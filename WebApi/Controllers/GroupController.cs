@@ -24,7 +24,7 @@ namespace WebApi.Controllers
         {
             return await groupService.Get(10);
         }
-
+        
         [HttpPost]
         public async Task<GroupDto> Create(CreateGroupDto createGroupDto)
         {

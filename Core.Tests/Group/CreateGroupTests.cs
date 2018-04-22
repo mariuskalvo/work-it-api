@@ -4,6 +4,7 @@ using System.Text;
 using AutoMapper;
 using Core.DTOs;
 using Core.Exceptions;
+using Core.RepositoryInterfaces;
 using Core.Services;
 using Moq;
 using Xunit;
@@ -16,7 +17,9 @@ namespace Core.Tests.Group
         public async void GroupWithNullOrEmptyNameThrowsException()
         {
             var mapper = new Mock<IMapper>();
-            var groupService = new GroupService(mapper.Object);
+            var groupRepository = new Mock<IGroupRepository>();
+
+            var groupService = new GroupService(groupRepository.Object, mapper.Object);
 
             var invalidGroupWithEmptyTitle = new CreateGroupDto()
             {

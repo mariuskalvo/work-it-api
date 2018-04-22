@@ -11,6 +11,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using AutoMapper;
+using Persistence.Database;
+using Microsoft.EntityFrameworkCore;
+using Core.RepositoryInterfaces;
+using Persistence.Repositories;
 
 namespace WebApi
 {
@@ -27,6 +31,12 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IGroupService, GroupService>();
+            services.AddTransient<IGroupRepository, GroupRepository>();
+
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             services.AddAutoMapper();
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "Groupie API", Version = "v1" }));

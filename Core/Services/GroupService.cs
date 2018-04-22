@@ -8,26 +8,23 @@ using Core.DTOs;
 using Core.DTOS;
 using Core.Entities;
 using Core.Exceptions;
+using Core.RepositoryInterfaces;
 using Core.Validators;
 
 namespace Core.Services
 {
     public class GroupService : IGroupService
     {
+        private readonly IGroupRepository groupRepository;
         private readonly IMapper mapper;
 
-        public GroupService(IMapper mapper)
+        public GroupService(IGroupRepository groupRepository, IMapper mapper)
         {
+            this.groupRepository = groupRepository;
             this.mapper = mapper;
         }
 
-        public static List<Group> groups = new List<Group>()
-        {
-            new Group() { Id = 0, Title = "First group"},
-            new Group() { Id = 1, Title = "Second group"}
-        };
-
-        public Task<GroupDto> Create(CreateGroupDto createGroupDto)
+        public async Task<GroupDto> Create(CreateGroupDto createGroupDto)
         {
             var validator = new CreateGroupDtoValidator();
             var validationResults = validator.Validate(createGroupDto);
@@ -39,21 +36,18 @@ namespace Core.Services
                 throw new InvalidModelStateException($"Could not create new category: The following properties are invalid: {errorListString}");
             }
 
-            return Task.Run(() =>
-            {
-                var groupToAdd = mapper.Map<Group>(createGroupDto);
-                groupToAdd.Id = groups.Count;
+            var entityToAdd = mapper.Map<Group>(createGroupDto);
+            entityToAdd.CreatedAt = DateTime.Now;
 
-                groups.Add(groupToAdd);
+            var trackedEntity = await groupRepository.Add(entityToAdd);
+            var createdGroupDto = mapper.Map<GroupDto>(trackedEntity);
 
-                var groupToReturn = mapper.Map<GroupDto>(groupToAdd);
-
-                return groupToReturn;
-            });
+            return createdGroupDto;
         }
 
         public async Task<IEnumerable<GroupDto>> Get(int limit)
         {
+            var groups = await groupRepository.GetAll();
             return mapper.Map<IEnumerable<GroupDto>>(groups);
         }
     }

@@ -13,8 +13,7 @@ namespace Core.AutoMapper
         public DomainProfile()
         {
             CreateMap<CreateGroupDto, Group>();
-            CreateMap<Group, GroupDto>();
-
+            CreateMap<Group, GroupDto>().ReverseMap();
         }
     }
 }
