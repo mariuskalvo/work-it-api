@@ -16,6 +16,9 @@ namespace Persistence.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // tb => EntityTypeBuilder<Type>
+
             modelBuilder.Entity<Group>(tb => tb.HasMany(thread => thread.Threads));
             modelBuilder.Entity<GroupThread>(tb => tb.HasOne(grp => grp.Group));
         }

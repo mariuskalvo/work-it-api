@@ -14,6 +14,9 @@ namespace Core.AutoMapper
         {
             CreateMap<CreateGroupDto, Group>();
             CreateMap<Group, GroupDto>().ReverseMap();
+
+            CreateMap<CreateGroupThreadDto, GroupThread>();
+            CreateMap<GroupThread, GroupThreadDto>().ReverseMap();
         }
     }
 }

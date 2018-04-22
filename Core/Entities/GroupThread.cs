@@ -13,6 +13,7 @@ namespace Core.Entities
         public long Id { get; set; }
         public string Title { get; set; }
 
+        public long GroupId { get; set; }
         public Group Group { get; set; }
         public DateTime CreatedAt { get; set; }
     }

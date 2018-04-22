@@ -15,6 +15,7 @@ using Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Core.RepositoryInterfaces;
 using Persistence.Repositories;
+using Core.Services.Interfaces;
 
 namespace WebApi
 {
@@ -31,7 +32,11 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IGroupService, GroupService>();
+            services.AddTransient<IGroupThreadService, GroupThreadService>();
+
+
             services.AddTransient<IGroupRepository, GroupRepository>();
+            services.AddTransient<IGroupThreadRepository, GroupThreadRepository>();
 
             services.AddDbContext<AppDbContext>(options =>
             {

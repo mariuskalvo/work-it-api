@@ -30,11 +30,7 @@ namespace Core.Services
             var validationResults = validator.Validate(createGroupDto);
 
             if (!validationResults.IsValid)
-            {
-                var errors = validationResults.Errors.Select(error => error.PropertyName);
-                var errorListString = string.Join(",", errors);
-                throw new InvalidModelStateException($"Could not create new category: The following properties are invalid: {errorListString}");
-            }
+                throw ExceptionFactory.CreateFromValidationResults(validationResults);
 
             var entityToAdd = mapper.Map<Group>(createGroupDto);
             entityToAdd.CreatedAt = DateTime.Now;
