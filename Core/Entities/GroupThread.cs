@@ -6,15 +6,14 @@ using System.Text;
 
 namespace Core.Entities
 {
-    public class Group
+    public class GroupThread
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
         public string Title { get; set; }
 
-        public IEnumerable<GroupThread> Threads { get; set; }
-
+        public Group Group { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }
