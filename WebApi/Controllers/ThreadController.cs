@@ -21,7 +21,7 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<GroupThreadDto> Create(CreateGroupThreadDto thread)
         {
-            return await groupThreadService.Add(thread);
+            return await groupThreadService.Create(thread);
         }
     }
 }

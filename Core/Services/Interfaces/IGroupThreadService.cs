@@ -8,6 +8,6 @@ namespace Core.Services.Interfaces
 {
     public interface IGroupThreadService
     {
-        Task<GroupThreadDto> Add(CreateGroupThreadDto groupThread);
+        Task<GroupThreadDto> Create(CreateGroupThreadDto groupThread);
     }
 }

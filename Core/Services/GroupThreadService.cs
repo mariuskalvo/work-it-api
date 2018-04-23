@@ -24,7 +24,7 @@ namespace Core.Services
             this.mapper = mapper;
         }
 
-        public async Task<GroupThreadDto> Add(CreateGroupThreadDto groupThread)
+        public async Task<GroupThreadDto> Create(CreateGroupThreadDto groupThread)
         {
 
             GroupThreadValidator validator = new GroupThreadValidator();
