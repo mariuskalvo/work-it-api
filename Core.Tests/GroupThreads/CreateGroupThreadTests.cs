@@ -11,7 +11,7 @@ using Core.Services;
 using Moq;
 using Xunit;
 
-namespace Core.Tests.Groups
+namespace Core.Tests.GroupThreads
 {
     public class CreateGroupThreadTests
     {
