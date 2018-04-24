@@ -26,7 +26,6 @@ namespace Core.Services
 
         public async Task<GroupThreadDto> Create(CreateGroupThreadDto groupThread)
         {
-
             GroupThreadValidator validator = new GroupThreadValidator();
             var validationResults = validator.Validate(groupThread);
 
@@ -40,7 +39,20 @@ namespace Core.Services
             var addedDto = mapper.Map<GroupThreadDto>(entityToAdd);
 
             return addedDto;
+        }
 
+        public async Task<IEnumerable<GroupThreadDto>> GetLatest(int limit)
+        {
+            var entities = await groupThreadRepository.GetLatest(limit);
+            return mapper.Map<IEnumerable<GroupThreadDto>>(entities);
+        }
+
+        public async Task<IEnumerable<GroupThreadDto>> GetPagedByGroupId(long groupId, int page, int pageSize = 10)
+        {
+            int actualPage = Math.Max(page - 1, 0);
+            int skip = actualPage * pageSize;
+            var entities = await groupThreadRepository.GetByGroupIdWithSkipAndLimit(groupId, pageSize, skip);
+            return mapper.Map<IEnumerable<GroupThreadDto>>(entities);
         }
     }
 }
