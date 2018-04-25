@@ -47,11 +47,17 @@ namespace Core.Services
             return mapper.Map<IEnumerable<GroupThreadDto>>(entities);
         }
 
-        public async Task<IEnumerable<GroupThreadDto>> GetPagedByGroupId(long groupId, int page, int pageSize = 10)
+        public async Task<IEnumerable<GroupThreadDto>> GetPagedByGroupId(long groupId, int page, int pageSize)
         {
+            // Dersom negativ page eller pageSize, sett til 0.
+            // Sider i repositories indekseres fra 0.
+
+            int actualPageSize = Math.Max(pageSize, 0);
+
             int actualPage = Math.Max(page - 1, 0);
             int skip = actualPage * pageSize;
-            var entities = await groupThreadRepository.GetByGroupIdWithSkipAndLimit(groupId, pageSize, skip);
+
+            var entities = await groupThreadRepository.GetByGroupIdWithSkipAndLimit(groupId, actualPageSize, skip);
             return mapper.Map<IEnumerable<GroupThreadDto>>(entities);
         }
     }
