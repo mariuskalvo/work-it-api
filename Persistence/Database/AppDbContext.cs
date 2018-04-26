@@ -10,6 +10,7 @@ namespace Persistence.Database
     {
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupThread> Threads { get; set; }
+        public DbSet<ThreadEntry> ThreadEntries { get; set; }
 
         public AppDbContext(DbContextOptions options) : base(options) { }
 
@@ -19,8 +20,11 @@ namespace Persistence.Database
 
             // tb => EntityTypeBuilder<Type>
 
-            modelBuilder.Entity<Group>(tb => tb.HasMany(thread => thread.Threads));
-            modelBuilder.Entity<GroupThread>(tb => tb.HasOne(grp => grp.Group));
+            modelBuilder.Entity<Group>(tb => tb.HasMany(grp => grp.Threads));
+            modelBuilder.Entity<GroupThread>(tb => tb.HasOne(thread => thread.Group));
+
+            modelBuilder.Entity<GroupThread>(tb => tb.HasMany(thread => thread.Entries));
+            modelBuilder.Entity<ThreadEntry>(tb => tb.HasOne(entry => entry.Thread));
         }
     }
 }
