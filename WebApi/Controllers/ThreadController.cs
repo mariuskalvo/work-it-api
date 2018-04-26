@@ -27,8 +27,7 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<GroupThreadDto>> GetLatest(int limit)
         {
-            int actualLimit = Math.Min(limit, 20);
-            return await groupThreadService.GetLatest(actualLimit);
+            return await groupThreadService.GetLatest(limit);
         }
 
         [HttpGet]

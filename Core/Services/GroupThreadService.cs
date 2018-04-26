@@ -43,7 +43,11 @@ namespace Core.Services
 
         public async Task<IEnumerable<GroupThreadDto>> GetLatest(int limit)
         {
-            var entities = await groupThreadRepository.GetLatest(limit);
+            int maxToFetch = 10;
+            int actualLimit = Math.Max(0, limit);
+            actualLimit = Math.Min(maxToFetch, actualLimit);
+
+            var entities = await groupThreadRepository.GetLatest(actualLimit);
             return mapper.Map<IEnumerable<GroupThreadDto>>(entities);
         }
 
