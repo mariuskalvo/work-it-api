@@ -10,7 +10,7 @@ using Core.Services.Interfaces;
 
 namespace Core.Services
 {
-    class ThreadEntryService : IThreadEntryService
+    public class ThreadEntryService : IThreadEntryService
     {
         private readonly IThreadEntryRepository threadEntryRepository;
         private readonly IMapper mapper;

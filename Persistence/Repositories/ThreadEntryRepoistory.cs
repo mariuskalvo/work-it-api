@@ -10,11 +10,11 @@ using Persistence.Database;
 
 namespace Persistence.Repositories
 {
-    class ThreadEntryRepoistory : IThreadEntryRepository
+    public class ThreadEntryRepository : IThreadEntryRepository
     {
         private readonly AppDbContext context;
 
-        public ThreadEntryRepoistory(AppDbContext context)
+        public ThreadEntryRepository(AppDbContext context)
         {
             this.context = context;
         }
