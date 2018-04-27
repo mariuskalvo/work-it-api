@@ -17,6 +17,9 @@ namespace Core.AutoMapper
 
             CreateMap<CreateGroupThreadDto, GroupThread>();
             CreateMap<GroupThread, GroupThreadDto>().ReverseMap();
+
+            CreateMap<CreateThreadEntryDto, ThreadEntry>();
+            CreateMap<ThreadEntry, ThreadEntryDto>().ReverseMap();
         }
     }
 }
