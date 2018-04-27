@@ -33,10 +33,11 @@ namespace WebApi
         {
             services.AddTransient<IGroupService, GroupService>();
             services.AddTransient<IGroupThreadService, GroupThreadService>();
-
+            services.AddTransient<IThreadEntryService, ThreadEntryService>();
 
             services.AddTransient<IGroupRepository, GroupRepository>();
             services.AddTransient<IGroupThreadRepository, GroupThreadRepository>();
+            services.AddTransient<IThreadEntryRepository, ThreadEntryRepository>();
 
             services.AddDbContext<AppDbContext>(options =>
             {
