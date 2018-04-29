@@ -16,7 +16,7 @@ namespace Core.Entities
         public GroupThread Thread { get; set; }
 
         public string Content { get; set; }
-        public IEnumerable<Reaction> Reactions { get; set; }
+        public IEnumerable<ThreadEntryReaction> Reactions { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

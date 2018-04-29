@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Core.Entities
 {
-    public class Reaction
+    public class ThreadEntryReaction
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,6 +14,6 @@ namespace Core.Entities
 
         public ThreadEntry ThreadEntry { get; set; }
         public long ThreadEntryId { get; set; }
-        public string ReactionId { get; set; }
+        public string ReactionTag { get; set; }
     }
 }
