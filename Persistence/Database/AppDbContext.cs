@@ -11,6 +11,8 @@ namespace Persistence.Database
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupThread> Threads { get; set; }
         public DbSet<ThreadEntry> ThreadEntries { get; set; }
+        public DbSet<ThreadEntryReaction> ThreadEntryReaction { get; set; }
+
 
         public AppDbContext(DbContextOptions options) : base(options) { }
 

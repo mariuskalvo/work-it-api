@@ -18,7 +18,7 @@ namespace Persistence.Repositories
         {
             this.context = context;
         }
-
+        
         public async Task<ThreadEntry> Create(ThreadEntry threadEntry)
         {
             context.ThreadEntries.Add(threadEntry);
@@ -29,6 +29,19 @@ namespace Persistence.Repositories
         public async Task<IEnumerable<ThreadEntry>> GetByThreadId(long threadId)
         {
             return await context.ThreadEntries.Where(t => t.GroupThreadId == threadId).ToListAsync();
+        }
+
+        public async Task AddReactionToThread(ThreadEntryReaction reaction)
+        {
+            context.ThreadEntryReaction.Add(reaction);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RemoveThreadEntryReaction(long reactionId)
+        {
+            var threadEntryReaction = context.ThreadEntryReaction.Find(reactionId);
+            context.ThreadEntryReaction.Remove(threadEntryReaction);
+            await context.SaveChangesAsync();
         }
     }
 }

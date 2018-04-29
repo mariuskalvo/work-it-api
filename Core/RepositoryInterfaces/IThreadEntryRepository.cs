@@ -10,5 +10,7 @@ namespace Core.RepositoryInterfaces
     {
         Task<ThreadEntry> Create(ThreadEntry threadEntry);
         Task<IEnumerable<ThreadEntry>> GetByThreadId(long threadId);
+        Task AddReactionToThread(ThreadEntryReaction reaction);
+        Task RemoveThreadEntryReaction(long reactionId);
     }
 }
