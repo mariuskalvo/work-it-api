@@ -9,7 +9,7 @@ namespace Core.Services
 {
     public interface IGroupService
     {
-        Task<IEnumerable<GroupDto>> Get(int limit);
-        Task<GroupDto> Create(CreateGroupDto createGroupDto);
+        IEnumerable<GroupDto> Get(int limit);
+        GroupDto Create(CreateGroupDto createGroupDto);
     }
 }

@@ -8,7 +8,9 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.RepositoryInterfaces;
 using Core.Services;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using Persistence.Database;
 using Xunit;
 
 namespace Core.Tests.Groups
@@ -24,12 +26,15 @@ namespace Core.Tests.Groups
         };
 
         [Fact]
-        public async void GroupWithNullOrEmptyName_ThrowsException()
+        public void GroupWithNullOrEmptyName_ThrowsException()
         {
             var mapper = new Mock<IMapper>();
-            var groupRepository = new Mock<IGroupRepository>();
 
-            var groupService = new GroupService(groupRepository.Object, mapper.Object);
+            var mockSet = new Mock<DbSet<Group>>();
+            var mockContext = new Mock<AppDbContext>();
+            mockContext.Setup(m => m.Groups).Returns(mockSet.Object);
+
+            var groupService = new GroupService(mockContext.Object, mapper.Object);
 
             var invalidGroupWithEmptyTitle = new CreateGroupDto()
             {
@@ -41,12 +46,12 @@ namespace Core.Tests.Groups
                 Title = null
             };
 
-            await Assert.ThrowsAsync<InvalidModelStateException>(() => groupService.Create(invalidGroupWithEmptyTitle));
-            await Assert.ThrowsAsync<InvalidModelStateException>(() => groupService.Create(invalidGroupWithNullTitle));
+            Assert.Throws<InvalidModelStateException>(() => groupService.Create(invalidGroupWithEmptyTitle));
+            Assert.Throws<InvalidModelStateException>(() => groupService.Create(invalidGroupWithNullTitle));
         }
 
         [Fact]
-        public async void GroupHasValidFields_GroupIsPersisted()
+        public void GroupHasValidFields_GroupIsPersisted()
         {
             var mockedMapper = new Mock<IMapper>();
             mockedMapper.Setup(mapper => mapper.Map<Group>(It.IsAny<CreateGroupDto>()))
@@ -57,19 +62,21 @@ namespace Core.Tests.Groups
                             Title = VALID_TITLE
                         });
 
-            var groupRepository = new Mock<IGroupRepository>();
-            groupRepository.Setup(gr => gr.Add(It.IsAny<Group>()))
-                           .ReturnsAsync(VALID_GROUP);
+            var mockSet = new Mock<DbSet<Group>>();
+            var mockContext = new Mock<AppDbContext>();
+            mockContext.Setup(m => m.Groups).Returns(mockSet.Object);
 
-            var groupService = new GroupService(groupRepository.Object, mockedMapper.Object);
+            var groupService = new GroupService(mockContext.Object, mockedMapper.Object);
 
             var validGroup = new CreateGroupDto()
             {
                 Title = VALID_TITLE
             };
 
-            var createdGroupDto = await groupService.Create(validGroup);
-            groupRepository.Verify(gr => gr.Add(It.IsAny<Group>()));
+            groupService.Create(validGroup);
+
+            mockSet.Verify(m => m.Add(It.IsAny<Group>()), Times.Once);
+            mockContext.Verify(m => m.SaveChanges(), Times.Once);
         }
     }
 }

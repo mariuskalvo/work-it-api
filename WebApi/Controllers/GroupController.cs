@@ -20,15 +20,15 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<GroupDto>> Get()
+        public IEnumerable<GroupDto> Get()
         {
-            return await groupService.Get(10);
+            return groupService.Get(10);
         }
         
         [HttpPost]
-        public async Task<GroupDto> Create(CreateGroupDto createGroupDto)
+        public GroupDto Create(CreateGroupDto createGroupDto)
         {
-            return await groupService.Create(createGroupDto);
+            return groupService.Create(createGroupDto);
         }
     }
 }

@@ -10,6 +10,8 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.RepositoryInterfaces;
 using Core.Validators;
+using Microsoft.EntityFrameworkCore;
+using Persistence.Database;
 
 namespace Core.Services
 {
@@ -17,14 +19,15 @@ namespace Core.Services
     {
         private readonly IGroupRepository groupRepository;
         private readonly IMapper mapper;
+        private readonly AppDbContext context;
 
-        public GroupService(IGroupRepository groupRepository, IMapper mapper)
+        public GroupService(AppDbContext context, IMapper mapper)
         {
-            this.groupRepository = groupRepository;
+            this.context = context;
             this.mapper = mapper;
         }
 
-        public async Task<GroupDto> Create(CreateGroupDto createGroupDto)
+        public GroupDto Create(CreateGroupDto createGroupDto)
         {
             var validator = new CreateGroupDtoValidator();
             var validationResults = validator.Validate(createGroupDto);
@@ -35,15 +38,16 @@ namespace Core.Services
             var entityToAdd = mapper.Map<Group>(createGroupDto);
             entityToAdd.CreatedAt = DateTime.Now;
 
-            var trackedEntity = await groupRepository.Add(entityToAdd);
-            var createdGroupDto = mapper.Map<GroupDto>(trackedEntity);
+            context.Groups.Add(entityToAdd);
+            context.SaveChanges();
 
-            return createdGroupDto;
+            return mapper.Map<GroupDto>(entityToAdd); ;
+
         }
 
-        public async Task<IEnumerable<GroupDto>> Get(int limit)
+        public IEnumerable<GroupDto> Get(int limit)
         {
-            var groups = await groupRepository.GetAll();
+            var groups = context.Groups.Take(limit).ToList();
             return mapper.Map<IEnumerable<GroupDto>>(groups);
         }
     }

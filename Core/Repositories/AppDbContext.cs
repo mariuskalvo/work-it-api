@@ -8,12 +8,13 @@ namespace Persistence.Database
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Group> Groups { get; set; }
+        public virtual DbSet<Group> Groups { get; set; }
         public DbSet<GroupThread> Threads { get; set; }
         public DbSet<ThreadEntry> ThreadEntries { get; set; }
         public DbSet<ThreadEntryReaction> ThreadEntryReaction { get; set; }
 
 
+        public AppDbContext() { }
         public AppDbContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
