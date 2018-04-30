@@ -4,7 +4,7 @@ using System.Text;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Persistence.Database
+namespace Core.DataAccess
 {
     public class AppDbContext : DbContext
     {
