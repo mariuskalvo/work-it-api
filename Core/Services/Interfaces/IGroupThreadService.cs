@@ -8,8 +8,8 @@ namespace Core.Services.Interfaces
 {
     public interface IGroupThreadService
     {
-        Task<GroupThreadDto> Create(CreateGroupThreadDto groupThread);
-        Task<IEnumerable<GroupThreadDto>> GetLatest(int limit);
-        Task<IEnumerable<GroupThreadDto>> GetPagedByGroupId(long groupId, int page, int pageSize = 10);
+        GroupThreadDto Create(CreateGroupThreadDto groupThread);
+        IEnumerable<GroupThreadDto> GetLatest(int limit);
+        IEnumerable<GroupThreadDto> GetPagedByGroupId(long groupId, int page, int pageSize = 10);
     }
 }

@@ -10,21 +10,22 @@ using Core.Exceptions;
 using Core.RepositoryInterfaces;
 using Core.Services.Interfaces;
 using Core.Validators;
+using Persistence.Database;
 
 namespace Core.Services
 {
     public class GroupThreadService : IGroupThreadService
     {
-        private readonly IGroupThreadRepository groupThreadRepository;
+        private readonly AppDbContext context;
         private readonly IMapper mapper;
 
-        public GroupThreadService(IGroupThreadRepository groupThreadRepository, IMapper mapper)
+        public GroupThreadService(AppDbContext context, IMapper mapper)
         {
-            this.groupThreadRepository = groupThreadRepository;
+            this.context = context;
             this.mapper = mapper;
         }
 
-        public async Task<GroupThreadDto> Create(CreateGroupThreadDto groupThread)
+        public GroupThreadDto Create(CreateGroupThreadDto groupThread)
         {
             GroupThreadValidator validator = new GroupThreadValidator();
             var validationResults = validator.Validate(groupThread);
@@ -35,33 +36,35 @@ namespace Core.Services
             var entityToAdd = mapper.Map<GroupThread>(groupThread);
             entityToAdd.CreatedAt = DateTime.Now;
 
-            bool success = await groupThreadRepository.Add(entityToAdd);
-            var addedDto = mapper.Map<GroupThreadDto>(entityToAdd);
+            context.Threads.Add(entityToAdd);
+            context.SaveChanges();
 
-            return addedDto;
+            return mapper.Map<GroupThreadDto>(entityToAdd);
         }
 
-        public async Task<IEnumerable<GroupThreadDto>> GetLatest(int limit)
+        public IEnumerable<GroupThreadDto> GetLatest(int limit)
         {
             int maxToFetch = 10;
             int actualLimit = Math.Max(0, limit);
             actualLimit = Math.Min(maxToFetch, actualLimit);
 
-            var entities = await groupThreadRepository.GetLatest(actualLimit);
+            var entities = context.Threads.Take(limit).OrderByDescending(grp => grp.CreatedAt);
             return mapper.Map<IEnumerable<GroupThreadDto>>(entities);
         }
 
-        public async Task<IEnumerable<GroupThreadDto>> GetPagedByGroupId(long groupId, int page, int pageSize)
+        public IEnumerable<GroupThreadDto> GetPagedByGroupId(long groupId, int page, int pageSize)
         {
-            // Dersom negativ page eller pageSize, sett til 0.
-            // Sider i repositories indekseres fra 0.
-
-            int actualPageSize = Math.Max(pageSize, 0);
+            if (pageSize < 0)
+                return new List<GroupThreadDto>();
 
             int actualPage = Math.Max(page - 1, 0);
             int skip = actualPage * pageSize;
 
-            var entities = await groupThreadRepository.GetByGroupIdWithSkipAndLimit(groupId, actualPageSize, skip);
+            var entities = context.Threads.Take(pageSize)
+                                          .Skip(skip)
+                                          .OrderByDescending(grp => grp.CreatedAt)
+                                          .ToList();
+
             return mapper.Map<IEnumerable<GroupThreadDto>>(entities);
         }
     }

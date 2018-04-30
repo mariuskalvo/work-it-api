@@ -9,9 +9,9 @@ namespace Persistence.Database
     public class AppDbContext : DbContext
     {
         public virtual DbSet<Group> Groups { get; set; }
-        public DbSet<GroupThread> Threads { get; set; }
-        public DbSet<ThreadEntry> ThreadEntries { get; set; }
-        public DbSet<ThreadEntryReaction> ThreadEntryReaction { get; set; }
+        public virtual DbSet<GroupThread> Threads { get; set; }
+        public virtual DbSet<ThreadEntry> ThreadEntries { get; set; }
+        public virtual DbSet<ThreadEntryReaction> ThreadEntryReaction { get; set; }
 
 
         public AppDbContext() { }

@@ -8,7 +8,9 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.RepositoryInterfaces;
 using Core.Services;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using Persistence.Database;
 using Xunit;
 
 namespace Core.Tests.GroupThreads
@@ -27,8 +29,11 @@ namespace Core.Tests.GroupThreads
         public async void ThreadWithNullOrEmptyName_ThrowsException()
         {
             var mapper = new Mock<IMapper>();
-            var threadRepository = new Mock<IGroupThreadRepository>();
-            var threadService = new GroupThreadService(threadRepository.Object, mapper.Object);
+
+            var mockContext = new Mock<AppDbContext>();
+            var mockSet = new Mock<DbSet<GroupThread>>();
+
+            var threadService = new GroupThreadService(mockContext.Object, mapper.Object);
 
             var invalidGroupWithEmptyTitle = new CreateGroupThreadDto()
             {
@@ -40,12 +45,12 @@ namespace Core.Tests.GroupThreads
                 Title = null
             };
 
-            await Assert.ThrowsAsync<InvalidModelStateException>(() => threadService.Create(invalidGroupWithEmptyTitle));
-            await Assert.ThrowsAsync<InvalidModelStateException>(() => threadService.Create(invalidGroupWithNullTitle));
+            Assert.Throws<InvalidModelStateException>(() => threadService.Create(invalidGroupWithEmptyTitle));
+            Assert.Throws<InvalidModelStateException>(() => threadService.Create(invalidGroupWithNullTitle));
         }
 
         [Fact]
-        public async void ThreadHasValidField_ThredIsPersisted()
+        public void ThreadHasValidField_ThredIsPersisted()
         {
             var mockedMapper = new Mock<IMapper>();
             mockedMapper.Setup(mapper => mapper.Map<GroupThread>(It.IsAny<CreateGroupThreadDto>()))
@@ -57,18 +62,22 @@ namespace Core.Tests.GroupThreads
                             Title = VALID_TITLE
                         });
 
-            var threadRepository = new Mock<IGroupThreadRepository>();
-            threadRepository.Setup(gr => gr.Add(It.IsAny<GroupThread>())).ReturnsAsync(true);
+            var mockContext = new Mock<AppDbContext>();
+            var mockSet = new Mock<DbSet<GroupThread>>();
+            mockContext.Setup(m => m.Threads).Returns(mockSet.Object);
 
-            var groupService = new GroupThreadService(threadRepository.Object, mockedMapper.Object);
+
+            var groupService = new GroupThreadService(mockContext.Object, mockedMapper.Object);
 
             var validThread = new CreateGroupThreadDto()
             {
                 Title = VALID_TITLE
             };
 
-            var createdGroupDto = await groupService.Create(validThread);
-            threadRepository.Verify(gr => gr.Add(It.IsAny<GroupThread>()));
+            groupService.Create(validThread);
+
+            mockContext.Verify(m => m.SaveChanges(), Times.Once);
+            mockSet.Verify(m => m.Add(It.IsAny<GroupThread>()), Times.Once);
         }
     }
 }

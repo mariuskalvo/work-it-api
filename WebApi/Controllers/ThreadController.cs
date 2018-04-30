@@ -19,21 +19,21 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<GroupThreadDto> Create(CreateGroupThreadDto thread)
+        public GroupThreadDto Create(CreateGroupThreadDto thread)
         {
-            return await groupThreadService.Create(thread);
+            return groupThreadService.Create(thread);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<GroupThreadDto>> GetLatest(int limit)
+        public IEnumerable<GroupThreadDto> GetLatest(int limit)
         {
-            return await groupThreadService.GetLatest(limit);
+            return groupThreadService.GetLatest(limit);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<GroupThreadDto>> GetByGroupId(long groupId, int page = 1)
+        public IEnumerable<GroupThreadDto> GetByGroupId(long groupId, int page = 1)
         {
-            return await groupThreadService.GetPagedByGroupId(groupId, page);
+            return groupThreadService.GetPagedByGroupId(groupId, page);
         }
     }
 }
