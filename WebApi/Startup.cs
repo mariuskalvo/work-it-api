@@ -11,10 +11,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using AutoMapper;
-using Persistence.Database;
+using Core.DataAccess;
 using Microsoft.EntityFrameworkCore;
-using Core.RepositoryInterfaces;
-using Persistence.Repositories;
 using Core.Services.Interfaces;
 
 namespace WebApi
@@ -34,10 +32,6 @@ namespace WebApi
             services.AddTransient<IGroupService, GroupService>();
             services.AddTransient<IGroupThreadService, GroupThreadService>();
             services.AddTransient<IThreadEntryService, ThreadEntryService>();
-
-            services.AddTransient<IGroupRepository, GroupRepository>();
-            services.AddTransient<IGroupThreadRepository, GroupThreadRepository>();
-            services.AddTransient<IThreadEntryRepository, ThreadEntryRepository>();
 
             services.AddDbContext<AppDbContext>(options =>
             {

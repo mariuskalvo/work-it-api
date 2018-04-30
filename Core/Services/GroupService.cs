@@ -8,16 +8,14 @@ using Core.DTOs;
 using Core.DTOS;
 using Core.Entities;
 using Core.Exceptions;
-using Core.RepositoryInterfaces;
 using Core.Validators;
 using Microsoft.EntityFrameworkCore;
-using Persistence.Database;
+using Core.DataAccess;
 
 namespace Core.Services
 {
     public class GroupService : IGroupService
     {
-        private readonly IGroupRepository groupRepository;
         private readonly IMapper mapper;
         private readonly AppDbContext context;
 

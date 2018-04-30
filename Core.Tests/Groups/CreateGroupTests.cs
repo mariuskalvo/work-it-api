@@ -6,11 +6,10 @@ using Core.DTOs;
 using Core.DTOS;
 using Core.Entities;
 using Core.Exceptions;
-using Core.RepositoryInterfaces;
 using Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using Persistence.Database;
+using Core.DataAccess;
 using Xunit;
 
 namespace Core.Tests.Groups

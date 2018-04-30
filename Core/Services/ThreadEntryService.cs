@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
-using Core.RepositoryInterfaces;
 using Core.Services.Interfaces;
-using Persistence.Database;
+using Core.DataAccess;
 
 namespace Core.Services
 {

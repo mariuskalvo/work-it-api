@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
-using Core.RepositoryInterfaces;
 using Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using Persistence.Database;
+using Core.DataAccess;
 using Xunit;
 
 namespace Core.Tests.GroupThreads
@@ -21,7 +20,6 @@ namespace Core.Tests.GroupThreads
         private IEnumerable<GroupThreadDto> groupThreadDtos;
         private IQueryable<GroupThread> groupThreads;
 
-        private Mock<IGroupThreadRepository> threadRepoMock;
         private Mock<IMapper> mapperMock;
 
         private static int PAGE_SIZE = 2;
@@ -33,7 +31,6 @@ namespace Core.Tests.GroupThreads
         public GetGroupThreads()
         {
 
-            threadRepoMock = new Mock<IGroupThreadRepository>();
             mapperMock = new Mock<IMapper>();
 
             var groupIds = new List<int>() { 1, 2, 3, 4, 5 };

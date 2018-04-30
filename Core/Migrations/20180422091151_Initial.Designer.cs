@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
-using Persistence.Database;
+using Core.DataAccess;
 using System;
 
-namespace Persistence.Migrations
+namespace Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20180422091151_Initial")]
