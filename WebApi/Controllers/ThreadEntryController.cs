@@ -19,15 +19,15 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ThreadEntryDto>> GetByThreadId(long threadId)
+        public IEnumerable<ThreadEntryDto> GetByThreadId(long threadId)
         {
-            return await threadEntryService.GetByThreadId(threadId);
+            return threadEntryService.GetByThreadId(threadId);
         }
 
         [HttpPost]
-        public async Task<ThreadEntryDto> Create(CreateThreadEntryDto createEntry)
+        public ThreadEntryDto Create(CreateThreadEntryDto createEntry)
         {
-            var createdDto = await threadEntryService.Create(createEntry);
+            var createdDto = threadEntryService.Create(createEntry);
             return createdDto;
         }
 

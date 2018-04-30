@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -7,33 +8,35 @@ using Core.DTOs;
 using Core.Entities;
 using Core.RepositoryInterfaces;
 using Core.Services.Interfaces;
+using Persistence.Database;
 
 namespace Core.Services
 {
     public class ThreadEntryService : IThreadEntryService
     {
-        private readonly IThreadEntryRepository threadEntryRepository;
+        private readonly AppDbContext context;
         private readonly IMapper mapper;
 
-        public ThreadEntryService(IThreadEntryRepository threadEntryRepository, IMapper mapper)
+        public ThreadEntryService(AppDbContext context, IMapper mapper)
         {
-            this.threadEntryRepository = threadEntryRepository;
+            this.context = context;
             this.mapper = mapper;
         }
 
-        public async Task<ThreadEntryDto> Create(CreateThreadEntryDto createDto)
+        public ThreadEntryDto Create(CreateThreadEntryDto createDto)
         {
             var mappedEntity = mapper.Map<ThreadEntry>(createDto);
 
             mappedEntity.CreatedAt = DateTime.Now;
-            var trackedEntity = await threadEntryRepository.Create(mappedEntity);
+            context.ThreadEntries.Add(mappedEntity);
+            context.SaveChanges();
 
-            return mapper.Map<ThreadEntryDto>(trackedEntity);
+            return mapper.Map<ThreadEntryDto>(mappedEntity);
         }
 
-        public async Task<IEnumerable<ThreadEntryDto>> GetByThreadId(long threadId)
+        public IEnumerable<ThreadEntryDto> GetByThreadId(long threadId)
         {
-            var entities = await threadEntryRepository.GetByThreadId(threadId);
+            var entities = context.ThreadEntries.Where(e => e.GroupThreadId == threadId).ToList();
             return mapper.Map<IEnumerable<ThreadEntryDto>>(entities);
         }
     }

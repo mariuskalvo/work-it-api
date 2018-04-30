@@ -8,7 +8,7 @@ namespace Core.Services.Interfaces
 {
     public interface IThreadEntryService
     {
-        Task<ThreadEntryDto> Create(CreateThreadEntryDto createDto);
-        Task<IEnumerable<ThreadEntryDto>> GetByThreadId(long threadId);
+        ThreadEntryDto Create(CreateThreadEntryDto createDto);
+        IEnumerable<ThreadEntryDto> GetByThreadId(long threadId);
     }
 }
