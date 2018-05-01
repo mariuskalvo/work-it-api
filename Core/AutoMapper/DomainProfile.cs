@@ -20,6 +20,8 @@ namespace Core.AutoMapper
 
             CreateMap<CreateThreadEntryDto, ThreadEntry>();
             CreateMap<ThreadEntry, ThreadEntryDto>().ReverseMap();
+
+            CreateMap<AddEntryReactionDto, ThreadEntryReaction>();
         }
     }
 }

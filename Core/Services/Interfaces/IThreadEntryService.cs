@@ -10,5 +10,6 @@ namespace Core.Services.Interfaces
     {
         ThreadEntryDto Create(CreateThreadEntryDto createDto);
         IEnumerable<ThreadEntryDto> GetByThreadId(long threadId);
+        void AddReactionToThreadEntry(AddEntryReactionDto addReactionDto);
     }
 }

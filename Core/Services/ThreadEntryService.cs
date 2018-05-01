@@ -38,5 +38,26 @@ namespace Core.Services
             var entities = context.ThreadEntries.Where(e => e.GroupThreadId == threadId).ToList();
             return mapper.Map<IEnumerable<ThreadEntryDto>>(entities);
         }
+
+        public void AddReactionToThreadEntry(AddEntryReactionDto addReactionDto)
+        {
+            var threadEntryId = addReactionDto.ThreadEntryId;
+            var reactionTag = addReactionDto.ReactionTag;
+
+            var reactionExists = 
+                context.ThreadEntryReactions
+                       .Any(t => 
+                            t.ThreadEntryId == threadEntryId &&
+                            t.ReactionTag.Equals(reactionTag, StringComparison.InvariantCultureIgnoreCase)
+                        );
+
+            if (reactionExists)
+                return;
+
+            var entityToAdd = mapper.Map<ThreadEntryReaction>(addReactionDto);
+            context.ThreadEntryReactions.Add(entityToAdd);
+            context.SaveChanges();
+
+        }
     }
 }
