@@ -31,5 +31,10 @@ namespace WebApi.Controllers
             return createdDto;
         }
 
+        [HttpPost]
+        public void AddReactionForThreadEntry(AddEntryReactionDto addReaction)
+        {
+            threadEntryService.AddReactionToThreadEntry(addReaction);
+        }
     }
 }
