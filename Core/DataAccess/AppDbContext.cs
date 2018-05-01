@@ -11,7 +11,7 @@ namespace Core.DataAccess
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<GroupThread> Threads { get; set; }
         public virtual DbSet<ThreadEntry> ThreadEntries { get; set; }
-        public virtual DbSet<ThreadEntryReaction> ThreadEntryReaction { get; set; }
+        public virtual DbSet<ThreadEntryReaction> ThreadEntryReactions { get; set; }
 
 
         public AppDbContext() { }
