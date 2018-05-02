@@ -30,19 +30,13 @@ namespace Core.Tests.GroupThreads
 
         public GetGroupThreads()
         {
-
             mapperMock = new Mock<IMapper>();
 
             var groupIds = new List<int>() { 1, 2, 3, 4, 5 };
             groupThreads = groupIds.Select(id => new GroupThread() { Id = id }).AsQueryable();
             groupThreadDtos = groupIds.Select(id => new GroupThreadDto() { Id = id });
 
-
-            mockSet = new Mock<DbSet<GroupThread>>();
-            mockSet.As<IQueryable<GroupThread>>().Setup(m => m.Provider).Returns(groupThreads.Provider);
-            mockSet.As<IQueryable<GroupThread>>().Setup(m => m.Expression).Returns(groupThreads.Expression);
-            mockSet.As<IQueryable<GroupThread>>().Setup(m => m.ElementType).Returns(groupThreads.ElementType);
-            mockSet.As<IQueryable<GroupThread>>().Setup(m => m.GetEnumerator()).Returns(groupThreads.GetEnumerator());
+            mockSet = DbContextQueryableHelper<GroupThread>.GetMockedDbSet(groupThreads);
 
             mockContext = new Mock<AppDbContext>();
             mockContext.Setup(m => m.Threads).Returns(mockSet.Object);

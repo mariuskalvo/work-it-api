@@ -25,8 +25,6 @@ namespace Core.Tests.ThreadEntryReactions
 
         public ThreadEntryReactionTests()
         {
-            var mapperMock = new Mock<IMapper>();
-            setMock = new Mock<DbSet<ThreadEntryReaction>>();
 
             reactions = new List<ThreadEntryReaction>()
             {
@@ -38,10 +36,8 @@ namespace Core.Tests.ThreadEntryReactions
                 }
             }.AsQueryable();
 
-            setMock.As<IQueryable<ThreadEntryReaction>>().Setup(m => m.Provider).Returns(reactions.Provider);
-            setMock.As<IQueryable<ThreadEntryReaction>>().Setup(m => m.Expression).Returns(reactions.Expression);
-            setMock.As<IQueryable<ThreadEntryReaction>>().Setup(m => m.ElementType).Returns(reactions.ElementType);
-            setMock.As<IQueryable<ThreadEntryReaction>>().Setup(m => m.GetEnumerator()).Returns(reactions.GetEnumerator());
+            var mapperMock = new Mock<IMapper>();
+            setMock = DbContextQueryableHelper<ThreadEntryReaction>.GetMockedDbSet(reactions);
 
             contextMock = new Mock<AppDbContext>();
             contextMock.Setup(m => m.ThreadEntryReactions).Returns(setMock.Object);
