@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using Core.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.DataAccess
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<GroupThread> Threads { get; set; }
