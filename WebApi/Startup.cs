@@ -14,6 +14,8 @@ using AutoMapper;
 using Core.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Core.Services.Interfaces;
+using Core.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApi
 {
@@ -36,7 +38,9 @@ namespace WebApi
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
-            });
+            })
+            .AddIdentity<ApplicationUser, IdentityRole>()
+            .AddDefaultTokenProviders();
 
             services.AddAutoMapper();
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "Groupie API", Version = "v1" }));
@@ -50,6 +54,7 @@ namespace WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseAuthentication();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gropuie API"));
             app.UseMvc();
