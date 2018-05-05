@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Core.DTOs;
@@ -8,16 +10,19 @@ using Core.Entities;
 using Core.Services.Interfaces;
 using Core.Validators;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Core.Services
 {
     public class AccountService : IAccountService
     {
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public AccountService(UserManager<ApplicationUser> userManager)
+        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         public async Task<ValidationResponse> CreateAccount(CreateAccountDto createAccount)
@@ -54,6 +59,40 @@ namespace Core.Services
             {
                 Success = true
             };
+        }
+
+        public async Task<string> IssueToken(LoginDto loginDto)
+        {
+            var signInResult = await signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, false, false);
+            if (signInResult.Succeeded)
+            {
+                var currentUser = userManager.Users.FirstOrDefault(user => user.UserName.Equals(loginDto.Email, StringComparison.InvariantCultureIgnoreCase));
+                return GenerateJwtToken(currentUser);
+            }
+            return "";
+        }
+
+        private string GenerateJwtToken(ApplicationUser user)
+        {
+            var userClaims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("The empire did nothing wrong"));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expires = DateTime.Now.AddDays(1);
+            var token = new JwtSecurityToken(
+                "localhost",
+                "localhost",
+                userClaims,
+                expires: expires,
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
