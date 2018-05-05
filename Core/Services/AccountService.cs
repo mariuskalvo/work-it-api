@@ -36,7 +36,8 @@ namespace Core.Services
 
             var userToAdd = new ApplicationUser()
             {
-                Email = createAccount.Email
+                Email = createAccount.Email,
+                UserName = createAccount.Email
             };
 
             var createResult = await userManager.CreateAsync(userToAdd, createAccount.Password);

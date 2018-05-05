@@ -34,12 +34,21 @@ namespace WebApi
             services.AddTransient<IGroupService, GroupService>();
             services.AddTransient<IGroupThreadService, GroupThreadService>();
             services.AddTransient<IThreadEntryService, ThreadEntryService>();
+            services.AddTransient<IAccountService, AccountService>();
 
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options => {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+
             })
-            .AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
             services.AddAutoMapper();
