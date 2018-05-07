@@ -63,7 +63,18 @@ namespace WebApi
             });
 
             services.AddAutoMapper();
-            services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "Groupie API", Version = "v1" }));
+            services.AddSwaggerGen(c => {
+
+                c.SwaggerDoc("v1", new Info { Title = "Groupie API", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
+                {
+                    Description = "Jwt Bearer Authentication",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
+
+            });
             services.AddMvc();
         }
 
