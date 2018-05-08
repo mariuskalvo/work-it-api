@@ -45,8 +45,8 @@ namespace Core.Tests.Groups
                 Title = null
             };
 
-            Assert.Throws<InvalidModelStateException>(() => groupService.Create(invalidGroupWithEmptyTitle));
-            Assert.Throws<InvalidModelStateException>(() => groupService.Create(invalidGroupWithNullTitle));
+            Assert.Throws<InvalidModelStateException>(() => groupService.Create(invalidGroupWithEmptyTitle, String.Empty));
+            Assert.Throws<InvalidModelStateException>(() => groupService.Create(invalidGroupWithNullTitle, String.Empty));
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Core.Tests.Groups
                 Title = VALID_TITLE
             };
 
-            groupService.Create(validGroup);
+            groupService.Create(validGroup, string.Empty);
 
             mockSet.Verify(m => m.Add(It.IsAny<Group>()), Times.Once);
             mockContext.Verify(m => m.SaveChanges(), Times.Once);
