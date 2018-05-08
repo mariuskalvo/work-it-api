@@ -25,7 +25,7 @@ namespace Core.Services
             this.mapper = mapper;
         }
 
-        public GroupDto Create(CreateGroupDto createGroupDto)
+        public GroupDto Create(CreateGroupDto createGroupDto, string applicationUserId)
         {
             var validator = new CreateGroupDtoValidator();
             var validationResults = validator.Validate(createGroupDto);
@@ -34,7 +34,9 @@ namespace Core.Services
                 throw ExceptionFactory.CreateFromValidationResults(validationResults);
 
             var entityToAdd = mapper.Map<Group>(createGroupDto);
+
             entityToAdd.CreatedAt = DateTime.Now;
+            entityToAdd.CreatedById = applicationUserId;
 
             context.Groups.Add(entityToAdd);
             context.SaveChanges();

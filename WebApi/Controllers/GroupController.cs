@@ -1,34 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Core.DTOs;
 using Core.DTOS;
 using Core.Services;
+using Core.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GroupController : Controller
     {
-        private readonly IGroupService groupService;
+        private readonly IGroupService _groupService;
+        private readonly IUserService _userService;
 
-        public GroupController(IGroupService groupService)
+        public GroupController(IGroupService groupService, IUserService userService)
         {
-            this.groupService = groupService;
+            _groupService = groupService;
+            _userService = userService;
         }
 
         [HttpGet]
         public IEnumerable<GroupDto> Get()
         {
-            return groupService.Get(10);
+            return _groupService.Get(10);
         }
         
         [HttpPost]
-        public GroupDto Create(CreateGroupDto createGroupDto)
+        public async Task<IActionResult> Create(CreateGroupDto createGroupDto)
         {
-            return groupService.Create(createGroupDto);
+            var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUser = await _userService.GetCurrentUser(jwtUserSubject);
+
+            if (currentUser == null)
+                return StatusCode(StatusCodes.Status401Unauthorized);
+
+            var createdGroupDto = _groupService.Create(createGroupDto, currentUser.Id);
+
+            return Ok(createdGroupDto);
         }
     }
 }

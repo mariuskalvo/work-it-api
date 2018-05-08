@@ -37,11 +37,13 @@ namespace Core.DataAccess
                         .WithMany(grp => grp.Owners)
                         .HasForeignKey(a => a.GroupId);
 
-
             modelBuilder.Entity<ApplicationUserOwnedGroups>()
                         .HasOne(a => a.ApplicationUser)
                         .WithMany(user => user.OwnedGroups)
                         .HasForeignKey(a => a.ApplicationUserId);
+
+            modelBuilder.Entity<Group>()
+                        .HasOne(grp => grp.CreatedBy);
         }
     }
 }
