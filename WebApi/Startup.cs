@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace WebApi
 {
@@ -38,32 +39,41 @@ namespace WebApi
             services.AddTransient<IGroupThreadService, GroupThreadService>();
             services.AddTransient<IThreadEntryService, ThreadEntryService>();
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IUserService, UserService>();
 
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
-            });
-
-            services.AddIdentity<ApplicationUser, IdentityRole>(options => {
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 8;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
-
             })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options => {
+            services.AddAuthentication(options => options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.SaveToken = true;
                         options.TokenValidationParameters = new TokenValidationParameters()
                         {
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("The empire did nothing wrong"))
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("secretsecretsecretsecretsecret")),
+                            ValidateIssuerSigningKey = true,
+                            ValidAudience = "http://localhost:55437",
+                            ValidIssuer = "http://localhost:55437",
+                            ClockSkew = TimeSpan.Zero
                         };
-            });
+                    });
 
             services.AddAutoMapper();
-            services.AddSwaggerGen(c => {
+            services.AddSwaggerGen(c =>
+            {
+                var security = new Dictionary<string, IEnumerable<string>>
+                {
+                    {"Bearer", new string[] { }},
+                };
 
                 c.SwaggerDoc("v1", new Info { Title = "Groupie API", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
@@ -73,8 +83,9 @@ namespace WebApi
                     In = "header",
                     Type = "apiKey"
                 });
-
+                c.AddSecurityRequirement(security);
             });
+
             services.AddMvc();
         }
 
@@ -85,9 +96,9 @@ namespace WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseAuthentication();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gropuie API"));
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

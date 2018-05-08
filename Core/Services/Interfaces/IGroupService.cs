@@ -10,6 +10,6 @@ namespace Core.Services
     public interface IGroupService
     {
         IEnumerable<GroupDto> Get(int limit);
-        GroupDto Create(CreateGroupDto createGroupDto);
+        GroupDto Create(CreateGroupDto createGroupDto, string applicationUserId);
     }
 }

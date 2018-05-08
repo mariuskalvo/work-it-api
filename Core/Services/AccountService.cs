@@ -77,16 +77,15 @@ namespace Core.Services
             var userClaims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("The empire did nothing wrong"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretsecretsecretsecretsecret"));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.Now.AddDays(1);
             var token = new JwtSecurityToken(
-                "localhost",
-                "localhost",
+                "http://localhost:55437",
+                "http://localhost:55437",
                 userClaims,
                 expires: expires,
                 signingCredentials: credentials
