@@ -17,6 +17,8 @@ namespace Core.Entities
         public Group Group { get; set; }
 
         public IEnumerable<ThreadEntry> Entries { get; set; }
+        public string CreatedById { get; set; }
+        public ApplicationUser CreatedBy { get; set; }
 
         public DateTime CreatedAt { get; set; }
     }

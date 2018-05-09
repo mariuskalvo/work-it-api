@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Core.DTOs;
 using Core.Services.Interfaces;
@@ -11,29 +12,34 @@ namespace WebApi.Controllers
     [Route("api/[controller]/[action]")]
     public class ThreadController : Controller
     {
-        private readonly IGroupThreadService groupThreadService;
+        private readonly IGroupThreadService _groupThreadService;
+        private readonly IUserService _userService;
 
-        public ThreadController(IGroupThreadService groupThreadService)
+        public ThreadController(IGroupThreadService groupThreadService, IUserService userService)
         {
-            this.groupThreadService = groupThreadService;
+            _groupThreadService = groupThreadService;
+            _userService = userService;
         }
 
         [HttpPost]
-        public GroupThreadDto Create(CreateGroupThreadDto thread)
+        public async Task<GroupThreadDto> Create(CreateGroupThreadDto thread)
         {
-            return groupThreadService.Create(thread);
+            var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUser = await _userService.GetCurrentUser(jwtUserSubject);
+
+            return _groupThreadService.Create(thread, currentUser.Id);
         }
 
         [HttpGet]
         public IEnumerable<GroupThreadDto> GetLatest(int limit)
         {
-            return groupThreadService.GetLatest(limit);
+            return _groupThreadService.GetLatest(limit);
         }
 
         [HttpGet]
         public IEnumerable<GroupThreadDto> GetByGroupId(long groupId, int page = 1)
         {
-            return groupThreadService.GetPagedByGroupId(groupId, page);
+            return _groupThreadService.GetPagedByGroupId(groupId, page);
         }
     }
 }

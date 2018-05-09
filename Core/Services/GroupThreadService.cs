@@ -24,7 +24,7 @@ namespace Core.Services
             this.mapper = mapper;
         }
 
-        public GroupThreadDto Create(CreateGroupThreadDto groupThread)
+        public GroupThreadDto Create(CreateGroupThreadDto groupThread, string creatorUserId)
         {
             GroupThreadValidator validator = new GroupThreadValidator();
             var validationResults = validator.Validate(groupThread);
@@ -33,7 +33,9 @@ namespace Core.Services
                 throw ExceptionFactory.CreateFromValidationResults(validationResults);
 
             var entityToAdd = mapper.Map<GroupThread>(groupThread);
+
             entityToAdd.CreatedAt = DateTime.Now;
+            entityToAdd.CreatedById = creatorUserId;
 
             context.Threads.Add(entityToAdd);
             context.SaveChanges();

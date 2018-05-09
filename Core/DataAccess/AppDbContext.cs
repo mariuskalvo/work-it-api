@@ -25,7 +25,10 @@ namespace Core.DataAccess
             // tb => EntityTypeBuilder<Type>
 
             modelBuilder.Entity<Group>(tb => tb.HasMany(grp => grp.Threads));
+            modelBuilder.Entity<Group>().HasOne(grp => grp.CreatedBy);
+
             modelBuilder.Entity<GroupThread>(tb => tb.HasOne(thread => thread.Group));
+            modelBuilder.Entity<GroupThread>(tb => tb.HasOne(thread => thread.CreatedBy));
 
             modelBuilder.Entity<GroupThread>(tb => tb.HasMany(thread => thread.Entries));
             modelBuilder.Entity<ThreadEntry>(tb => tb.HasOne(entry => entry.Thread));
@@ -42,8 +45,7 @@ namespace Core.DataAccess
                         .WithMany(user => user.OwnedGroups)
                         .HasForeignKey(a => a.ApplicationUserId);
 
-            modelBuilder.Entity<Group>()
-                        .HasOne(grp => grp.CreatedBy);
+
         }
     }
 }

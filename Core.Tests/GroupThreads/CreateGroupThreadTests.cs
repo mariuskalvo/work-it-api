@@ -44,8 +44,8 @@ namespace Core.Tests.GroupThreads
                 Title = null
             };
 
-            Assert.Throws<InvalidModelStateException>(() => threadService.Create(invalidGroupWithEmptyTitle));
-            Assert.Throws<InvalidModelStateException>(() => threadService.Create(invalidGroupWithNullTitle));
+            Assert.Throws<InvalidModelStateException>(() => threadService.Create(invalidGroupWithEmptyTitle, string.Empty));
+            Assert.Throws<InvalidModelStateException>(() => threadService.Create(invalidGroupWithNullTitle, string.Empty));
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace Core.Tests.GroupThreads
                 Title = VALID_TITLE
             };
 
-            groupService.Create(validThread);
+            groupService.Create(validThread, string.Empty);
 
             mockContext.Verify(m => m.SaveChanges(), Times.Once);
             mockSet.Verify(m => m.Add(It.IsAny<GroupThread>()), Times.Once);
