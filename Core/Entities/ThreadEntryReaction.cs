@@ -15,5 +15,8 @@ namespace Core.Entities
         public ThreadEntry ThreadEntry { get; set; }
         public long ThreadEntryId { get; set; }
         public string ReactionTag { get; set; }
+
+        public ApplicationUser CreatedBy { get; set; }
+        public string CreatedById { get; set; }
     }
 }

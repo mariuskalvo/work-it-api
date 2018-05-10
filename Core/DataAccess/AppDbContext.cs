@@ -33,6 +33,9 @@ namespace Core.DataAccess
             modelBuilder.Entity<GroupThread>(tb => tb.HasMany(thread => thread.Entries));
             modelBuilder.Entity<ThreadEntry>(tb => tb.HasOne(entry => entry.Thread));
 
+            modelBuilder.Entity<ThreadEntry>(tb => tb.HasMany(entry => entry.Reactions));
+            modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.ThreadEntry));
+
             modelBuilder.Entity<ApplicationUserOwnedGroups>().HasKey(a => new { a.ApplicationUserId, a.GroupId });
 
             modelBuilder.Entity<ApplicationUserOwnedGroups>()
