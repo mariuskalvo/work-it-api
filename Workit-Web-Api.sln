@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{96AAC6B8-1CC9-406B-B943-FC67722127A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkIt.Web.Api", "WorkIt.Web.Api\WorkIt.Web.Api.csproj", "{96AAC6B8-1CC9-406B-B943-FC67722127A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{50F941B2-5F6E-4F32-8F52-74AB5A8B5581}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkIt.Core", "WorkIt.Core\WorkIt.Core.csproj", "{50F941B2-5F6E-4F32-8F52-74AB5A8B5581}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{16D88D34-4FA1-4754-BE9E-A4F56E345929}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkIt.Core.Tests.Unit", "WorkIt.Core.Tests.Unit\WorkIt.Core.Tests.Unit.csproj", "{16D88D34-4FA1-4754-BE9E-A4F56E345929}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
