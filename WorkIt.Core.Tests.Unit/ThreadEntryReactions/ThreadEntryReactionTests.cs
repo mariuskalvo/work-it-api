@@ -38,10 +38,12 @@ namespace Core.Tests.ThreadEntryReactions
 
             var mapperMock = new Mock<IMapper>();
             setMock = DbContextQueryableHelper<ThreadEntryReaction>.GetMockedDbSet(reactions);
+            mapperMock.Setup(m => m.Map<ThreadEntryReaction>(It.IsAny<AddEntryReactionDto>())).Returns(new ThreadEntryReaction());
 
             contextMock = new Mock<AppDbContext>();
             contextMock.Setup(m => m.ThreadEntryReactions).Returns(setMock.Object);
             threadEntryService = new ThreadEntryService(contextMock.Object, mapperMock.Object);
+
         }
 
         [Fact]
