@@ -37,12 +37,12 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Create(CreateGroupDto createGroupDto)
         {
             var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var currentUser = await _userService.GetCurrentUser(jwtUserSubject);
+            var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
 
-            if (currentUser == null)
+            if (currentUserId == null)
                 return StatusCode(StatusCodes.Status401Unauthorized);
 
-            var createdGroupDto = _groupService.Create(createGroupDto, currentUser.Id);
+            var createdGroupDto = _groupService.Create(createGroupDto, currentUserId);
 
             return Ok(createdGroupDto);
         }

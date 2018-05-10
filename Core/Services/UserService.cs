@@ -17,9 +17,10 @@ namespace Core.Services
         {
             this.userManager = userManager;
         }
-        public async Task<ApplicationUser> GetCurrentUser(string email)
+        public async Task<string> GetCurrentUserId(string email)
         {
-            return await userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByEmailAsync(email);
+            return user?.Id;
         }
     }
 }

@@ -9,6 +9,6 @@ namespace Core.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<ApplicationUser> GetCurrentUser(string email);
+        Task<string> GetCurrentUserId(string email);
     }
 }

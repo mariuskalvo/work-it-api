@@ -27,9 +27,8 @@ namespace WebApi.Controllers
         public async Task<GroupThreadDto> Create(CreateGroupThreadDto thread)
         {
             var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var currentUser = await _userService.GetCurrentUser(jwtUserSubject);
-
-            return _groupThreadService.Create(thread, currentUser.Id);
+            var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
+            return _groupThreadService.Create(thread, currentUserId);
         }
 
         [HttpGet]
