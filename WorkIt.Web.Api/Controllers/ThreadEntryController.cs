@@ -5,10 +5,12 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Core.DTOs;
 using Core.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     public class ThreadEntryController : Controller
     {

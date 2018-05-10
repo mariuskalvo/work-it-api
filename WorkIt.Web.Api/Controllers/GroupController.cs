@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
     [Authorize]
+    [Route("api/[controller]")]
     public class GroupController : Controller
     {
         private readonly IGroupService _groupService;
