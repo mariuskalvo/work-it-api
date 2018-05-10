@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Core.DTOs;
 using Core.Services.Interfaces;
@@ -11,30 +12,36 @@ namespace WebApi.Controllers
     [Route("api/[controller]/[action]")]
     public class ThreadEntryController : Controller
     {
-        private readonly IThreadEntryService threadEntryService;
+        private readonly IThreadEntryService _threadEntryService;
+        private readonly IUserService _userService;
 
-        public ThreadEntryController(IThreadEntryService threadEntryService)
+        public ThreadEntryController(IThreadEntryService threadEntryService, IUserService userService)
         {
-            this.threadEntryService = threadEntryService;
+            _threadEntryService = threadEntryService;
+            _userService = userService;
         }
 
         [HttpGet]
         public IEnumerable<ThreadEntryDto> GetByThreadId(long threadId)
         {
-            return threadEntryService.GetByThreadId(threadId);
+            return _threadEntryService.GetByThreadId(threadId);
         }
 
         [HttpPost]
-        public ThreadEntryDto Create(CreateThreadEntryDto createEntry)
+        public async Task<ThreadEntryDto> Create(CreateThreadEntryDto createEntry)
         {
-            var createdDto = threadEntryService.Create(createEntry);
+            var jwtUserSubjectEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUserId = await _userService.GetCurrentUserId(jwtUserSubjectEmail);
+            var createdDto = _threadEntryService.Create(createEntry, currentUserId);
             return createdDto;
         }
 
         [HttpPost]
-        public void AddReactionForThreadEntry(AddEntryReactionDto addReaction)
+        public async Task AddReactionForThreadEntry(AddEntryReactionDto addReaction)
         {
-            threadEntryService.AddReactionToThreadEntry(addReaction);
+            var jwtUserSubjectEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUserId = await _userService.GetCurrentUserId(jwtUserSubjectEmail);
+            _threadEntryService.AddReactionToThreadEntry(addReaction, currentUserId);
         }
     }
 }

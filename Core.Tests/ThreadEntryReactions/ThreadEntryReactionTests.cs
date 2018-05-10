@@ -53,7 +53,7 @@ namespace Core.Tests.ThreadEntryReactions
                 ThreadEntryId = THREAD_ENTRY_ID
             };
 
-            threadEntryService.AddReactionToThreadEntry(addReactionDto);
+            threadEntryService.AddReactionToThreadEntry(addReactionDto, string.Empty);
 
             setMock.Verify(m => m.Add(It.IsAny<ThreadEntryReaction>()), Times.Once);
             contextMock.Verify(m => m.SaveChanges(), Times.Once);
@@ -68,7 +68,7 @@ namespace Core.Tests.ThreadEntryReactions
                 ThreadEntryId = 1
             };
 
-            threadEntryService.AddReactionToThreadEntry(addReactionDto);
+            threadEntryService.AddReactionToThreadEntry(addReactionDto, string.Empty);
 
             setMock.Verify(m => m.Add(It.IsAny<ThreadEntryReaction>()), Times.Never);
             contextMock.Verify(m => m.SaveChanges(), Times.Never);

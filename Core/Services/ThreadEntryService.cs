@@ -22,15 +22,17 @@ namespace Core.Services
             this.mapper = mapper;
         }
 
-        public ThreadEntryDto Create(CreateThreadEntryDto createDto)
+        public ThreadEntryDto Create(CreateThreadEntryDto createDto, string currentUserId)
         {
-            var mappedEntity = mapper.Map<ThreadEntry>(createDto);
+            var entityToAdd = mapper.Map<ThreadEntry>(createDto);
 
-            mappedEntity.CreatedAt = DateTime.Now;
-            context.ThreadEntries.Add(mappedEntity);
+            entityToAdd.CreatedAt = DateTime.Now;
+            entityToAdd.CreatedById = currentUserId;
+
+            context.ThreadEntries.Add(entityToAdd);
             context.SaveChanges();
 
-            return mapper.Map<ThreadEntryDto>(mappedEntity);
+            return mapper.Map<ThreadEntryDto>(entityToAdd);
         }
 
         public IEnumerable<ThreadEntryDto> GetByThreadId(long threadId)
@@ -39,7 +41,7 @@ namespace Core.Services
             return mapper.Map<IEnumerable<ThreadEntryDto>>(entities);
         }
 
-        public void AddReactionToThreadEntry(AddEntryReactionDto addReactionDto)
+        public void AddReactionToThreadEntry(AddEntryReactionDto addReactionDto, string currentUserId)
         {
             var threadEntryId = addReactionDto.ThreadEntryId;
             var reactionTag = addReactionDto.ReactionTag;
@@ -55,6 +57,8 @@ namespace Core.Services
                 return;
 
             var entityToAdd = mapper.Map<ThreadEntryReaction>(addReactionDto);
+            entityToAdd.CreatedById = currentUserId;
+
             context.ThreadEntryReactions.Add(entityToAdd);
             context.SaveChanges();
 
