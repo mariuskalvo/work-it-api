@@ -29,12 +29,14 @@ namespace Core.DataAccess
 
             modelBuilder.Entity<GroupThread>(tb => tb.HasOne(thread => thread.Group));
             modelBuilder.Entity<GroupThread>(tb => tb.HasOne(thread => thread.CreatedBy));
-
             modelBuilder.Entity<GroupThread>(tb => tb.HasMany(thread => thread.Entries));
-            modelBuilder.Entity<ThreadEntry>(tb => tb.HasOne(entry => entry.Thread));
 
+            modelBuilder.Entity<ThreadEntry>(tb => tb.HasOne(entry => entry.Thread));
+            modelBuilder.Entity<ThreadEntry>(tb => tb.HasOne(entry => entry.CreatedBy));
             modelBuilder.Entity<ThreadEntry>(tb => tb.HasMany(entry => entry.Reactions));
+
             modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.ThreadEntry));
+            modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.CreatedBy));
 
             modelBuilder.Entity<ApplicationUserOwnedGroups>().HasKey(a => new { a.ApplicationUserId, a.GroupId });
 
