@@ -12,13 +12,13 @@ using Moq;
 using Core.DataAccess;
 using Xunit;
 
-namespace Core.Tests.GroupThreads
+namespace Core.Tests.ProjectThreads
 {
     public class GetGroupThreads
     {
 
-        private IEnumerable<GroupThreadDto> groupThreadDtos;
-        private IQueryable<GroupThread> groupThreads;
+        private IEnumerable<ProjectThreadDto> groupThreadDtos;
+        private IQueryable<ProjectThread> groupThreads;
 
         private Mock<IMapper> mapperMock;
 
@@ -26,22 +26,22 @@ namespace Core.Tests.GroupThreads
         private static int GROUP_ID = 1;
 
         private readonly Mock<AppDbContext> mockContext;
-        private readonly Mock<DbSet<GroupThread>> mockSet;
+        private readonly Mock<DbSet<ProjectThread>> mockSet;
 
         public GetGroupThreads()
         {
             mapperMock = new Mock<IMapper>();
 
             var groupIds = new List<int>() { 1, 2, 3, 4, 5 };
-            groupThreads = groupIds.Select(id => new GroupThread() { Id = id }).AsQueryable();
-            groupThreadDtos = groupIds.Select(id => new GroupThreadDto() { Id = id });
+            groupThreads = groupIds.Select(id => new ProjectThread() { Id = id }).AsQueryable();
+            groupThreadDtos = groupIds.Select(id => new ProjectThreadDto() { Id = id });
 
-            mockSet = DbContextQueryableHelper<GroupThread>.GetMockedDbSet(groupThreads);
+            mockSet = DbContextQueryableHelper<ProjectThread>.GetMockedDbSet(groupThreads);
 
             mockContext = new Mock<AppDbContext>();
             mockContext.Setup(m => m.Threads).Returns(mockSet.Object);
 
-            mapperMock.Setup(mapper => mapper.Map<IEnumerable<GroupThreadDto>>(It.IsAny<IEnumerable<GroupThread>>()))
+            mapperMock.Setup(mapper => mapper.Map<IEnumerable<ProjectThreadDto>>(It.IsAny<IEnumerable<ProjectThread>>()))
                       .Returns(groupThreadDtos.Take(PAGE_SIZE));
 
         }
@@ -54,7 +54,7 @@ namespace Core.Tests.GroupThreads
         {
             int pageNumber = -100;
 
-            var groupThreadService = new GroupThreadService(mockContext.Object, mapperMock.Object);
+            var groupThreadService = new ProjectThreadService(mockContext.Object, mapperMock.Object);
             var pagedResults = groupThreadService.GetPagedByGroupId(GROUP_ID, pageNumber, PAGE_SIZE);
 
             Assert.Equal(PAGE_SIZE, pagedResults.Count());
@@ -71,7 +71,7 @@ namespace Core.Tests.GroupThreads
             int pageNumber = 1;
             int inputPageSize = -100;
 
-            var groupThreadService = new GroupThreadService(mockContext.Object, mapperMock.Object);
+            var groupThreadService = new ProjectThreadService(mockContext.Object, mapperMock.Object);
             var results = groupThreadService.GetPagedByGroupId(GROUP_ID, pageNumber, inputPageSize);
 
             Assert.Empty(results);

@@ -35,8 +35,8 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IGroupService, GroupService>();
-            services.AddTransient<IGroupThreadService, GroupThreadService>();
+            services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<IProjectThreadService, ProjectThreadService>();
             services.AddTransient<IThreadEntryService, ThreadEntryService>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IUserService, UserService>();

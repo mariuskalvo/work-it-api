@@ -6,9 +6,9 @@ using FluentValidation;
 
 namespace Core.Validators
 {
-    class GroupThreadValidator : AbstractValidator<CreateGroupThreadDto>
+    class CreateProjectDtoValidator : AbstractValidator<CreateProjectDto>
     {
-        public GroupThreadValidator()
+        public CreateProjectDtoValidator()
         {
             RuleFor(g => g.Title).NotNull().NotEmpty();
         }

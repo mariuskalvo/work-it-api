@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Core.Entities
 {
-    public class GroupThread
+    public class ProjectThread
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,7 +14,7 @@ namespace Core.Entities
         public string Title { get; set; }
 
         public long GroupId { get; set; }
-        public Group Group { get; set; }
+        public Project Group { get; set; }
 
         public IEnumerable<ThreadEntry> Entries { get; set; }
         public string CreatedById { get; set; }

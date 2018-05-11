@@ -12,11 +12,11 @@ namespace Core.AutoMapper
     {
         public DomainProfile()
         {
-            CreateMap<CreateGroupDto, Group>();
-            CreateMap<Group, GroupDto>().ReverseMap();
+            CreateMap<CreateProjectDto, Project>();
+            CreateMap<Project, ProjectDto>().ReverseMap();
 
-            CreateMap<CreateGroupThreadDto, GroupThread>();
-            CreateMap<GroupThread, GroupThreadDto>().ReverseMap();
+            CreateMap<CreateProjectThreadDto, ProjectThread>();
+            CreateMap<ProjectThread, ProjectThreadDto>().ReverseMap();
 
             CreateMap<CreateThreadEntryDto, ThreadEntry>();
             CreateMap<ThreadEntry, ThreadEntryDto>().ReverseMap();

@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Core.DTOs
 {
-    public class CreateGroupThreadDto
+    public class CreateProjectDto
     {
         public string Title { get; set; }
-        public long GroupId { get; set; }
     }
 }

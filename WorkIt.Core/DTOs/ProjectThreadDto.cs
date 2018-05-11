@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.DTOS
+namespace Core.DTOs
 {
-    public class GroupDto
+    public class ProjectThreadDto
     {
         public long Id { get; set; }
         public string Title { get; set; }

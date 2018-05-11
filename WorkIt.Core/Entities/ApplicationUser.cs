@@ -7,6 +7,6 @@ namespace Core.Entities
 {
     public class ApplicationUser : IdentityUser
     {
-        public IEnumerable<ApplicationUserOwnedGroups> OwnedGroups { get; set; }
+        public IEnumerable<ApplicationUserOwnedProjects> OwnedGroups { get; set; }
     }
 }

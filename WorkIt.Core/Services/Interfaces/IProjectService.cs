@@ -7,9 +7,9 @@ using Core.DTOS;
 
 namespace Core.Services
 {
-    public interface IGroupService
+    public interface IProjectService
     {
-        IEnumerable<GroupDto> Get(int limit);
-        GroupDto Create(CreateGroupDto createGroupDto, string applicationUserId);
+        IEnumerable<ProjectDto> Get(int limit);
+        ProjectDto Create(CreateProjectDto createGroupDto, string applicationUserId);
     }
 }

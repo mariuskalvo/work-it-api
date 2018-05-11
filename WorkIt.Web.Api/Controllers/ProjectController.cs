@@ -16,25 +16,25 @@ namespace WebApi.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class GroupController : Controller
+    public class ProjectController : Controller
     {
-        private readonly IGroupService _groupService;
+        private readonly IProjectService _projectService;
         private readonly IUserService _userService;
 
-        public GroupController(IGroupService groupService, IUserService userService)
+        public ProjectController(IProjectService projectService, IUserService userService)
         {
-            _groupService = groupService;
+            _projectService = projectService;
             _userService = userService;
         }
 
         [HttpGet]
-        public IEnumerable<GroupDto> Get()
+        public IEnumerable<ProjectDto> Get()
         {
-            return _groupService.Get(10);
+            return _projectService.Get(10);
         }
         
         [HttpPost]
-        public async Task<IActionResult> Create(CreateGroupDto createGroupDto)
+        public async Task<IActionResult> Create(CreateProjectDto createGroupDto)
         {
             var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
@@ -42,9 +42,9 @@ namespace WebApi.Controllers
             if (currentUserId == null)
                 return StatusCode(StatusCodes.Status401Unauthorized);
 
-            var createdGroupDto = _groupService.Create(createGroupDto, currentUserId);
+            var createProjectDto = _projectService.Create(createGroupDto, currentUserId);
 
-            return Ok(createdGroupDto);
+            return Ok(createProjectDto);
         }
     }
 }

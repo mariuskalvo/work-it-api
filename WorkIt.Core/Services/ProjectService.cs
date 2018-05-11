@@ -14,26 +14,26 @@ using Core.DataAccess;
 
 namespace Core.Services
 {
-    public class GroupService : IGroupService
+    public class ProjectService : IProjectService
     {
         private readonly IMapper mapper;
         private readonly AppDbContext context;
 
-        public GroupService(AppDbContext context, IMapper mapper)
+        public ProjectService(AppDbContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
         }
 
-        public GroupDto Create(CreateGroupDto createGroupDto, string applicationUserId)
+        public ProjectDto Create(CreateProjectDto createGroupDto, string applicationUserId)
         {
-            var validator = new CreateGroupDtoValidator();
+            var validator = new CreateProjectDtoValidator();
             var validationResults = validator.Validate(createGroupDto);
 
             if (!validationResults.IsValid)
                 throw ExceptionFactory.CreateFromValidationResults(validationResults);
 
-            var entityToAdd = mapper.Map<Group>(createGroupDto);
+            var entityToAdd = mapper.Map<Project>(createGroupDto);
 
             entityToAdd.CreatedAt = DateTime.Now;
             entityToAdd.CreatedById = applicationUserId;
@@ -41,14 +41,14 @@ namespace Core.Services
             context.Groups.Add(entityToAdd);
             context.SaveChanges();
 
-            return mapper.Map<GroupDto>(entityToAdd); ;
+            return mapper.Map<ProjectDto>(entityToAdd); ;
 
         }
 
-        public IEnumerable<GroupDto> Get(int limit)
+        public IEnumerable<ProjectDto> Get(int limit)
         {
             var groups = context.Groups.Take(limit).ToList();
-            return mapper.Map<IEnumerable<GroupDto>>(groups);
+            return mapper.Map<IEnumerable<ProjectDto>>(groups);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Core.Entities
         public long Id { get; set; }
 
         public long GroupThreadId { get; set; }
-        public GroupThread Thread { get; set; }
+        public ProjectThread Thread { get; set; }
 
         public string Content { get; set; }
         public IEnumerable<ThreadEntryReaction> Reactions { get; set; }

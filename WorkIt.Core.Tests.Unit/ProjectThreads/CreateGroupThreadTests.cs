@@ -12,13 +12,13 @@ using Moq;
 using Core.DataAccess;
 using Xunit;
 
-namespace Core.Tests.GroupThreads
+namespace Core.Tests.ProjectThreads
 {
     public class CreateGroupThreadTests
     {
         private static string VALID_TITLE = "Valid title";
         private static long VALID_ID = 1;
-        private static GroupThread VALID_THREAD = new GroupThread()
+        private static ProjectThread VALID_THREAD = new ProjectThread()
         {
             GroupId = VALID_ID,
             Title = VALID_TITLE
@@ -30,16 +30,16 @@ namespace Core.Tests.GroupThreads
             var mapper = new Mock<IMapper>();
 
             var mockContext = new Mock<AppDbContext>();
-            var mockSet = new Mock<DbSet<GroupThread>>();
+            var mockSet = new Mock<DbSet<ProjectThread>>();
 
-            var threadService = new GroupThreadService(mockContext.Object, mapper.Object);
+            var threadService = new ProjectThreadService(mockContext.Object, mapper.Object);
 
-            var invalidGroupWithEmptyTitle = new CreateGroupThreadDto()
+            var invalidGroupWithEmptyTitle = new CreateProjectThreadDto()
             {
                 Title = ""
             };
 
-            var invalidGroupWithNullTitle = new CreateGroupThreadDto()
+            var invalidGroupWithNullTitle = new CreateProjectThreadDto()
             {
                 Title = null
             };
@@ -52,23 +52,23 @@ namespace Core.Tests.GroupThreads
         public void ThreadHasValidField_ThredIsPersisted()
         {
             var mockedMapper = new Mock<IMapper>();
-            mockedMapper.Setup(mapper => mapper.Map<GroupThread>(It.IsAny<CreateGroupThreadDto>()))
+            mockedMapper.Setup(mapper => mapper.Map<ProjectThread>(It.IsAny<CreateProjectThreadDto>()))
                         .Returns(VALID_THREAD);
 
-            mockedMapper.Setup(mapper => mapper.Map<GroupThreadDto>(It.IsAny<GroupThread>()))
-                        .Returns(new GroupThreadDto()
+            mockedMapper.Setup(mapper => mapper.Map<ProjectThreadDto>(It.IsAny<ProjectThread>()))
+                        .Returns(new ProjectThreadDto()
                         {
                             Title = VALID_TITLE
                         });
 
             var mockContext = new Mock<AppDbContext>();
-            var mockSet = new Mock<DbSet<GroupThread>>();
+            var mockSet = new Mock<DbSet<ProjectThread>>();
             mockContext.Setup(m => m.Threads).Returns(mockSet.Object);
 
 
-            var groupService = new GroupThreadService(mockContext.Object, mockedMapper.Object);
+            var groupService = new ProjectThreadService(mockContext.Object, mockedMapper.Object);
 
-            var validThread = new CreateGroupThreadDto()
+            var validThread = new CreateProjectThreadDto()
             {
                 Title = VALID_TITLE
             };
@@ -76,7 +76,7 @@ namespace Core.Tests.GroupThreads
             groupService.Create(validThread, string.Empty);
 
             mockContext.Verify(m => m.SaveChanges(), Times.Once);
-            mockSet.Verify(m => m.Add(It.IsAny<GroupThread>()), Times.Once);
+            mockSet.Verify(m => m.Add(It.IsAny<ProjectThread>()), Times.Once);
         }
     }
 }

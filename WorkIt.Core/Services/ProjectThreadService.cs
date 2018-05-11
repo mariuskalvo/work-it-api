@@ -13,26 +13,26 @@ using Core.DataAccess;
 
 namespace Core.Services
 {
-    public class GroupThreadService : IGroupThreadService
+    public class ProjectThreadService : IProjectThreadService
     {
         private readonly AppDbContext context;
         private readonly IMapper mapper;
 
-        public GroupThreadService(AppDbContext context, IMapper mapper)
+        public ProjectThreadService(AppDbContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
         }
 
-        public GroupThreadDto Create(CreateGroupThreadDto groupThread, string creatorUserId)
+        public ProjectThreadDto Create(CreateProjectThreadDto groupThread, string creatorUserId)
         {
-            GroupThreadValidator validator = new GroupThreadValidator();
+            ProjectThreadValidator validator = new ProjectThreadValidator();
             var validationResults = validator.Validate(groupThread);
 
             if (!validationResults.IsValid)
                 throw ExceptionFactory.CreateFromValidationResults(validationResults);
 
-            var entityToAdd = mapper.Map<GroupThread>(groupThread);
+            var entityToAdd = mapper.Map<ProjectThread>(groupThread);
 
             entityToAdd.CreatedAt = DateTime.Now;
             entityToAdd.CreatedById = creatorUserId;
@@ -40,23 +40,23 @@ namespace Core.Services
             context.Threads.Add(entityToAdd);
             context.SaveChanges();
 
-            return mapper.Map<GroupThreadDto>(entityToAdd);
+            return mapper.Map<ProjectThreadDto>(entityToAdd);
         }
 
-        public IEnumerable<GroupThreadDto> GetLatest(int limit)
+        public IEnumerable<ProjectThreadDto> GetLatest(int limit)
         {
             int maxToFetch = 10;
             int actualLimit = Math.Max(0, limit);
             actualLimit = Math.Min(maxToFetch, actualLimit);
 
             var entities = context.Threads.Take(limit).OrderByDescending(grp => grp.CreatedAt);
-            return mapper.Map<IEnumerable<GroupThreadDto>>(entities);
+            return mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
         }
 
-        public IEnumerable<GroupThreadDto> GetPagedByGroupId(long groupId, int page, int pageSize)
+        public IEnumerable<ProjectThreadDto> GetPagedByGroupId(long groupId, int page, int pageSize)
         {
             if (pageSize < 0)
-                return new List<GroupThreadDto>();
+                return new List<ProjectThreadDto>();
 
             int actualPage = Math.Max(page - 1, 0);
             int skip = actualPage * pageSize;
@@ -66,7 +66,7 @@ namespace Core.Services
                                           .OrderByDescending(grp => grp.CreatedAt)
                                           .ToList();
 
-            return mapper.Map<IEnumerable<GroupThreadDto>>(entities);
+            return mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
         }
     }
 }

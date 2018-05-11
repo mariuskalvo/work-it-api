@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkIt.Core", "WorkIt.Core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkIt.Core.Tests.Unit", "WorkIt.Core.Tests.Unit\WorkIt.Core.Tests.Unit.csproj", "{16D88D34-4FA1-4754-BE9E-A4F56E345929}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkIt.Tests.Integration", "WorkIt.Tests.Integration\WorkIt.Tests.Integration.csproj", "{350FE4BF-B961-44FB-8EF3-904D9C037313}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{16D88D34-4FA1-4754-BE9E-A4F56E345929}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16D88D34-4FA1-4754-BE9E-A4F56E345929}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16D88D34-4FA1-4754-BE9E-A4F56E345929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{350FE4BF-B961-44FB-8EF3-904D9C037313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{350FE4BF-B961-44FB-8EF3-904D9C037313}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{350FE4BF-B961-44FB-8EF3-904D9C037313}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{350FE4BF-B961-44FB-8EF3-904D9C037313}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

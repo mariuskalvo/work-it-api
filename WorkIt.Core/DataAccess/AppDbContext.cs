@@ -9,8 +9,8 @@ namespace Core.DataAccess
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
-        public virtual DbSet<Group> Groups { get; set; }
-        public virtual DbSet<GroupThread> Threads { get; set; }
+        public virtual DbSet<Project> Groups { get; set; }
+        public virtual DbSet<ProjectThread> Threads { get; set; }
         public virtual DbSet<ThreadEntry> ThreadEntries { get; set; }
         public virtual DbSet<ThreadEntryReaction> ThreadEntryReactions { get; set; }
 
@@ -24,12 +24,12 @@ namespace Core.DataAccess
 
             // tb => EntityTypeBuilder<Type>
 
-            modelBuilder.Entity<Group>(tb => tb.HasMany(grp => grp.Threads));
-            modelBuilder.Entity<Group>().HasOne(grp => grp.CreatedBy);
+            modelBuilder.Entity<Project>(tb => tb.HasMany(grp => grp.Threads));
+            modelBuilder.Entity<Project>().HasOne(grp => grp.CreatedBy);
 
-            modelBuilder.Entity<GroupThread>(tb => tb.HasOne(thread => thread.Group));
-            modelBuilder.Entity<GroupThread>(tb => tb.HasOne(thread => thread.CreatedBy));
-            modelBuilder.Entity<GroupThread>(tb => tb.HasMany(thread => thread.Entries));
+            modelBuilder.Entity<ProjectThread>(tb => tb.HasOne(thread => thread.Group));
+            modelBuilder.Entity<ProjectThread>(tb => tb.HasOne(thread => thread.CreatedBy));
+            modelBuilder.Entity<ProjectThread>(tb => tb.HasMany(thread => thread.Entries));
 
             modelBuilder.Entity<ThreadEntry>(tb => tb.HasOne(entry => entry.Thread));
             modelBuilder.Entity<ThreadEntry>(tb => tb.HasOne(entry => entry.CreatedBy));
@@ -38,14 +38,14 @@ namespace Core.DataAccess
             modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.ThreadEntry));
             modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.CreatedBy));
 
-            modelBuilder.Entity<ApplicationUserOwnedGroups>().HasKey(a => new { a.ApplicationUserId, a.GroupId });
+            modelBuilder.Entity<ApplicationUserOwnedProjects>().HasKey(a => new { a.ApplicationUserId, a.GroupId });
 
-            modelBuilder.Entity<ApplicationUserOwnedGroups>()
+            modelBuilder.Entity<ApplicationUserOwnedProjects>()
                         .HasOne(a => a.Group)
                         .WithMany(grp => grp.Owners)
                         .HasForeignKey(a => a.GroupId);
 
-            modelBuilder.Entity<ApplicationUserOwnedGroups>()
+            modelBuilder.Entity<ApplicationUserOwnedProjects>()
                         .HasOne(a => a.ApplicationUser)
                         .WithMany(user => user.OwnedGroups)
                         .HasForeignKey(a => a.ApplicationUserId);

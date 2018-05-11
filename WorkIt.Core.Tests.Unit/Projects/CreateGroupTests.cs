@@ -12,12 +12,12 @@ using Moq;
 using Core.DataAccess;
 using Xunit;
 
-namespace Core.Tests.Groups
+namespace Core.Tests.Projects
 {
     public class CreateGroupTests
     {
         private static readonly string VALID_TITLE = "Valid title";
-        private static readonly Group VALID_GROUP = new Group()
+        private static readonly Project VALID_GROUP = new Project()
         {
             Id = 1,
             Title = VALID_TITLE,
@@ -29,18 +29,18 @@ namespace Core.Tests.Groups
         {
             var mapper = new Mock<IMapper>();
 
-            var mockSet = new Mock<DbSet<Group>>();
+            var mockSet = new Mock<DbSet<Project>>();
             var mockContext = new Mock<AppDbContext>();
             mockContext.Setup(m => m.Groups).Returns(mockSet.Object);
 
-            var groupService = new GroupService(mockContext.Object, mapper.Object);
+            var groupService = new ProjectService(mockContext.Object, mapper.Object);
 
-            var invalidGroupWithEmptyTitle = new CreateGroupDto()
+            var invalidGroupWithEmptyTitle = new CreateProjectDto()
             {
                 Title = ""
             };
 
-            var invalidGroupWithNullTitle = new CreateGroupDto()
+            var invalidGroupWithNullTitle = new CreateProjectDto()
             {
                 Title = null
             };
@@ -53,28 +53,28 @@ namespace Core.Tests.Groups
         public void GroupHasValidFields_GroupIsPersisted()
         {
             var mockedMapper = new Mock<IMapper>();
-            mockedMapper.Setup(mapper => mapper.Map<Group>(It.IsAny<CreateGroupDto>()))
+            mockedMapper.Setup(mapper => mapper.Map<Project>(It.IsAny<CreateProjectDto>()))
                         .Returns(VALID_GROUP);
 
-            mockedMapper.Setup(mapper => mapper.Map<GroupDto>(It.IsAny<Group>()))
-                        .Returns(new GroupDto() {
+            mockedMapper.Setup(mapper => mapper.Map<ProjectDto>(It.IsAny<Project>()))
+                        .Returns(new ProjectDto() {
                             Title = VALID_TITLE
                         });
 
-            var mockSet = new Mock<DbSet<Group>>();
+            var mockSet = new Mock<DbSet<Project>>();
             var mockContext = new Mock<AppDbContext>();
             mockContext.Setup(m => m.Groups).Returns(mockSet.Object);
 
-            var groupService = new GroupService(mockContext.Object, mockedMapper.Object);
+            var groupService = new ProjectService(mockContext.Object, mockedMapper.Object);
 
-            var validGroup = new CreateGroupDto()
+            var validGroup = new CreateProjectDto()
             {
                 Title = VALID_TITLE
             };
 
             groupService.Create(validGroup, string.Empty);
 
-            mockSet.Verify(m => m.Add(It.IsAny<Group>()), Times.Once);
+            mockSet.Verify(m => m.Add(It.IsAny<Project>()), Times.Once);
             mockContext.Verify(m => m.SaveChanges(), Times.Once);
         }
     }

@@ -14,33 +14,33 @@ namespace WebApi.Controllers
     [Route("api/[controller]/[action]")]
     public class ThreadController : Controller
     {
-        private readonly IGroupThreadService _groupThreadService;
+        private readonly IProjectThreadService _projectThreadService;
         private readonly IUserService _userService;
 
-        public ThreadController(IGroupThreadService groupThreadService, IUserService userService)
+        public ThreadController(IProjectThreadService projectThreadService, IUserService userService)
         {
-            _groupThreadService = groupThreadService;
+            _projectThreadService = projectThreadService;
             _userService = userService;
         }
 
         [HttpPost]
-        public async Task<GroupThreadDto> Create(CreateGroupThreadDto thread)
+        public async Task<ProjectThreadDto> Create(CreateProjectThreadDto thread)
         {
             var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
-            return _groupThreadService.Create(thread, currentUserId);
+            return _projectThreadService.Create(thread, currentUserId);
         }
 
         [HttpGet]
-        public IEnumerable<GroupThreadDto> GetLatest(int limit)
+        public IEnumerable<ProjectThreadDto> GetLatest(int limit)
         {
-            return _groupThreadService.GetLatest(limit);
+            return _projectThreadService.GetLatest(limit);
         }
 
         [HttpGet]
-        public IEnumerable<GroupThreadDto> GetByGroupId(long groupId, int page = 1)
+        public IEnumerable<ProjectThreadDto> GetByGroupId(long groupId, int page = 1)
         {
-            return _groupThreadService.GetPagedByGroupId(groupId, page);
+            return _projectThreadService.GetPagedByGroupId(groupId, page);
         }
     }
 }
