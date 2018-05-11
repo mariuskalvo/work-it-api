@@ -32,9 +32,10 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ProjectThreadDto> GetLatest(int limit)
+        public IEnumerable<ProjectThreadDto> GetLatestByProjectId(int limit, long projectId)
         {
-            return _projectThreadService.GetLatest(limit);
+            int actualLimit = Math.Max(0, Math.Min(limit, 10));
+            return _projectThreadService.GetLatestByProjectId(actualLimit, projectId);
         }
 
         [HttpGet]

@@ -43,13 +43,13 @@ namespace Core.Services
             return mapper.Map<ProjectThreadDto>(entityToAdd);
         }
 
-        public IEnumerable<ProjectThreadDto> GetLatest(int limit)
+        public IEnumerable<ProjectThreadDto> GetLatestByProjectId(int limit, long projectId)
         {
             int maxToFetch = 10;
             int actualLimit = Math.Max(0, limit);
             actualLimit = Math.Min(maxToFetch, actualLimit);
 
-            var entities = context.Threads.Take(limit).OrderByDescending(grp => grp.CreatedAt);
+            var entities = context.Threads.Where(t => t.ProjectId == projectId).OrderByDescending(grp => grp.CreatedAt).Take(actualLimit);
             return mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
         }
 

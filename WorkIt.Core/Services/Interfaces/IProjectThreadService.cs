@@ -9,7 +9,7 @@ namespace Core.Services.Interfaces
     public interface IProjectThreadService
     {
         ProjectThreadDto Create(CreateProjectThreadDto groupThread, string creatorUserId);
-        IEnumerable<ProjectThreadDto> GetLatest(int limit);
+        IEnumerable<ProjectThreadDto> GetLatestByProjectId(int limit, long threadId);
         IEnumerable<ProjectThreadDto> GetPagedByGroupId(long groupId, int page, int pageSize = 10);
     }
 }
