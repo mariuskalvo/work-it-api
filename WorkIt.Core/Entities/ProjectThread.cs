@@ -13,8 +13,8 @@ namespace Core.Entities
         public long Id { get; set; }
         public string Title { get; set; }
 
-        public long GroupId { get; set; }
-        public Project Group { get; set; }
+        public long ProjectId { get; set; }
+        public Project Project { get; set; }
 
         public IEnumerable<ThreadEntry> Entries { get; set; }
         public string CreatedById { get; set; }

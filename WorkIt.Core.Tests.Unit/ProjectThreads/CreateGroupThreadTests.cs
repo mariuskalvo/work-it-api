@@ -20,7 +20,7 @@ namespace Core.Tests.ProjectThreads
         private static long VALID_ID = 1;
         private static ProjectThread VALID_THREAD = new ProjectThread()
         {
-            GroupId = VALID_ID,
+            ProjectId = VALID_ID,
             Title = VALID_TITLE
         };
 

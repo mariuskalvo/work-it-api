@@ -27,7 +27,7 @@ namespace Core.DataAccess
             modelBuilder.Entity<Project>(tb => tb.HasMany(grp => grp.Threads));
             modelBuilder.Entity<Project>().HasOne(grp => grp.CreatedBy);
 
-            modelBuilder.Entity<ProjectThread>(tb => tb.HasOne(thread => thread.Group));
+            modelBuilder.Entity<ProjectThread>(tb => tb.HasOne(thread => thread.Project));
             modelBuilder.Entity<ProjectThread>(tb => tb.HasOne(thread => thread.CreatedBy));
             modelBuilder.Entity<ProjectThread>(tb => tb.HasMany(thread => thread.Entries));
 
