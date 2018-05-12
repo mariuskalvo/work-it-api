@@ -4,6 +4,7 @@ using System.Text;
 using Core.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WorkIt.Core.Entities;
 
 namespace Core.DataAccess
 {
@@ -39,6 +40,7 @@ namespace Core.DataAccess
             modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.CreatedBy));
 
             modelBuilder.Entity<ApplicationUserOwnedProjects>().HasKey(a => new { a.ApplicationUserId, a.ProjectId });
+            modelBuilder.Entity<ApplicationUserProjectMembers>().HasKey(a => new { a.ApplicationUserId, a.ProjectId });
 
             modelBuilder.Entity<ApplicationUserOwnedProjects>()
                         .HasOne(a => a.Project)
@@ -47,8 +49,18 @@ namespace Core.DataAccess
 
             modelBuilder.Entity<ApplicationUserOwnedProjects>()
                         .HasOne(a => a.ApplicationUser)
-                        .WithMany(user => user.OwnedGroups)
+                        .WithMany(user => user.OwnedProjects)
                         .HasForeignKey(a => a.ApplicationUserId);
+
+            modelBuilder.Entity<ApplicationUserProjectMembers>()
+                        .HasOne(a => a.ApplicationUser)
+                        .WithMany(user => user.MemberProjects)
+                        .HasForeignKey(a => a.ApplicationUserId);
+
+            modelBuilder.Entity<ApplicationUserProjectMembers>()
+                        .HasOne(a => a.Project)
+                        .WithMany(project => project.Members)
+                        .HasForeignKey(a => a.ProjectId);
 
 
         }

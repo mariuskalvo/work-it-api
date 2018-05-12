@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WorkIt.Core.Entities;
 
 namespace Core.Entities
 {
@@ -13,6 +14,7 @@ namespace Core.Entities
         public string Title { get; set; }
         public IEnumerable<ProjectThread> Threads { get; set; }
         public IEnumerable<ApplicationUserOwnedProjects> Owners { get; set; }
+        public IEnumerable<ApplicationUserProjectMembers> Members { get; set; }
 
         public string CreatedById { get; set; }
         public ApplicationUser CreatedBy { get; set; }
