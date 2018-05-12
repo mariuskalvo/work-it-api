@@ -38,12 +38,12 @@ namespace Core.DataAccess
             modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.ThreadEntry));
             modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.CreatedBy));
 
-            modelBuilder.Entity<ApplicationUserOwnedProjects>().HasKey(a => new { a.ApplicationUserId, a.GroupId });
+            modelBuilder.Entity<ApplicationUserOwnedProjects>().HasKey(a => new { a.ApplicationUserId, a.ProjectId });
 
             modelBuilder.Entity<ApplicationUserOwnedProjects>()
-                        .HasOne(a => a.Group)
+                        .HasOne(a => a.Project)
                         .WithMany(grp => grp.Owners)
-                        .HasForeignKey(a => a.GroupId);
+                        .HasForeignKey(a => a.ProjectId);
 
             modelBuilder.Entity<ApplicationUserOwnedProjects>()
                         .HasOne(a => a.ApplicationUser)

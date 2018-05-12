@@ -7,6 +7,6 @@ namespace Core.DTOs
     public class CreateProjectThreadDto
     {
         public string Title { get; set; }
-        public long GroupId { get; set; }
+        public long ProjectId { get; set; }
     }
 }

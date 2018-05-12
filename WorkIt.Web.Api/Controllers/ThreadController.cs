@@ -41,7 +41,7 @@ namespace WebApi.Controllers
         [HttpGet]
         public IEnumerable<ProjectThreadDto> GetByGroupId(long groupId, int page = 1)
         {
-            return _projectThreadService.GetPagedByGroupId(groupId, page);
+            return _projectThreadService.GetPagedByProjectId(groupId, page);
         }
     }
 }

@@ -10,6 +10,6 @@ namespace Core.Services.Interfaces
     {
         ProjectThreadDto Create(CreateProjectThreadDto groupThread, string creatorUserId);
         IEnumerable<ProjectThreadDto> GetLatestByProjectId(int limit, long threadId);
-        IEnumerable<ProjectThreadDto> GetPagedByGroupId(long groupId, int page, int pageSize = 10);
+        IEnumerable<ProjectThreadDto> GetPagedByProjectId(long groupId, int page, int pageSize = 10);
     }
 }

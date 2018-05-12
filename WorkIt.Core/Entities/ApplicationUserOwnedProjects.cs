@@ -11,7 +11,7 @@ namespace Core.Entities
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
 
-        public long GroupId { get; set; }
-        public Project Group { get; set; }
+        public long ProjectId { get; set; }
+        public Project Project { get; set; }
     }
 }

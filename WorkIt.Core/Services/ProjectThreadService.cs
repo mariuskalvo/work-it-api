@@ -53,7 +53,7 @@ namespace Core.Services
             return mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
         }
 
-        public IEnumerable<ProjectThreadDto> GetPagedByGroupId(long groupId, int page, int pageSize)
+        public IEnumerable<ProjectThreadDto> GetPagedByProjectId(long projectId, int page, int pageSize)
         {
             if (pageSize < 0)
                 return new List<ProjectThreadDto>();

@@ -55,7 +55,7 @@ namespace Core.Tests.ProjectThreads
             int pageNumber = -100;
 
             var groupThreadService = new ProjectThreadService(mockContext.Object, mapperMock.Object);
-            var pagedResults = groupThreadService.GetPagedByGroupId(GROUP_ID, pageNumber, PAGE_SIZE);
+            var pagedResults = groupThreadService.GetPagedByProjectId(GROUP_ID, pageNumber, PAGE_SIZE);
 
             Assert.Equal(PAGE_SIZE, pagedResults.Count());
             Assert.Equal(1, pagedResults.ElementAt(0).Id);
@@ -72,7 +72,7 @@ namespace Core.Tests.ProjectThreads
             int inputPageSize = -100;
 
             var groupThreadService = new ProjectThreadService(mockContext.Object, mapperMock.Object);
-            var results = groupThreadService.GetPagedByGroupId(GROUP_ID, pageNumber, inputPageSize);
+            var results = groupThreadService.GetPagedByProjectId(GROUP_ID, pageNumber, inputPageSize);
 
             Assert.Empty(results);
 
