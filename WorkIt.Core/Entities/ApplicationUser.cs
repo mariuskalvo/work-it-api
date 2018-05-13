@@ -9,6 +9,6 @@ namespace Core.Entities
     public class ApplicationUser : IdentityUser
     {
         public IEnumerable<ApplicationUserOwnedProjects> OwnedProjects { get; set; }
-        public IEnumerable<ApplicationUserProjectMembers> MemberProjects { get; set; }
+        public IEnumerable<ApplicationUserProjectMember> MemberProjects { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace Core.Tests.Projects
 
             var mockSet = new Mock<DbSet<Project>>();
             var mockContext = new Mock<AppDbContext>();
-            mockContext.Setup(m => m.Groups).Returns(mockSet.Object);
+            mockContext.Setup(m => m.Projects).Returns(mockSet.Object);
 
             var groupService = new ProjectService(mockContext.Object, mapper.Object);
 
@@ -63,7 +63,7 @@ namespace Core.Tests.Projects
 
             var mockSet = new Mock<DbSet<Project>>();
             var mockContext = new Mock<AppDbContext>();
-            mockContext.Setup(m => m.Groups).Returns(mockSet.Object);
+            mockContext.Setup(m => m.Projects).Returns(mockSet.Object);
 
             var groupService = new ProjectService(mockContext.Object, mockedMapper.Object);
 

@@ -11,6 +11,7 @@ using Core.Exceptions;
 using Core.Validators;
 using Microsoft.EntityFrameworkCore;
 using Core.DataAccess;
+using WorkIt.Core.Entities;
 
 namespace Core.Services
 {
@@ -38,16 +39,26 @@ namespace Core.Services
             entityToAdd.CreatedAt = DateTime.Now;
             entityToAdd.CreatedById = applicationUserId;
 
-            context.Groups.Add(entityToAdd);
+            context.Projects.Add(entityToAdd);
             context.SaveChanges();
 
             return mapper.Map<ProjectDto>(entityToAdd); ;
 
         }
 
+        public void AddMemberToProject(long projectId, string userId)
+        {
+            context.ProjectMembers.Add(new ApplicationUserProjectMember() {
+                ApplicationUserId = userId,
+                ProjectId = projectId
+            });
+
+            context.SaveChanges();
+        }
+
         public IEnumerable<ProjectDto> Get(int limit)
         {
-            var groups = context.Groups.Take(limit).ToList();
+            var groups = context.Projects.Take(limit).ToList();
             return mapper.Map<IEnumerable<ProjectDto>>(groups);
         }
     }

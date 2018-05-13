@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class ProjectController : Controller
     {
         private readonly IProjectService _projectService;
@@ -45,6 +45,12 @@ namespace WebApi.Controllers
             var createProjectDto = _projectService.Create(createGroupDto, currentUserId);
 
             return Ok(createProjectDto);
+        }
+
+        [HttpPost]
+        public void AddMember(long projectId, string userId)
+        {
+            _projectService.AddMemberToProject(projectId, userId);
         }
     }
 }

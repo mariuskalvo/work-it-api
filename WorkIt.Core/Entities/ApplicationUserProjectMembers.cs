@@ -5,7 +5,7 @@ using Core.Entities;
 
 namespace WorkIt.Core.Entities
 {
-    public class ApplicationUserProjectMembers
+    public class ApplicationUserProjectMember
     {
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }

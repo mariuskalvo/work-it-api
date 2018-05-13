@@ -10,10 +10,12 @@ namespace Core.DataAccess
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
-        public virtual DbSet<Project> Groups { get; set; }
+        public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<ProjectThread> Threads { get; set; }
         public virtual DbSet<ThreadEntry> ThreadEntries { get; set; }
         public virtual DbSet<ThreadEntryReaction> ThreadEntryReactions { get; set; }
+
+        public virtual DbSet<ApplicationUserProjectMember> ProjectMembers { get; set; }
 
 
         public AppDbContext() { }
@@ -40,7 +42,7 @@ namespace Core.DataAccess
             modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.CreatedBy));
 
             modelBuilder.Entity<ApplicationUserOwnedProjects>().HasKey(a => new { a.ApplicationUserId, a.ProjectId });
-            modelBuilder.Entity<ApplicationUserProjectMembers>().HasKey(a => new { a.ApplicationUserId, a.ProjectId });
+            modelBuilder.Entity<ApplicationUserProjectMember>().HasKey(a => new { a.ApplicationUserId, a.ProjectId });
 
             modelBuilder.Entity<ApplicationUserOwnedProjects>()
                         .HasOne(a => a.Project)
@@ -52,12 +54,12 @@ namespace Core.DataAccess
                         .WithMany(user => user.OwnedProjects)
                         .HasForeignKey(a => a.ApplicationUserId);
 
-            modelBuilder.Entity<ApplicationUserProjectMembers>()
+            modelBuilder.Entity<ApplicationUserProjectMember>()
                         .HasOne(a => a.ApplicationUser)
                         .WithMany(user => user.MemberProjects)
                         .HasForeignKey(a => a.ApplicationUserId);
 
-            modelBuilder.Entity<ApplicationUserProjectMembers>()
+            modelBuilder.Entity<ApplicationUserProjectMember>()
                         .HasOne(a => a.Project)
                         .WithMany(project => project.Members)
                         .HasForeignKey(a => a.ProjectId);

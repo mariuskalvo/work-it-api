@@ -11,5 +11,6 @@ namespace Core.Services
     {
         IEnumerable<ProjectDto> Get(int limit);
         ProjectDto Create(CreateProjectDto createGroupDto, string applicationUserId);
+        void AddMemberToProject(long projectId, string userId);
     }
 }
