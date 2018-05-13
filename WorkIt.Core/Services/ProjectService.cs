@@ -10,56 +10,51 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.Validators;
 using Microsoft.EntityFrameworkCore;
-using Core.DataAccess;
 using WorkIt.Core.Entities;
+using WorkIt.Core.Interfaces.Repositories;
 
 namespace Core.Services
 {
     public class ProjectService : IProjectService
     {
-        private readonly IMapper mapper;
-        private readonly AppDbContext context;
+        private readonly IMapper _mapper;
+        private readonly IProjectRepository _projectRepository;
 
-        public ProjectService(AppDbContext context, IMapper mapper)
+        public ProjectService(IProjectRepository projectRepository, IMapper mapper)
         {
-            this.context = context;
-            this.mapper = mapper;
+            _mapper = mapper;
+            _projectRepository = projectRepository;
         }
 
-        public ProjectDto Create(CreateProjectDto createGroupDto, string applicationUserId)
+        public async Task<ProjectDto> Create(CreateProjectDto createGroupDto, string applicationUserId)
         {
             var validator = new CreateProjectDtoValidator();
             var validationResults = validator.Validate(createGroupDto);
 
             if (!validationResults.IsValid)
-                throw ExceptionFactory.CreateFromValidationResults(validationResults);
+                return null;
 
-            var entityToAdd = mapper.Map<Project>(createGroupDto);
+            var entityToAdd = _mapper.Map<Project>(createGroupDto);
 
             entityToAdd.CreatedAt = DateTime.Now;
             entityToAdd.CreatedById = applicationUserId;
 
-            context.Projects.Add(entityToAdd);
-            context.SaveChanges();
-
-            return mapper.Map<ProjectDto>(entityToAdd); ;
-
+            var addedEntity = await _projectRepository.Create(entityToAdd);
+            return _mapper.Map<ProjectDto>(addedEntity);
         }
 
-        public void AddMemberToProject(long projectId, string userId)
+        public async Task AddMemberToProject(long projectId, string userId)
         {
-            context.ProjectMembers.Add(new ApplicationUserProjectMember() {
-                ApplicationUserId = userId,
-                ProjectId = projectId
-            });
-
-            context.SaveChanges();
+            await _projectRepository.AddMemberToProject(userId, projectId);
         }
 
-        public IEnumerable<ProjectDto> Get(int limit)
+        public async Task<IEnumerable<ProjectDto>> Get(int page, int pageSize)
         {
-            var groups = context.Projects.Take(limit).ToList();
-            return mapper.Map<IEnumerable<ProjectDto>>(groups);
+            int actualPage = Math.Max(page - 1, 0);
+            int skip = actualPage * pageSize;
+
+            var projects = await _projectRepository.GetProjects(pageSize, skip);
+            return _mapper.Map<IEnumerable<ProjectDto>>(projects);
         }
     }
 }

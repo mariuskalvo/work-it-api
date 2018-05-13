@@ -9,13 +9,17 @@ using Core.Exceptions;
 using Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using Core.DataAccess;
 using Xunit;
+using System.Threading.Tasks;
+using WorkIt.Core.Interfaces.Repositories;
+using WorkIt.Infrastructure.DataAccess;
 
 namespace Core.Tests.Projects
 {
-    public class CreateGroupTests
+    public class CreateProjectTests
     {
+        private Mock<IProjectRepository> _projectRepositoryMock;
+
         private static readonly string VALID_TITLE = "Valid title";
         private static readonly Project VALID_GROUP = new Project()
         {
@@ -24,33 +28,30 @@ namespace Core.Tests.Projects
             CreatedAt = new DateTime(1990, 6, 30)
         };
 
+        public CreateProjectTests()
+        {
+            _projectRepositoryMock = new Mock<IProjectRepository>();
+        }
+
         [Fact]
-        public void GroupWithNullOrEmptyName_ThrowsException()
+        public async Task GroupWithNullOrEmptyName_ReturnsNull()
         {
             var mapper = new Mock<IMapper>();
 
-            var mockSet = new Mock<DbSet<Project>>();
             var mockContext = new Mock<AppDbContext>();
-            mockContext.Setup(m => m.Projects).Returns(mockSet.Object);
-
-            var groupService = new ProjectService(mockContext.Object, mapper.Object);
+            var groupService = new ProjectService(_projectRepositoryMock.Object, mapper.Object);
 
             var invalidGroupWithEmptyTitle = new CreateProjectDto()
             {
                 Title = ""
             };
 
-            var invalidGroupWithNullTitle = new CreateProjectDto()
-            {
-                Title = null
-            };
-
-            Assert.Throws<InvalidModelStateException>(() => groupService.Create(invalidGroupWithEmptyTitle, String.Empty));
-            Assert.Throws<InvalidModelStateException>(() => groupService.Create(invalidGroupWithNullTitle, String.Empty));
+            var result = await groupService.Create(invalidGroupWithEmptyTitle, String.Empty);
+            Assert.Null(result);
         }
 
         [Fact]
-        public void GroupHasValidFields_GroupIsPersisted()
+        public async Task GroupHasValidFields_GroupIsPersisted()
         {
             var mockedMapper = new Mock<IMapper>();
             mockedMapper.Setup(mapper => mapper.Map<Project>(It.IsAny<CreateProjectDto>()))
@@ -65,17 +66,15 @@ namespace Core.Tests.Projects
             var mockContext = new Mock<AppDbContext>();
             mockContext.Setup(m => m.Projects).Returns(mockSet.Object);
 
-            var groupService = new ProjectService(mockContext.Object, mockedMapper.Object);
+            var groupService = new ProjectService(_projectRepositoryMock.Object, mockedMapper.Object);
 
             var validGroup = new CreateProjectDto()
             {
                 Title = VALID_TITLE
             };
 
-            groupService.Create(validGroup, string.Empty);
-
-            mockSet.Verify(m => m.Add(It.IsAny<Project>()), Times.Once);
-            mockContext.Verify(m => m.SaveChanges(), Times.Once);
+            var created = await groupService.Create(validGroup, string.Empty);
+            _projectRepositoryMock.Verify(p => p.Create(It.IsAny<Project>()), Times.Once);
         }
     }
 }

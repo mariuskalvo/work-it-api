@@ -28,20 +28,14 @@ namespace WebApi.Controllers
         {
             var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
-            return _projectThreadService.Create(thread, currentUserId);
+            return await _projectThreadService.Create(thread, currentUserId);
         }
 
         [HttpGet]
-        public IEnumerable<ProjectThreadDto> GetLatestByProjectId(int limit, long projectId)
+        public async Task<IEnumerable<ProjectThreadDto>> GetByProjectId(long projectId, int page = 1)
         {
-            int actualLimit = Math.Max(0, Math.Min(limit, 10));
-            return _projectThreadService.GetLatestByProjectId(actualLimit, projectId);
-        }
-
-        [HttpGet]
-        public IEnumerable<ProjectThreadDto> GetByGroupId(long groupId, int page = 1)
-        {
-            return _projectThreadService.GetPagedByProjectId(groupId, page);
+            int pageSize = 10;
+            return await _projectThreadService.GetPagedByProjectId(projectId, page, pageSize);
         }
     }
 }

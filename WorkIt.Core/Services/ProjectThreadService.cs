@@ -9,64 +9,46 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.Services.Interfaces;
 using Core.Validators;
-using Core.DataAccess;
+using WorkIt.Core.Interfaces.Repositories;
 
 namespace Core.Services
 {
     public class ProjectThreadService : IProjectThreadService
     {
-        private readonly AppDbContext context;
-        private readonly IMapper mapper;
+        private readonly IProjectThreadRepository _projectThreadRepository;
+        private readonly IMapper _mapper;
 
-        public ProjectThreadService(AppDbContext context, IMapper mapper)
+        public ProjectThreadService(IProjectThreadRepository projectThreadRepository, IMapper mapper)
         {
-            this.context = context;
-            this.mapper = mapper;
+            _projectThreadRepository = projectThreadRepository;
+            _mapper = mapper;
         }
 
-        public ProjectThreadDto Create(CreateProjectThreadDto groupThread, string creatorUserId)
+        public async Task<ProjectThreadDto> Create(CreateProjectThreadDto groupThread, string creatorUserId)
         {
             ProjectThreadValidator validator = new ProjectThreadValidator();
             var validationResults = validator.Validate(groupThread);
 
             if (!validationResults.IsValid)
-                throw ExceptionFactory.CreateFromValidationResults(validationResults);
+                return null;
 
-            var entityToAdd = mapper.Map<ProjectThread>(groupThread);
+            var entityToAdd = _mapper.Map<ProjectThread>(groupThread);
 
             entityToAdd.CreatedAt = DateTime.Now;
             entityToAdd.CreatedById = creatorUserId;
 
-            context.Threads.Add(entityToAdd);
-            context.SaveChanges();
+            var addedEntity = await _projectThreadRepository.Create(entityToAdd);
 
-            return mapper.Map<ProjectThreadDto>(entityToAdd);
+            return _mapper.Map<ProjectThreadDto>(entityToAdd);
         }
 
-        public IEnumerable<ProjectThreadDto> GetLatestByProjectId(int limit, long projectId)
+        public async Task<IEnumerable<ProjectThreadDto>> GetPagedByProjectId(long projectId, int page, int pageSize)
         {
-            int maxToFetch = 10;
-            int actualLimit = Math.Max(0, limit);
-            actualLimit = Math.Min(maxToFetch, actualLimit);
-
-            var entities = context.Threads.Where(t => t.ProjectId == projectId).OrderByDescending(grp => grp.CreatedAt).Take(actualLimit);
-            return mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
-        }
-
-        public IEnumerable<ProjectThreadDto> GetPagedByProjectId(long projectId, int page, int pageSize)
-        {
-            if (pageSize < 0)
-                return new List<ProjectThreadDto>();
-
             int actualPage = Math.Max(page - 1, 0);
             int skip = actualPage * pageSize;
 
-            var entities = context.Threads.Take(pageSize)
-                                          .Skip(skip)
-                                          .OrderByDescending(grp => grp.CreatedAt)
-                                          .ToList();
-
-            return mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
+            var entities = await _projectThreadRepository.GetProjectThreads(projectId, pageSize, skip);
+            return _mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
         }
     }
 }

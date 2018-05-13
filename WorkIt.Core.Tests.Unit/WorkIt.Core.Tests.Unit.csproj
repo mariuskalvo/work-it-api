@@ -16,6 +16,7 @@
 
   <ItemGroup>
 	  <ProjectReference Include="..\WorkIt.Core\WorkIt.Core.csproj" />
+	  <ProjectReference Include="..\WorkIt.Infrastructure\WorkIt.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,8 +8,8 @@ namespace Core.Services.Interfaces
 {
     public interface IThreadEntryService
     {
-        ThreadEntryDto Create(CreateThreadEntryDto createDto, string currentUserId);
-        IEnumerable<ThreadEntryDto> GetByThreadId(long threadId);
+        Task<ThreadEntryDto> Create(CreateThreadEntryDto createDto, string currentUserId);
+        Task<IEnumerable<ThreadEntryDto>> GetPagedByThreadId(long threadId, int page, int pageSize);
         void AddReactionToThreadEntry(AddEntryReactionDto addReactionDto, string currentUserId);
     }
 }

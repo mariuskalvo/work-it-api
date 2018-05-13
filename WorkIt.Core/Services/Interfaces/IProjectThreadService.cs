@@ -8,8 +8,7 @@ namespace Core.Services.Interfaces
 {
     public interface IProjectThreadService
     {
-        ProjectThreadDto Create(CreateProjectThreadDto groupThread, string creatorUserId);
-        IEnumerable<ProjectThreadDto> GetLatestByProjectId(int limit, long threadId);
-        IEnumerable<ProjectThreadDto> GetPagedByProjectId(long groupId, int page, int pageSize = 10);
+        Task<ProjectThreadDto> Create(CreateProjectThreadDto groupThread, string creatorUserId);
+        Task<IEnumerable<ProjectThreadDto>> GetPagedByProjectId(long threadId, int page, int pageSize);
     }
 }

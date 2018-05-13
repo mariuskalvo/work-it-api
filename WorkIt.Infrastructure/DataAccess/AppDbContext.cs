@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WorkIt.Core.Entities;
 
-namespace Core.DataAccess
+namespace WorkIt.Infrastructure.DataAccess
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {

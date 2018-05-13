@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using AutoMapper;
-using Core.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Core.Services.Interfaces;
 using Core.Entities;
@@ -20,6 +19,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using WorkIt.Core.Interfaces.Repositories;
+using WorkIt.Infrastructure.Repositories;
+using WorkIt.Infrastructure.DataAccess;
 
 namespace WebApi
 {
@@ -35,11 +37,15 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IProjectService, ProjectService>();
-            services.AddTransient<IProjectThreadService, ProjectThreadService>();
-            services.AddTransient<IThreadEntryService, ThreadEntryService>();
-            services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<IUserService, UserService>();
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IProjectThreadService, ProjectThreadService>();
+            services.AddScoped<IThreadEntryService, ThreadEntryService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<IProjectThreadRepository, ProjectThreadRepository>();
+            services.AddScoped<IThreadEntryRepository, ThreadEntryRepository>();
 
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>

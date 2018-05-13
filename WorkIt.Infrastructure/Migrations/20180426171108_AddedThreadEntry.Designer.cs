@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
-using Core.DataAccess;
 using System;
+using WorkIt.Infrastructure.DataAccess;
 
 namespace Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180422155343_AddedGroupThread")]
-    partial class AddedGroupThread
+    [Migration("20180426171108_AddedThreadEntry")]
+    partial class AddedThreadEntry
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,11 +53,37 @@ namespace Core.Migrations
                     b.ToTable("Threads");
                 });
 
+            modelBuilder.Entity("Core.Entities.ThreadEntry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Content");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<long>("GroupThreadId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupThreadId");
+
+                    b.ToTable("ThreadEntries");
+                });
+
             modelBuilder.Entity("Core.Entities.GroupThread", b =>
                 {
                     b.HasOne("Core.Entities.Group", "Group")
                         .WithMany("Threads")
                         .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Core.Entities.ThreadEntry", b =>
+                {
+                    b.HasOne("Core.Entities.GroupThread", "Thread")
+                        .WithMany("Entries")
+                        .HasForeignKey("GroupThreadId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

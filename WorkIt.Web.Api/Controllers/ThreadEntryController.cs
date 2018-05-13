@@ -24,9 +24,10 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ThreadEntryDto> GetByThreadId(long threadId)
+        public async Task<IEnumerable<ThreadEntryDto>> GetByThreadId(long threadId, int page = 1)
         {
-            return _threadEntryService.GetByThreadId(threadId);
+            int pageSize = 10;
+            return await _threadEntryService.GetPagedByThreadId(threadId, page, pageSize);
         }
 
         [HttpPost]
@@ -34,8 +35,7 @@ namespace WebApi.Controllers
         {
             var jwtUserSubjectEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUserId = await _userService.GetCurrentUserId(jwtUserSubjectEmail);
-            var createdDto = _threadEntryService.Create(createEntry, currentUserId);
-            return createdDto;
+            return await _threadEntryService.Create(createEntry, currentUserId);
         }
 
         [HttpPost]

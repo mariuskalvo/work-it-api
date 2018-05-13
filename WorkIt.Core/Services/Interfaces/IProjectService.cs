@@ -9,8 +9,9 @@ namespace Core.Services
 {
     public interface IProjectService
     {
-        IEnumerable<ProjectDto> Get(int limit);
-        ProjectDto Create(CreateProjectDto createGroupDto, string applicationUserId);
-        void AddMemberToProject(long projectId, string userId);
+        Task<IEnumerable<ProjectDto>> Get(int page, int pageSize);
+        Task<ProjectDto> Create(CreateProjectDto createGroupDto, string applicationUserId);
+        Task AddMemberToProject(long projectId, string userId);
+
     }
 }

@@ -28,9 +28,10 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ProjectDto> Get()
+        public async Task<IEnumerable<ProjectDto>> Get(int page = 1)
         {
-            return _projectService.Get(10);
+            int pageSize = 10;
+            return await _projectService.Get(page, pageSize);
         }
         
         [HttpPost]
@@ -42,15 +43,14 @@ namespace WebApi.Controllers
             if (currentUserId == null)
                 return StatusCode(StatusCodes.Status401Unauthorized);
 
-            var createProjectDto = _projectService.Create(createGroupDto, currentUserId);
-
+            var createProjectDto = await _projectService.Create(createGroupDto, currentUserId);
             return Ok(createProjectDto);
         }
 
         [HttpPost]
-        public void AddMember(long projectId, string userId)
+        public async Task AddMember(long projectId, string userId)
         {
-            _projectService.AddMemberToProject(projectId, userId);
+            await _projectService.AddMemberToProject(projectId, userId);
         }
     }
 }

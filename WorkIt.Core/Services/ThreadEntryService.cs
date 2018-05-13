@@ -7,61 +7,45 @@ using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
 using Core.Services.Interfaces;
-using Core.DataAccess;
+using WorkIt.Core.Interfaces.Repositories;
 
 namespace Core.Services
 {
     public class ThreadEntryService : IThreadEntryService
     {
-        private readonly AppDbContext context;
-        private readonly IMapper mapper;
+        private readonly IThreadEntryRepository _threadEntryRepository;
+        private readonly IMapper _mapper;
 
-        public ThreadEntryService(AppDbContext context, IMapper mapper)
+        public ThreadEntryService(IThreadEntryRepository threadEntryRepository, IMapper mapper)
         {
-            this.context = context;
-            this.mapper = mapper;
+            _threadEntryRepository = threadEntryRepository;
+            _mapper = mapper;
         }
 
-        public ThreadEntryDto Create(CreateThreadEntryDto createDto, string currentUserId)
+        public async Task<ThreadEntryDto> Create(CreateThreadEntryDto createDto, string currentUserId)
         {
-            var entityToAdd = mapper.Map<ThreadEntry>(createDto);
+            var entityToAdd = _mapper.Map<ThreadEntry>(createDto);
 
             entityToAdd.CreatedAt = DateTime.Now;
             entityToAdd.CreatedById = currentUserId;
 
-            context.ThreadEntries.Add(entityToAdd);
-            context.SaveChanges();
-
-            return mapper.Map<ThreadEntryDto>(entityToAdd);
+            var created = await _threadEntryRepository.Create(entityToAdd);
+            return _mapper.Map<ThreadEntryDto>(created);
         }
 
-        public IEnumerable<ThreadEntryDto> GetByThreadId(long threadId)
+        public async Task<IEnumerable<ThreadEntryDto>> GetPagedByThreadId(long threadId, int page, int pageSize)
         {
-            var entities = context.ThreadEntries.Where(e => e.GroupThreadId == threadId).ToList();
-            return mapper.Map<IEnumerable<ThreadEntryDto>>(entities);
+            int actualPage = Math.Max(page - 1, 0);
+            int skip = actualPage * pageSize;
+
+            var entries = await _threadEntryRepository.GetByThreadId(threadId, pageSize, skip);
+            return _mapper.Map<IEnumerable<ThreadEntryDto>>(entries);
         }
 
         public void AddReactionToThreadEntry(AddEntryReactionDto addReactionDto, string currentUserId)
         {
-            var threadEntryId = addReactionDto.ThreadEntryId;
-            var reactionTag = addReactionDto.ReactionTag;
-
-            var reactionExists = 
-                context.ThreadEntryReactions
-                       .Any(t => 
-                            t.ThreadEntryId == threadEntryId &&
-                            t.ReactionTag.Equals(reactionTag, StringComparison.InvariantCultureIgnoreCase)
-                        );
-
-            if (reactionExists)
-                return;
-
-            var entityToAdd = mapper.Map<ThreadEntryReaction>(addReactionDto);
-            entityToAdd.CreatedById = currentUserId;
-
-            context.ThreadEntryReactions.Add(entityToAdd);
-            context.SaveChanges();
 
         }
+
     }
 }

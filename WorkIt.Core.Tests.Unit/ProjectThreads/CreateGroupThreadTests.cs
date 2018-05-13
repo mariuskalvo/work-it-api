@@ -9,8 +9,10 @@ using Core.Exceptions;
 using Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using Core.DataAccess;
 using Xunit;
+using WorkIt.Infrastructure.DataAccess;
+using System.Threading.Tasks;
+using WorkIt.Core.Interfaces.Repositories;
 
 namespace Core.Tests.ProjectThreads
 {
@@ -24,32 +26,31 @@ namespace Core.Tests.ProjectThreads
             Title = VALID_TITLE
         };
 
+        private readonly Mock<IProjectThreadRepository> _threadRepoMock;
+
+        public CreateGroupThreadTests()
+        {
+            _threadRepoMock = new Mock<IProjectThreadRepository>();
+        }
+
         [Fact]
-        public async void ThreadWithNullOrEmptyName_ThrowsException()
+        public async Task ThreadWithNullOrEmptyName_ThrowsException()
         {
             var mapper = new Mock<IMapper>();
 
-            var mockContext = new Mock<AppDbContext>();
-            var mockSet = new Mock<DbSet<ProjectThread>>();
-
-            var threadService = new ProjectThreadService(mockContext.Object, mapper.Object);
+            var threadService = new ProjectThreadService(_threadRepoMock.Object, mapper.Object);
 
             var invalidGroupWithEmptyTitle = new CreateProjectThreadDto()
             {
                 Title = ""
             };
 
-            var invalidGroupWithNullTitle = new CreateProjectThreadDto()
-            {
-                Title = null
-            };
-
-            Assert.Throws<InvalidModelStateException>(() => threadService.Create(invalidGroupWithEmptyTitle, string.Empty));
-            Assert.Throws<InvalidModelStateException>(() => threadService.Create(invalidGroupWithNullTitle, string.Empty));
+            var creationResult = await threadService.Create(invalidGroupWithEmptyTitle, string.Empty);
+            Assert.Null(creationResult);
         }
 
         [Fact]
-        public void ThreadHasValidField_ThredIsPersisted()
+        public async Task ThreadHasValidField_ThredIsPersisted()
         {
             var mockedMapper = new Mock<IMapper>();
             mockedMapper.Setup(mapper => mapper.Map<ProjectThread>(It.IsAny<CreateProjectThreadDto>()))
@@ -66,17 +67,16 @@ namespace Core.Tests.ProjectThreads
             mockContext.Setup(m => m.Threads).Returns(mockSet.Object);
 
 
-            var groupService = new ProjectThreadService(mockContext.Object, mockedMapper.Object);
+            var groupService = new ProjectThreadService(_threadRepoMock.Object, mockedMapper.Object);
 
             var validThread = new CreateProjectThreadDto()
             {
                 Title = VALID_TITLE
             };
 
-            groupService.Create(validThread, string.Empty);
+            var created = await groupService.Create(validThread, string.Empty);
 
-            mockContext.Verify(m => m.SaveChanges(), Times.Once);
-            mockSet.Verify(m => m.Add(It.IsAny<ProjectThread>()), Times.Once);
+            _threadRepoMock.Verify(r => r.Create(It.IsAny<ProjectThread>()), Times.Once);
         }
     }
 }

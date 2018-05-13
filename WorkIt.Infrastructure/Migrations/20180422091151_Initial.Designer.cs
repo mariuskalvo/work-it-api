@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
-using Core.DataAccess;
 using System;
+using WorkIt.Infrastructure.DataAccess;
 
 namespace Core.Migrations
 {
