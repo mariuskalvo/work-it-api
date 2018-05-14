@@ -12,6 +12,6 @@ namespace Core.Services
         Task<IEnumerable<ProjectDto>> Get(int page, int pageSize);
         Task<ProjectDto> Create(CreateProjectDto createGroupDto, string applicationUserId);
         Task AddMemberToProject(long projectId, string userId);
-
+        Task RemoveMemberFromProject(long projectId, string userId);
     }
 }

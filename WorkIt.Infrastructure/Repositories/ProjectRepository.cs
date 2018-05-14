@@ -71,5 +71,15 @@ namespace WorkIt.Infrastructure.Repositories
 
             return projects;
         }
+
+        public async Task RemoveMemberFromProject(string userId, long projectId)
+        {
+            var entityToRemove = await _dbContext.ProjectMembers
+                                           .Where(pm => pm.ApplicationUserId == userId && pm.ProjectId == projectId)
+                                           .FirstOrDefaultAsync();
+
+            _dbContext.Remove(entityToRemove);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -48,6 +48,11 @@ namespace Core.Services
             await _projectRepository.AddMemberToProject(userId, projectId);
         }
 
+        public async Task RemoveMemberFromProject(long projectId, string userId)
+        {
+            await _projectRepository.RemoveMemberFromProject(userId, projectId);
+        }
+
         public async Task<IEnumerable<ProjectDto>> Get(int page, int pageSize)
         {
             int actualPage = Math.Max(page - 1, 0);
@@ -56,5 +61,6 @@ namespace Core.Services
             var projects = await _projectRepository.GetProjects(pageSize, skip);
             return _mapper.Map<IEnumerable<ProjectDto>>(projects);
         }
+
     }
 }

@@ -41,7 +41,7 @@ namespace WebApi.Controllers
             var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
 
             if (currentUserId == null)
-                return StatusCode(StatusCodes.Status401Unauthorized);
+                return StatusCode(StatusCodes.Status500InternalServerError);
 
             var createProjectDto = await _projectService.Create(createGroupDto, currentUserId);
             return Ok(createProjectDto);
@@ -51,6 +51,12 @@ namespace WebApi.Controllers
         public async Task AddMember(long projectId, string userId)
         {
             await _projectService.AddMemberToProject(projectId, userId);
+        }
+
+        [HttpDelete]
+        public async Task RemoveMember(long projectId, string userId)
+        {
+            await _projectService.RemoveMemberFromProject(projectId, userId);
         }
     }
 }
