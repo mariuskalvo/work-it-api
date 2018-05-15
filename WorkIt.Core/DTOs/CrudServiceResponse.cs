@@ -23,4 +23,21 @@ namespace WorkIt.Core.DTOs
             return this;
         }
     }
+
+    public class CrudServiceResponse<T> : CrudServiceResponse where T : class
+    {
+        public T Data { get; set; }
+
+        public CrudServiceResponse(CrudStatus status, string errorMessage = null) : base(status, errorMessage)
+        {
+            Status = status;
+            ErrorMessage = errorMessage;
+        }
+
+        public CrudServiceResponse<T> SetData(T data)
+        {
+            Data = data;
+            return this;
+        }
+    }
 }

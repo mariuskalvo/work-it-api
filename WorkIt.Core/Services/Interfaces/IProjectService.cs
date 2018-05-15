@@ -11,7 +11,7 @@ namespace Core.Services
     public interface IProjectService
     {
         Task<IEnumerable<ProjectDto>> Get(int page, int pageSize);
-        Task<ProjectDto> Create(CreateProjectDto createGroupDto, string applicationUserId);
+        Task<CrudServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId);
         Task<CrudServiceResponse> AddMemberToProject(long projectId, string userId);
         Task<CrudServiceResponse> RemoveMemberFromProject(long projectId, string userId);
     }

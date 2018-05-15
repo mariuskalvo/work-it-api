@@ -31,10 +31,13 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProjectDto>> Get(int page = 1)
+        public async Task<IActionResult> Get(int page = 1)
         {
             int pageSize = 10;
-            return await _projectService.Get(page, pageSize);
+            var projects = await _projectService.Get(page, pageSize);
+
+            return new OkObjectResult(projects);
+
         }
         
         [HttpPost]
@@ -46,8 +49,12 @@ namespace WebApi.Controllers
             if (currentUserId == null)
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
-            var createProjectDto = await _projectService.Create(createGroupDto, currentUserId);
-            return Ok(createProjectDto);
+            var response = await _projectService.Create(createGroupDto, currentUserId);
+
+            if (response.Status != CrudStatus.Ok)
+                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+            else
+                return new OkObjectResult(response.Data);
         }
 
         [HttpPost]

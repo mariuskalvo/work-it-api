@@ -33,10 +33,11 @@ namespace WorkIt.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Project>> GetProjects(int take, int skip)
-        { 
+        {
+            var allEntities = await _dbContext.Projects.ToListAsync();
             var entities = await _dbContext.Projects
-                                     .Take(take)
                                      .Skip(skip)
+                                     .Take(take)
                                      .OrderByDescending(p => p.CreatedAt)
                                      .ToListAsync();
             return entities;

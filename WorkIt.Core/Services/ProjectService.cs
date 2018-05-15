@@ -33,13 +33,13 @@ namespace Core.Services
             _projectMembershipRepository = projectMembershipRepository;
         }
 
-        public async Task<ProjectDto> Create(CreateProjectDto createGroupDto, string applicationUserId)
+        public async Task<CrudServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId)
         {
             var validator = new CreateProjectDtoValidator();
             var validationResults = validator.Validate(createGroupDto);
 
             if (!validationResults.IsValid)
-                return null;
+                return new CrudServiceResponse<ProjectDto>(CrudStatus.BadRequest);
 
             var entityToAdd = _mapper.Map<Project>(createGroupDto);
 
@@ -47,7 +47,9 @@ namespace Core.Services
             entityToAdd.CreatedById = applicationUserId;
 
             var addedEntity = await _projectRepository.Create(entityToAdd);
-            return _mapper.Map<ProjectDto>(addedEntity);
+            var projectDto = _mapper.Map<ProjectDto>(addedEntity);
+
+            return new CrudServiceResponse<ProjectDto>(CrudStatus.Ok).SetData(projectDto);
         }
 
         public async Task<CrudServiceResponse> AddMemberToProject(long projectId, string userId)
@@ -57,14 +59,14 @@ namespace Core.Services
                 var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
 
                 if (existingMembership != null)
-                    return ServiceResponseStates.ErrorAttemptingAddingDuplicate();
+                    return new CrudServiceResponse(CrudStatus.BadRequest, "Attempting to add duplicate project membership");
 
                 await _projectMembershipRepository.AddMemberToProject(userId, projectId);
-                return ServiceResponseStates.OkResponse();
+                return new CrudServiceResponse(CrudStatus.Ok);
 
             } catch (Exception ex)
             {
-                return ServiceResponseStates.ErrorResponse().SetException(ex);
+                return new CrudServiceResponse(CrudStatus.Error).SetException(ex);
             }
         }
 
@@ -74,14 +76,14 @@ namespace Core.Services
             {
                 var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
                 if (existingMembership == null)
-                    return ServiceResponseStates.ErrorAttemptingRemoveNonExistingEntry();
+                    return new CrudServiceResponse(CrudStatus.BadRequest, "Attempting to remove non-existing project membership");
 
                 await _projectMembershipRepository.RemoveMembership(existingMembership);
-                return ServiceResponseStates.OkResponse();
+                return new CrudServiceResponse(CrudStatus.Ok);
 
             } catch (Exception ex)
             {
-                return ServiceResponseStates.ErrorResponse().SetException(ex);
+                return new CrudServiceResponse(CrudStatus.Error).SetException(ex);
             }
         }
 
