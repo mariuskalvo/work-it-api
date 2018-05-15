@@ -22,6 +22,7 @@ using System.IdentityModel.Tokens.Jwt;
 using WorkIt.Core.Interfaces.Repositories;
 using WorkIt.Infrastructure.Repositories;
 using WorkIt.Infrastructure.DataAccess;
+using WorkIt.Core.Services.Interfaces;
 
 namespace WebApi
 {
@@ -45,6 +46,8 @@ namespace WebApi
 
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IProjectThreadRepository, ProjectThreadRepository>();
+            services.AddScoped<IProjectMembershipRepository, ProjectMembershipRepository>();
+
             services.AddScoped<IThreadEntryRepository, ThreadEntryRepository>();
 
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));

@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.DTOs;
 using Core.DTOS;
+using WorkIt.Core.DTOs;
 
 namespace Core.Services
 {
@@ -11,7 +12,7 @@ namespace Core.Services
     {
         Task<IEnumerable<ProjectDto>> Get(int page, int pageSize);
         Task<ProjectDto> Create(CreateProjectDto createGroupDto, string applicationUserId);
-        Task AddMemberToProject(long projectId, string userId);
-        Task RemoveMemberFromProject(long projectId, string userId);
+        Task<CrudServiceResponse> AddMemberToProject(long projectId, string userId);
+        Task<CrudServiceResponse> RemoveMemberFromProject(long projectId, string userId);
     }
 }

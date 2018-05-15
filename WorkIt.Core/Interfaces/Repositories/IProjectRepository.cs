@@ -12,7 +12,6 @@ namespace WorkIt.Core.Interfaces.Repositories
         Task<Project> GetById(long id);
         Task<IEnumerable<Project>> GetProjectsWithUserMembership(string userId);
         Task<IEnumerable<Project>> GetProjects(int take, int skip);
-        Task AddMemberToProject(string userId, long projectId);
-        Task RemoveMemberFromProject(string userId, long projectId);
+
     }
 }

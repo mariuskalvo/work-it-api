@@ -13,12 +13,15 @@ using Xunit;
 using System.Threading.Tasks;
 using WorkIt.Core.Interfaces.Repositories;
 using WorkIt.Infrastructure.DataAccess;
+using WorkIt.Core.Services.Interfaces;
 
 namespace Core.Tests.Projects
 {
     public class CreateProjectTests
     {
         private Mock<IProjectRepository> _projectRepositoryMock;
+        private Mock<IProjectMembershipRepository> _projectMembershipRepositoryMock;
+        private Mock<IMapper> _mapperMock;
 
         private static readonly string VALID_TITLE = "Valid title";
         private static readonly Project VALID_GROUP = new Project()
@@ -31,15 +34,17 @@ namespace Core.Tests.Projects
         public CreateProjectTests()
         {
             _projectRepositoryMock = new Mock<IProjectRepository>();
+            _projectMembershipRepositoryMock = new Mock<IProjectMembershipRepository>();
+            _mapperMock = new Mock<IMapper>();
         }
 
         [Fact]
         public async Task GroupWithNullOrEmptyName_ReturnsNull()
         {
-            var mapper = new Mock<IMapper>();
 
-            var mockContext = new Mock<AppDbContext>();
-            var groupService = new ProjectService(_projectRepositoryMock.Object, mapper.Object);
+            var groupService = new ProjectService(_projectRepositoryMock.Object, 
+                                                  _projectMembershipRepositoryMock.Object,
+                                                  _mapperMock.Object);
 
             var invalidGroupWithEmptyTitle = new CreateProjectDto()
             {
@@ -53,11 +58,10 @@ namespace Core.Tests.Projects
         [Fact]
         public async Task GroupHasValidFields_GroupIsPersisted()
         {
-            var mockedMapper = new Mock<IMapper>();
-            mockedMapper.Setup(mapper => mapper.Map<Project>(It.IsAny<CreateProjectDto>()))
+            _mapperMock.Setup(mapper => mapper.Map<Project>(It.IsAny<CreateProjectDto>()))
                         .Returns(VALID_GROUP);
 
-            mockedMapper.Setup(mapper => mapper.Map<ProjectDto>(It.IsAny<Project>()))
+            _mapperMock.Setup(mapper => mapper.Map<ProjectDto>(It.IsAny<Project>()))
                         .Returns(new ProjectDto() {
                             Title = VALID_TITLE
                         });
@@ -66,7 +70,9 @@ namespace Core.Tests.Projects
             var mockContext = new Mock<AppDbContext>();
             mockContext.Setup(m => m.Projects).Returns(mockSet.Object);
 
-            var groupService = new ProjectService(_projectRepositoryMock.Object, mockedMapper.Object);
+            var groupService = new ProjectService(_projectRepositoryMock.Object,
+                                                  _projectMembershipRepositoryMock.Object,
+                                                  _mapperMock.Object);
 
             var validGroup = new CreateProjectDto()
             {

@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WorkIt.Core;
+using WorkIt.Core.Constants;
+using WorkIt.Web.Api.Utils;
 
 namespace WebApi.Controllers
 {
@@ -48,15 +51,21 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task AddMember(long projectId, string userId)
+        public async Task<IActionResult> AddMember(ProjectMembershipDto projectMembership)
         {
-            await _projectService.AddMemberToProject(projectId, userId);
+            var response = await _projectService.AddMemberToProject(projectMembership.ProjectId, 
+                                                                    projectMembership.UserId);
+
+            return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
         }
 
         [HttpDelete]
-        public async Task RemoveMember(long projectId, string userId)
+        public async Task<IActionResult> RemoveMember(ProjectMembershipDto projectMembership)
         {
-            await _projectService.RemoveMemberFromProject(projectId, userId);
+            var response = await _projectService.RemoveMemberFromProject(projectMembership.ProjectId,
+                                                                         projectMembership.UserId);
+
+            return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
         }
     }
 }

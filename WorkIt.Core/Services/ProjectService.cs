@@ -10,8 +10,11 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.Validators;
 using Microsoft.EntityFrameworkCore;
+using WorkIt.Core.Constants;
+using WorkIt.Core.DTOs;
 using WorkIt.Core.Entities;
 using WorkIt.Core.Interfaces.Repositories;
+using WorkIt.Core.Services.Interfaces;
 
 namespace Core.Services
 {
@@ -19,11 +22,15 @@ namespace Core.Services
     {
         private readonly IMapper _mapper;
         private readonly IProjectRepository _projectRepository;
+        private readonly IProjectMembershipRepository _projectMembershipRepository;
 
-        public ProjectService(IProjectRepository projectRepository, IMapper mapper)
+        public ProjectService(IProjectRepository projectRepository, 
+                              IProjectMembershipRepository projectMembershipRepository,
+                              IMapper mapper)
         {
             _mapper = mapper;
             _projectRepository = projectRepository;
+            _projectMembershipRepository = projectMembershipRepository;
         }
 
         public async Task<ProjectDto> Create(CreateProjectDto createGroupDto, string applicationUserId)
@@ -43,14 +50,39 @@ namespace Core.Services
             return _mapper.Map<ProjectDto>(addedEntity);
         }
 
-        public async Task AddMemberToProject(long projectId, string userId)
+        public async Task<CrudServiceResponse> AddMemberToProject(long projectId, string userId)
         {
-            await _projectRepository.AddMemberToProject(userId, projectId);
+            try
+            {
+                var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
+
+                if (existingMembership != null)
+                    return ServiceResponseStates.ErrorAttemptingAddingDuplicate();
+
+                await _projectMembershipRepository.AddMemberToProject(userId, projectId);
+                return ServiceResponseStates.OkResponse();
+
+            } catch (Exception ex)
+            {
+                return ServiceResponseStates.ErrorResponse().SetException(ex);
+            }
         }
 
-        public async Task RemoveMemberFromProject(long projectId, string userId)
+        public async Task<CrudServiceResponse> RemoveMemberFromProject(long projectId, string userId)
         {
-            await _projectRepository.RemoveMemberFromProject(userId, projectId);
+            try
+            {
+                var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
+                if (existingMembership == null)
+                    return ServiceResponseStates.ErrorAttemptingRemoveNonExistingEntry();
+
+                await _projectMembershipRepository.RemoveMembership(existingMembership);
+                return ServiceResponseStates.OkResponse();
+
+            } catch (Exception ex)
+            {
+                return ServiceResponseStates.ErrorResponse().SetException(ex);
+            }
         }
 
         public async Task<IEnumerable<ProjectDto>> Get(int page, int pageSize)

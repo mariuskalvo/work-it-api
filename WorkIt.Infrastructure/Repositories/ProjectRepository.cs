@@ -20,23 +20,6 @@ namespace WorkIt.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddMemberToProject(string userId, long projectId)
-        {
-            var membershipExists = _dbContext.ProjectMembers
-                .Any(pm => pm.ApplicationUserId == userId && pm.ProjectId == projectId);
-
-            if (membershipExists)
-                return;
-
-            _dbContext.ProjectMembers.Add(new ApplicationUserProjectMember()
-            {
-                ApplicationUserId = userId,
-                ProjectId = projectId
-            });
-
-            await _dbContext.SaveChangesAsync();
-        }
-
         public async Task<Project> Create(Project project)
         {
             _dbContext.Projects.Add(project);
@@ -72,14 +55,6 @@ namespace WorkIt.Infrastructure.Repositories
             return projects;
         }
 
-        public async Task RemoveMemberFromProject(string userId, long projectId)
-        {
-            var entityToRemove = await _dbContext.ProjectMembers
-                                           .Where(pm => pm.ApplicationUserId == userId && pm.ProjectId == projectId)
-                                           .FirstOrDefaultAsync();
 
-            _dbContext.Remove(entityToRemove);
-            await _dbContext.SaveChangesAsync();
-        }
     }
 }
