@@ -53,8 +53,8 @@ namespace WebApi.Controllers
 
             if (response.Status != CrudStatus.Ok)
                 return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
-            else
-                return new OkObjectResult(response.Data);
+
+            return new OkObjectResult(response.Data);
         }
 
         [HttpPost]
