@@ -9,6 +9,8 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.Services.Interfaces;
 using Core.Validators;
+using WorkIt.Core.Constants;
+using WorkIt.Core.DTOs;
 using WorkIt.Core.Interfaces.Repositories;
 
 namespace Core.Services
@@ -24,7 +26,7 @@ namespace Core.Services
             _mapper = mapper;
         }
 
-        public async Task<ProjectThreadDto> Create(CreateProjectThreadDto groupThread, string creatorUserId)
+        public async Task<CrudServiceResponse<ProjectThreadDto>> Create(CreateProjectThreadDto groupThread, string creatorUserId)
         {
             ProjectThreadValidator validator = new ProjectThreadValidator();
             var validationResults = validator.Validate(groupThread);
@@ -38,17 +40,27 @@ namespace Core.Services
             entityToAdd.CreatedById = creatorUserId;
 
             var addedEntity = await _projectThreadRepository.Create(entityToAdd);
+            var returningDto = _mapper.Map<ProjectThreadDto>(entityToAdd);
 
-            return _mapper.Map<ProjectThreadDto>(entityToAdd);
+            return new CrudServiceResponse<ProjectThreadDto>(CrudStatus.Ok).SetData(returningDto);
         }
 
-        public async Task<IEnumerable<ProjectThreadDto>> GetPagedByProjectId(long projectId, int page, int pageSize)
+        public async Task<CrudServiceResponse<IEnumerable<ProjectThreadDto>>> GetPagedByProjectId(long projectId, int page, int pageSize)
         {
             int actualPage = Math.Max(page - 1, 0);
             int skip = actualPage * pageSize;
 
-            var entities = await _projectThreadRepository.GetProjectThreads(projectId, pageSize, skip);
-            return _mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
+            try
+            {
+                var entities = await _projectThreadRepository.GetProjectThreads(projectId, pageSize, skip);
+                var returningDtos = _mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
+                return new CrudServiceResponse<IEnumerable<ProjectThreadDto>>(CrudStatus.Ok).SetData(returningDtos);
+
+            }
+            catch (Exception ex)
+            {
+                return new CrudServiceResponse<IEnumerable<ProjectThreadDto>>(CrudStatus.Error).SetException(ex);
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using WorkIt.Core.Interfaces.Repositories;
 using WorkIt.Infrastructure.DataAccess;
 using WorkIt.Core.Services.Interfaces;
+using Core.Services.Interfaces;
 
 namespace Core.Tests.Projects
 {
@@ -22,6 +23,7 @@ namespace Core.Tests.Projects
         private Mock<IProjectRepository> _projectRepositoryMock;
         private Mock<IProjectMembershipRepository> _projectMembershipRepositoryMock;
         private Mock<IMapper> _mapperMock;
+        private Mock<IUserService> _userServiceMock;
 
         private static readonly string VALID_TITLE = "Valid title";
         private static readonly Project VALID_GROUP = new Project()
@@ -36,6 +38,7 @@ namespace Core.Tests.Projects
             _projectRepositoryMock = new Mock<IProjectRepository>();
             _projectMembershipRepositoryMock = new Mock<IProjectMembershipRepository>();
             _mapperMock = new Mock<IMapper>();
+            _userServiceMock = new Mock<IUserService>();
         }
 
         [Fact]
@@ -44,6 +47,7 @@ namespace Core.Tests.Projects
 
             var groupService = new ProjectService(_projectRepositoryMock.Object, 
                                                   _projectMembershipRepositoryMock.Object,
+                                                  _userServiceMock.Object,
                                                   _mapperMock.Object);
 
             var invalidGroupWithEmptyTitle = new CreateProjectDto()
@@ -72,6 +76,7 @@ namespace Core.Tests.Projects
 
             var groupService = new ProjectService(_projectRepositoryMock.Object,
                                                   _projectMembershipRepositoryMock.Object,
+                                                  _userServiceMock.Object,
                                                   _mapperMock.Object);
 
             var validGroup = new CreateProjectDto()

@@ -39,5 +39,11 @@ namespace WorkIt.Core.DTOs
             Data = data;
             return this;
         }
+
+        public new CrudServiceResponse<T> SetException(Exception exception)
+        {
+            Exception = exception;
+            return this;
+        }
     }
 }

@@ -7,6 +7,8 @@ using Core.DTOs;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WorkIt.Core.Constants;
+using WorkIt.Web.Api.Utils;
 
 namespace WebApi.Controllers
 {
@@ -24,18 +26,29 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ProjectThreadDto> Create(CreateProjectThreadDto thread)
+        public async Task<IActionResult> Create(CreateProjectThreadDto thread)
         {
             var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
-            return await _projectThreadService.Create(thread, currentUserId);
+            var response = await _projectThreadService.Create(thread, currentUserId);
+
+            if (response.Status != CrudStatus.Ok)
+                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+
+            return new OkObjectResult(response.Data);
+
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProjectThreadDto>> GetByProjectId(long projectId, int page = 1)
+        public async Task<IActionResult> GetByProjectId(long projectId, int page = 1)
         {
             int pageSize = 10;
-            return await _projectThreadService.GetPagedByProjectId(projectId, page, pageSize);
+            var response = await _projectThreadService.GetPagedByProjectId(projectId, page, pageSize);
+
+            if (response.Status != CrudStatus.Ok)
+                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+
+            return new OkObjectResult(response.Data);
         }
     }
 }
