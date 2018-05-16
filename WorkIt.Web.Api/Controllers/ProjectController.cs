@@ -58,7 +58,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddMember(ProjectMembershipDto projectMembership)
+        public async Task<IActionResult> AddMember([FromBody] ProjectMembershipDto projectMembership)
         {
             var response = await _projectService.AddMemberToProject(projectMembership.ProjectId, 
                                                                     projectMembership.UserId);

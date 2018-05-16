@@ -4,12 +4,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.DTOs;
 using Core.Entities;
+using WorkIt.Core.DTOs;
 
 namespace Core.Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<ValidationResponse> CreateAccount(CreateAccountDto createAccount);
-        Task<string> IssueToken(LoginDto loginDto);
+        Task<CrudServiceResponse> CreateAccount(CreateAccountDto createAccount);
+        Task<CrudServiceResponse<string>> IssueToken(LoginDto loginDto);
     }
 }

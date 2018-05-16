@@ -8,6 +8,7 @@ using Core.DTOs;
 using Core.DTOS;
 using Core.Entities;
 using Core.Exceptions;
+using Core.Services.Interfaces;
 using Core.Validators;
 using Microsoft.EntityFrameworkCore;
 using WorkIt.Core.Constants;
@@ -23,14 +24,17 @@ namespace Core.Services
         private readonly IMapper _mapper;
         private readonly IProjectRepository _projectRepository;
         private readonly IProjectMembershipRepository _projectMembershipRepository;
+        private readonly IUserService _userService;
 
         public ProjectService(IProjectRepository projectRepository, 
                               IProjectMembershipRepository projectMembershipRepository,
+                              IUserService userService,
                               IMapper mapper)
         {
             _mapper = mapper;
             _projectRepository = projectRepository;
             _projectMembershipRepository = projectMembershipRepository;
+            _userService = userService;
         }
 
         public async Task<CrudServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId)
@@ -56,10 +60,17 @@ namespace Core.Services
         {
             try
             {
-                var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
+                var user = await _userService.GetUserById(userId);
+                if (user == null)
+                    return new CrudServiceResponse(CrudStatus.BadRequest);
 
+                var project = await _projectRepository.GetById(projectId);
+                if (project == null)
+                    return new CrudServiceResponse(CrudStatus.BadRequest);
+
+                var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
                 if (existingMembership != null)
-                    return new CrudServiceResponse(CrudStatus.BadRequest, "Attempting to add duplicate project membership");
+                    return new CrudServiceResponse(CrudStatus.BadRequest);
 
                 await _projectMembershipRepository.AddMemberToProject(userId, projectId);
                 return new CrudServiceResponse(CrudStatus.Ok);

@@ -6,35 +6,36 @@ using Core.DTOs;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WorkIt.Core.Constants;
+using WorkIt.Web.Api.Utils;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class AccountController : Controller
     {
-        private readonly IAccountService accountService;
+        private readonly IAccountService _accountService;
 
         public AccountController(IAccountService accountService)
         {
-            this.accountService = accountService;
+            _accountService = accountService;
         }
 
         [HttpPost]
-        public async Task<ValidationResponse> CreateAccount(CreateAccountDto createAccountDto)
+        public async Task<IActionResult> CreateAccount(CreateAccountDto createAccountDto)
         {
-            var validationResult = await accountService.CreateAccount(createAccountDto);
-            return validationResult;
+            var response = await _accountService.CreateAccount(createAccountDto);
+            return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            var token = await accountService.IssueToken(loginDto);
-            if (String.IsNullOrEmpty(token))
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
-            }
-            return Ok(token);
+            var response = await _accountService.IssueToken(loginDto);
+            if (response.Status != CrudStatus.Ok)
+                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+
+            return new OkObjectResult(response.Data);
         }
     }
 }

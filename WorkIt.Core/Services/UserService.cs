@@ -22,5 +22,10 @@ namespace Core.Services
             var user = await userManager.FindByEmailAsync(email);
             return user?.Id;
         }
+
+        public async Task<ApplicationUser> GetUserById(string userId)
+        {
+            return await userManager.FindByIdAsync(userId);
+        }
     }
 }

@@ -11,6 +11,8 @@ using Core.Services.Interfaces;
 using Core.Validators;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using WorkIt.Core.Constants;
+using WorkIt.Core.DTOs;
 
 namespace Core.Services
 {
@@ -25,18 +27,15 @@ namespace Core.Services
             this.signInManager = signInManager;
         }
 
-        public async Task<ValidationResponse> CreateAccount(CreateAccountDto createAccount)
+        public async Task<CrudServiceResponse> CreateAccount(CreateAccountDto createAccount)
         {
             var createAccountValidator = new AccountValidator();
             var validationResult = createAccountValidator.Validate(createAccount);
 
             if (!validationResult.IsValid)
             {
-                return new ValidationResponse()
-                {
-                    Success = false,
-                    Errors = validationResult.Errors.Select(err => err.ErrorMessage)
-                };
+                var validationMessage = String.Join(". ", validationResult.Errors);
+                return new CrudServiceResponse(CrudStatus.BadRequest, validationMessage);
             }
 
             var userToAdd = new ApplicationUser()
@@ -46,30 +45,25 @@ namespace Core.Services
             };
 
             var createResult = await userManager.CreateAsync(userToAdd, createAccount.Password);
-            if (!createResult.Succeeded)
-            {
-                return new ValidationResponse()
-                {
-                    Success = false,
-                    Errors = createResult.Errors.Select(err => err.Description)
-                };
-            }
 
-            return new ValidationResponse()
-            {
-                Success = true
-            };
+            if (!createResult.Succeeded)
+                return new CrudServiceResponse(CrudStatus.Error, "Could not create user account");
+
+            return new CrudServiceResponse(CrudStatus.Ok);
         }
 
-        public async Task<string> IssueToken(LoginDto loginDto)
+        public async Task<CrudServiceResponse<string>> IssueToken(LoginDto loginDto)
         {
             var signInResult = await signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, false, false);
             if (signInResult.Succeeded)
             {
-                var currentUser = userManager.Users.FirstOrDefault(user => user.UserName.Equals(loginDto.Email, StringComparison.InvariantCultureIgnoreCase));
-                return GenerateJwtToken(currentUser);
+                var currentUser = userManager.Users.FirstOrDefault(user => 
+                    user.UserName.Equals(loginDto.Email, StringComparison.InvariantCultureIgnoreCase));
+                var token = GenerateJwtToken(currentUser);
+
+                return new CrudServiceResponse<string>(CrudStatus.Ok).SetData(token);
             }
-            return "";
+            return new CrudServiceResponse<string>(CrudStatus.Error);
         }
 
         private string GenerateJwtToken(ApplicationUser user)
