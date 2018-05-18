@@ -35,14 +35,18 @@ namespace Core.Services
                 return null;
 
             var entityToAdd = _mapper.Map<ProjectThread>(groupThread);
-
             entityToAdd.CreatedAt = DateTime.Now;
             entityToAdd.CreatedById = creatorUserId;
 
-            var addedEntity = await _projectThreadRepository.Create(entityToAdd);
-            var returningDto = _mapper.Map<ProjectThreadDto>(entityToAdd);
-
-            return new CrudServiceResponse<ProjectThreadDto>(CrudStatus.Ok).SetData(returningDto);
+            try
+            {
+                var addedEntity = await _projectThreadRepository.Create(entityToAdd);
+                var returningDto = _mapper.Map<ProjectThreadDto>(entityToAdd);
+                return new CrudServiceResponse<ProjectThreadDto>(CrudStatus.Ok).SetData(returningDto);
+            } catch (Exception ex)
+            {
+                return new CrudServiceResponse<ProjectThreadDto>(CrudStatus.Error).SetException(ex);
+            }
         }
 
         public async Task<CrudServiceResponse<IEnumerable<ProjectThreadDto>>> GetPagedByProjectId(long projectId, int page, int pageSize)
@@ -55,7 +59,6 @@ namespace Core.Services
                 var entities = await _projectThreadRepository.GetProjectThreads(projectId, pageSize, skip);
                 var returningDtos = _mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
                 return new CrudServiceResponse<IEnumerable<ProjectThreadDto>>(CrudStatus.Ok).SetData(returningDtos);
-
             }
             catch (Exception ex)
             {

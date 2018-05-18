@@ -7,6 +7,8 @@ using Core.DTOs;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WorkIt.Core.Constants;
+using WorkIt.Web.Api.Utils;
 
 namespace WebApi.Controllers
 {
@@ -24,26 +26,29 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ThreadEntryDto>> GetByThreadId(long threadId, int page = 1)
+        public async Task<IActionResult> GetByThreadId(long threadId, int page = 1)
         {
             int pageSize = 10;
-            return await _threadEntryService.GetPagedByThreadId(threadId, page, pageSize);
+            var response = await _threadEntryService.GetPagedByThreadId(threadId, page, pageSize);
+
+            if (response.Status != CrudStatus.Ok)
+                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+
+            return new OkObjectResult(response.Data);
         }
 
+
         [HttpPost]
-        public async Task<ThreadEntryDto> Create(CreateThreadEntryDto createEntry)
+        public async Task<IActionResult> Create(CreateThreadEntryDto createEntry)
         {
             var jwtUserSubjectEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUserId = await _userService.GetCurrentUserId(jwtUserSubjectEmail);
-            return await _threadEntryService.Create(createEntry, currentUserId);
-        }
+            var response = await _threadEntryService.Create(createEntry, currentUserId);
 
-        [HttpPost]
-        public async Task AddReactionForThreadEntry(AddEntryReactionDto addReaction)
-        {
-            var jwtUserSubjectEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var currentUserId = await _userService.GetCurrentUserId(jwtUserSubjectEmail);
-            _threadEntryService.AddReactionToThreadEntry(addReaction, currentUserId);
+            if (response.Status != CrudStatus.Ok)
+                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+
+            return new OkObjectResult(response.Data);
         }
     }
 }

@@ -29,10 +29,11 @@ namespace WorkIt.Infrastructure.Repositories
         public async Task<IEnumerable<ThreadEntry>> GetByThreadId(long threadId, int take, int skip)
         {
             return await _dbContext.ThreadEntries
-                         .Take(take)
-                         .Skip(skip)
-                         .OrderByDescending(p => p.CreatedAt)
-                         .ToListAsync();
+                             .Where(te => te.GroupThreadId == threadId)        
+                             .Take(take)
+                             .Skip(skip)
+                             .OrderByDescending(p => p.CreatedAt)
+                             .ToListAsync();
         }
     }
 }

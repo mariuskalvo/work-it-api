@@ -7,6 +7,8 @@ using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
 using Core.Services.Interfaces;
+using WorkIt.Core.Constants;
+using WorkIt.Core.DTOs;
 using WorkIt.Core.Interfaces.Repositories;
 
 namespace Core.Services
@@ -22,30 +24,38 @@ namespace Core.Services
             _mapper = mapper;
         }
 
-        public async Task<ThreadEntryDto> Create(CreateThreadEntryDto createDto, string currentUserId)
+        public async Task<CrudServiceResponse<ThreadEntryDto>> Create(CreateThreadEntryDto createDto, string currentUserId)
         {
             var entityToAdd = _mapper.Map<ThreadEntry>(createDto);
-
             entityToAdd.CreatedAt = DateTime.Now;
             entityToAdd.CreatedById = currentUserId;
 
-            var created = await _threadEntryRepository.Create(entityToAdd);
-            return _mapper.Map<ThreadEntryDto>(created);
+            try
+            {
+                var created = await _threadEntryRepository.Create(entityToAdd);
+                var returningDto = _mapper.Map<ThreadEntryDto>(created);
+                return new CrudServiceResponse<ThreadEntryDto>(CrudStatus.Ok).SetData(returningDto);
+            } catch (Exception ex)
+            {
+                return new CrudServiceResponse<ThreadEntryDto>(CrudStatus.Error).SetException(ex);
+            }
+
         }
 
-        public async Task<IEnumerable<ThreadEntryDto>> GetPagedByThreadId(long threadId, int page, int pageSize)
+        public async Task<CrudServiceResponse<IEnumerable<ThreadEntryDto>>> GetPagedByThreadId(long threadId, int page, int pageSize)
         {
             int actualPage = Math.Max(page - 1, 0);
             int skip = actualPage * pageSize;
 
-            var entries = await _threadEntryRepository.GetByThreadId(threadId, pageSize, skip);
-            return _mapper.Map<IEnumerable<ThreadEntryDto>>(entries);
+            try
+            {
+                var entries = await _threadEntryRepository.GetByThreadId(threadId, pageSize, skip);
+                var returningDtos = _mapper.Map<IEnumerable<ThreadEntryDto>>(entries);
+                return new CrudServiceResponse<IEnumerable<ThreadEntryDto>>(CrudStatus.Ok).SetData(returningDtos);
+            } catch (Exception ex)
+            {
+                return new CrudServiceResponse<IEnumerable<ThreadEntryDto>>(CrudStatus.Error).SetException(ex);
+            }
         }
-
-        public void AddReactionToThreadEntry(AddEntryReactionDto addReactionDto, string currentUserId)
-        {
-
-        }
-
     }
 }
