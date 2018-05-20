@@ -29,7 +29,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             var response = await _accountService.IssueToken(loginDto);
             if (response.Status != CrudStatus.Ok)
