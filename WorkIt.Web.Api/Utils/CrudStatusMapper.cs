@@ -26,6 +26,8 @@ namespace WorkIt.Web.Api.Utils
                     return StatusCodes.Status202Accepted;
                 case CrudStatus.Updated:
                     return StatusCodes.Status202Accepted;
+                case CrudStatus.Unauthorized:
+                    return StatusCodes.Status401Unauthorized;
                 default:
                     return StatusCodes.Status200OK;
             }

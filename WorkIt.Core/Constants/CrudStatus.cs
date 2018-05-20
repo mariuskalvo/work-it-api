@@ -11,6 +11,7 @@ namespace WorkIt.Core.Constants
         Created,
         Deleted,
         Updated,
+        Unauthorized,
         Error
     }
 }

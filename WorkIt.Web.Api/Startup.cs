@@ -23,6 +23,7 @@ using WorkIt.Core.Interfaces.Repositories;
 using WorkIt.Infrastructure.Repositories;
 using WorkIt.Infrastructure.DataAccess;
 using WorkIt.Core.Services.Interfaces;
+using Newtonsoft.Json.Serialization;
 
 namespace WebApi
 {
@@ -95,7 +96,12 @@ namespace WebApi
                 c.AddSecurityRequirement(security);
             });
 
-            services.AddMvc();
+            services
+                .AddMvc()
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,6 +111,14 @@ namespace WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder =>
+                builder
+                    .WithOrigins("http://localhost:3000")
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader());
+
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gropuie API"));
             app.UseAuthentication();

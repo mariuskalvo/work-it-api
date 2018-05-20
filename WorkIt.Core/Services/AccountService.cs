@@ -63,7 +63,7 @@ namespace Core.Services
 
                 return new CrudServiceResponse<string>(CrudStatus.Ok).SetData(token);
             }
-            return new CrudServiceResponse<string>(CrudStatus.Error);
+            return new CrudServiceResponse<string>(CrudStatus.Unauthorized);
         }
 
         private string GenerateJwtToken(ApplicationUser user)
