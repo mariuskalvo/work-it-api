@@ -27,7 +27,7 @@ namespace Core.Services
             this.signInManager = signInManager;
         }
 
-        public async Task<CrudServiceResponse> CreateAccount(CreateAccountDto createAccount)
+        public async Task<ServiceResponse> CreateAccount(CreateAccountDto createAccount)
         {
             var createAccountValidator = new AccountValidator();
             var validationResult = createAccountValidator.Validate(createAccount);
@@ -35,7 +35,7 @@ namespace Core.Services
             if (!validationResult.IsValid)
             {
                 var validationMessage = String.Join(". ", validationResult.Errors);
-                return new CrudServiceResponse(CrudStatus.BadRequest, validationMessage);
+                return new ServiceResponse(ServiceStatus.BadRequest, validationMessage);
             }
 
             var userToAdd = new ApplicationUser()
@@ -47,12 +47,12 @@ namespace Core.Services
             var createResult = await userManager.CreateAsync(userToAdd, createAccount.Password);
 
             if (!createResult.Succeeded)
-                return new CrudServiceResponse(CrudStatus.Error, "Could not create user account");
+                return new ServiceResponse(ServiceStatus.Error, "Could not create user account");
 
-            return new CrudServiceResponse(CrudStatus.Ok);
+            return new ServiceResponse(ServiceStatus.Ok);
         }
 
-        public async Task<CrudServiceResponse<string>> IssueToken(LoginDto loginDto)
+        public async Task<ServiceResponse<string>> IssueToken(LoginDto loginDto)
         {
             var signInResult = await signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, false, false);
             if (signInResult.Succeeded)
@@ -61,9 +61,9 @@ namespace Core.Services
                     user.UserName.Equals(loginDto.Email, StringComparison.InvariantCultureIgnoreCase));
                 var token = GenerateJwtToken(currentUser);
 
-                return new CrudServiceResponse<string>(CrudStatus.Ok).SetData(token);
+                return new ServiceResponse<string>(ServiceStatus.Ok).SetData(token);
             }
-            return new CrudServiceResponse<string>(CrudStatus.Unauthorized);
+            return new ServiceResponse<string>(ServiceStatus.Unauthorized);
         }
 
         private string GenerateJwtToken(ApplicationUser user)

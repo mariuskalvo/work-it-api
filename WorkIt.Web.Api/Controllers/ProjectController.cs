@@ -38,8 +38,8 @@ namespace WebApi.Controllers
 
             var response = await _projectService.Get(currentUserId);
 
-            if (response.Status != CrudStatus.Ok)
-                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+            if (response.Status != ServiceStatus.Ok)
+                return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
 
             return new OkObjectResult(response.Data);
 
@@ -54,8 +54,8 @@ namespace WebApi.Controllers
 
             var response = await _projectService.Create(createGroupDto, currentUserId);
 
-            if (response.Status != CrudStatus.Ok)
-                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+            if (response.Status != ServiceStatus.Ok)
+                return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
 
             return new OkObjectResult(response.Data);
         }
@@ -66,7 +66,7 @@ namespace WebApi.Controllers
             var response = await _projectService.AddMemberToProject(projectMembership.ProjectId, 
                                                                     projectMembership.UserId);
 
-            return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+            return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
         }
 
         [HttpDelete]
@@ -75,7 +75,7 @@ namespace WebApi.Controllers
             var response = await _projectService.RemoveMemberFromProject(projectMembership.ProjectId,
                                                                          projectMembership.UserId);
 
-            return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+            return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
         }
     }
 }

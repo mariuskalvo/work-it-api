@@ -8,25 +8,25 @@ using WorkIt.Core.Constants;
 
 namespace WorkIt.Web.Api.Utils
 {
-    public static class CrudStatusMapper
+    public static class ServiceStatusMapper
     {
-        public static int MapCrudStatusToStatusCode(CrudStatus status)
+        public static int MapToHttpStatusCode(ServiceStatus status)
         {
             switch (status)
             {
-                case CrudStatus.BadRequest:
+                case ServiceStatus.BadRequest:
                     return StatusCodes.Status400BadRequest;
-                case CrudStatus.Error:
+                case ServiceStatus.Error:
                     return StatusCodes.Status500InternalServerError;
-                case CrudStatus.Ok:
+                case ServiceStatus.Ok:
                     return StatusCodes.Status200OK;
-                case CrudStatus.Created:
+                case ServiceStatus.Created:
                     return StatusCodes.Status201Created;
-                case CrudStatus.Deleted:
+                case ServiceStatus.Deleted:
                     return StatusCodes.Status202Accepted;
-                case CrudStatus.Updated:
+                case ServiceStatus.Updated:
                     return StatusCodes.Status202Accepted;
-                case CrudStatus.Unauthorized:
+                case ServiceStatus.Unauthorized:
                     return StatusCodes.Status401Unauthorized;
                 default:
                     return StatusCodes.Status200OK;

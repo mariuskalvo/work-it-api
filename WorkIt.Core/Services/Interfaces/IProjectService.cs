@@ -10,9 +10,9 @@ namespace Core.Services
 {
     public interface IProjectService
     {
-        Task<CrudServiceResponse<IEnumerable<ProjectDto>>> Get(string currentUserId);
-        Task<CrudServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId);
-        Task<CrudServiceResponse> AddMemberToProject(long projectId, string userId);
-        Task<CrudServiceResponse> RemoveMemberFromProject(long projectId, string userId);
+        Task<ServiceResponse<IEnumerable<ProjectDto>>> Get(string currentUserId);
+        Task<ServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId);
+        Task<ServiceResponse> AddMemberToProject(long projectId, string userId);
+        Task<ServiceResponse> RemoveMemberFromProject(long projectId, string userId);
     }
 }

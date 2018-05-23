@@ -31,8 +31,8 @@ namespace WebApi.Controllers
             int pageSize = 10;
             var response = await _threadEntryService.GetPagedByThreadId(threadId, page, pageSize);
 
-            if (response.Status != CrudStatus.Ok)
-                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+            if (response.Status != ServiceStatus.Ok)
+                return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
 
             return new OkObjectResult(response.Data);
         }
@@ -45,8 +45,8 @@ namespace WebApi.Controllers
             var currentUserId = await _userService.GetCurrentUserId(jwtUserSubjectEmail);
             var response = await _threadEntryService.Create(createEntry, currentUserId);
 
-            if (response.Status != CrudStatus.Ok)
-                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+            if (response.Status != ServiceStatus.Ok)
+                return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
 
             return new OkObjectResult(response.Data);
         }

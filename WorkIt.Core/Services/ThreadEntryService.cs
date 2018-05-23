@@ -24,7 +24,7 @@ namespace Core.Services
             _mapper = mapper;
         }
 
-        public async Task<CrudServiceResponse<ThreadEntryDto>> Create(CreateThreadEntryDto createDto, string currentUserId)
+        public async Task<ServiceResponse<ThreadEntryDto>> Create(CreateThreadEntryDto createDto, string currentUserId)
         {
             var entityToAdd = _mapper.Map<ThreadEntry>(createDto);
             entityToAdd.CreatedAt = DateTime.Now;
@@ -34,15 +34,15 @@ namespace Core.Services
             {
                 var created = await _threadEntryRepository.Create(entityToAdd);
                 var returningDto = _mapper.Map<ThreadEntryDto>(created);
-                return new CrudServiceResponse<ThreadEntryDto>(CrudStatus.Ok).SetData(returningDto);
+                return new ServiceResponse<ThreadEntryDto>(ServiceStatus.Ok).SetData(returningDto);
             } catch (Exception ex)
             {
-                return new CrudServiceResponse<ThreadEntryDto>(CrudStatus.Error).SetException(ex);
+                return new ServiceResponse<ThreadEntryDto>(ServiceStatus.Error).SetException(ex);
             }
 
         }
 
-        public async Task<CrudServiceResponse<IEnumerable<ThreadEntryDto>>> GetPagedByThreadId(long threadId, int page, int pageSize)
+        public async Task<ServiceResponse<IEnumerable<ThreadEntryDto>>> GetPagedByThreadId(long threadId, int page, int pageSize)
         {
             int actualPage = Math.Max(page - 1, 0);
             int skip = actualPage * pageSize;
@@ -51,10 +51,10 @@ namespace Core.Services
             {
                 var entries = await _threadEntryRepository.GetByThreadId(threadId, pageSize, skip);
                 var returningDtos = _mapper.Map<IEnumerable<ThreadEntryDto>>(entries);
-                return new CrudServiceResponse<IEnumerable<ThreadEntryDto>>(CrudStatus.Ok).SetData(returningDtos);
+                return new ServiceResponse<IEnumerable<ThreadEntryDto>>(ServiceStatus.Ok).SetData(returningDtos);
             } catch (Exception ex)
             {
-                return new CrudServiceResponse<IEnumerable<ThreadEntryDto>>(CrudStatus.Error).SetException(ex);
+                return new ServiceResponse<IEnumerable<ThreadEntryDto>>(ServiceStatus.Error).SetException(ex);
             }
         }
     }

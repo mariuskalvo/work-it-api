@@ -37,13 +37,13 @@ namespace Core.Services
             _userService = userService;
         }
 
-        public async Task<CrudServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId)
+        public async Task<ServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId)
         {
             var validator = new CreateProjectDtoValidator();
             var validationResults = validator.Validate(createGroupDto);
 
             if (!validationResults.IsValid)
-                return new CrudServiceResponse<ProjectDto>(CrudStatus.BadRequest);
+                return new ServiceResponse<ProjectDto>(ServiceStatus.BadRequest);
 
             var entityToAdd = _mapper.Map<Project>(createGroupDto);
 
@@ -53,62 +53,62 @@ namespace Core.Services
             var addedEntity = await _projectRepository.Create(entityToAdd);
             var projectDto = _mapper.Map<ProjectDto>(addedEntity);
 
-            return new CrudServiceResponse<ProjectDto>(CrudStatus.Ok).SetData(projectDto);
+            return new ServiceResponse<ProjectDto>(ServiceStatus.Ok).SetData(projectDto);
         }
 
-        public async Task<CrudServiceResponse> AddMemberToProject(long projectId, string userId)
+        public async Task<ServiceResponse> AddMemberToProject(long projectId, string userId)
         {
             try
             {
                 var user = await _userService.GetUserById(userId);
                 if (user == null)
-                    return new CrudServiceResponse(CrudStatus.BadRequest);
+                    return new ServiceResponse(ServiceStatus.BadRequest);
 
                 var project = await _projectRepository.GetById(projectId);
                 if (project == null)
-                    return new CrudServiceResponse(CrudStatus.BadRequest);
+                    return new ServiceResponse(ServiceStatus.BadRequest);
 
                 var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
                 if (existingMembership != null)
-                    return new CrudServiceResponse(CrudStatus.BadRequest);
+                    return new ServiceResponse(ServiceStatus.BadRequest);
 
                 await _projectMembershipRepository.AddMemberToProject(userId, projectId);
-                return new CrudServiceResponse(CrudStatus.Ok);
+                return new ServiceResponse(ServiceStatus.Ok);
 
             } catch (Exception ex)
             {
-                return new CrudServiceResponse(CrudStatus.Error).SetException(ex);
+                return new ServiceResponse(ServiceStatus.Error).SetException(ex);
             }
         }
 
-        public async Task<CrudServiceResponse> RemoveMemberFromProject(long projectId, string userId)
+        public async Task<ServiceResponse> RemoveMemberFromProject(long projectId, string userId)
         {
             try
             {
                 var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
                 if (existingMembership == null)
-                    return new CrudServiceResponse(CrudStatus.BadRequest, "Attempting to remove non-existing project membership");
+                    return new ServiceResponse(ServiceStatus.BadRequest, "Attempting to remove non-existing project membership");
 
                 await _projectMembershipRepository.RemoveMembership(existingMembership);
-                return new CrudServiceResponse(CrudStatus.Ok);
+                return new ServiceResponse(ServiceStatus.Ok);
 
             } catch (Exception ex)
             {
-                return new CrudServiceResponse(CrudStatus.Error).SetException(ex);
+                return new ServiceResponse(ServiceStatus.Error).SetException(ex);
             }
         }
 
-        public async Task<CrudServiceResponse<IEnumerable<ProjectDto>>> Get(string currentUserId)
+        public async Task<ServiceResponse<IEnumerable<ProjectDto>>> Get(string currentUserId)
         {
             try
             {
                 var projects = await _projectRepository.GetProjects(currentUserId);
                 var projectDtos = _mapper.Map<IEnumerable<ProjectDto>>(projects);
-                return new CrudServiceResponse<IEnumerable<ProjectDto>>(CrudStatus.Ok).SetData(projectDtos);
+                return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Ok).SetData(projectDtos);
             }
             catch (Exception ex)
             {
-                return new CrudServiceResponse<IEnumerable<ProjectDto>>(CrudStatus.Error);
+                return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Error);
             }
         }
     }

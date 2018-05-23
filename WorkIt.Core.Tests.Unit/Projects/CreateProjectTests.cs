@@ -57,7 +57,7 @@ namespace Core.Tests.Projects
             };
 
             var response = await groupService.Create(invalidGroupWithEmptyTitle, String.Empty);
-            Assert.Equal(CrudStatus.BadRequest, response.Status);
+            Assert.Equal(ServiceStatus.BadRequest, response.Status);
         }
 
         [Fact]

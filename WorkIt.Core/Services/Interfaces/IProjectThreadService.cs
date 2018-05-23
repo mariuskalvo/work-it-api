@@ -9,7 +9,7 @@ namespace Core.Services.Interfaces
 {
     public interface IProjectThreadService
     {
-        Task<CrudServiceResponse<ProjectThreadDto>> Create(CreateProjectThreadDto groupThread, string creatorUserId);
-        Task<CrudServiceResponse<IEnumerable<ProjectThreadDto>>> GetPagedByProjectId(long threadId, int page, int pageSize);
+        Task<ServiceResponse<ProjectThreadDto>> Create(CreateProjectThreadDto groupThread, string creatorUserId);
+        Task<ServiceResponse<IEnumerable<ProjectThreadDto>>> GetPagedByProjectId(long threadId, int page, int pageSize);
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WorkIt.Core.Constants
 {
-    public enum CrudStatus
+    public enum ServiceStatus
     {
         Ok,
         BadRequest,

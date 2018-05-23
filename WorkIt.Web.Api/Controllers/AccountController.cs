@@ -25,15 +25,15 @@ namespace WebApi.Controllers
         public async Task<IActionResult> CreateAccount(CreateAccountDto createAccountDto)
         {
             var response = await _accountService.CreateAccount(createAccountDto);
-            return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+            return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
         }
 
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             var response = await _accountService.IssueToken(loginDto);
-            if (response.Status != CrudStatus.Ok)
-                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+            if (response.Status != ServiceStatus.Ok)
+                return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
 
             return new OkObjectResult(response.Data);
         }
