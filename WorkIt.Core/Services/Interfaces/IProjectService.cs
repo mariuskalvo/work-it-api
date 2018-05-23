@@ -10,7 +10,7 @@ namespace Core.Services
 {
     public interface IProjectService
     {
-        Task<CrudServiceResponse<IEnumerable<ProjectDto>>> Get(int page, int pageSize);
+        Task<CrudServiceResponse<IEnumerable<ProjectDto>>> Get(string currentUserId);
         Task<CrudServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId);
         Task<CrudServiceResponse> AddMemberToProject(long projectId, string userId);
         Task<CrudServiceResponse> RemoveMemberFromProject(long projectId, string userId);

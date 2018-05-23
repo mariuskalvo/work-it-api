@@ -32,14 +32,19 @@ namespace WorkIt.Infrastructure.Repositories
             return await _dbContext.Projects.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Project>> GetProjects(int take, int skip)
+        public async Task<IEnumerable<Project>> GetProjects(string currentUserId)
         {
             var allEntities = await _dbContext.Projects.ToListAsync();
-            var entities = await _dbContext.Projects
-                                     .Skip(skip)
-                                     .Take(take)
-                                     .OrderByDescending(p => p.CreatedAt)
-                                     .ToListAsync();
+
+            var entities = await 
+                (from project in _dbContext.Projects
+                join projectMember in _dbContext.ProjectMembers
+                on project.Id equals projectMember.ProjectId
+                where projectMember.ApplicationUserId == currentUserId
+                orderby project.CreatedAt descending
+                select project
+                ).ToListAsync();
+
             return entities;
         }
 

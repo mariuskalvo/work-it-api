@@ -98,14 +98,11 @@ namespace Core.Services
             }
         }
 
-        public async Task<CrudServiceResponse<IEnumerable<ProjectDto>>> Get(int page, int pageSize)
+        public async Task<CrudServiceResponse<IEnumerable<ProjectDto>>> Get(string currentUserId)
         {
-            int actualPage = Math.Max(page - 1, 0);
-            int skip = actualPage * pageSize;
-
             try
             {
-                var projects = await _projectRepository.GetProjects(pageSize, skip);
+                var projects = await _projectRepository.GetProjects(currentUserId);
                 var projectDtos = _mapper.Map<IEnumerable<ProjectDto>>(projects);
                 return new CrudServiceResponse<IEnumerable<ProjectDto>>(CrudStatus.Ok).SetData(projectDtos);
             }

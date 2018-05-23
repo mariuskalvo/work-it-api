@@ -15,6 +15,7 @@ using WorkIt.Core.Interfaces.Repositories;
 using WorkIt.Infrastructure.DataAccess;
 using WorkIt.Core.Services.Interfaces;
 using Core.Services.Interfaces;
+using WorkIt.Core.Constants;
 
 namespace Core.Tests.Projects
 {
@@ -42,7 +43,7 @@ namespace Core.Tests.Projects
         }
 
         [Fact]
-        public async Task GroupWithNullOrEmptyName_ReturnsNull()
+        public async Task GroupWithNullOrEmptyName_ReturnsInvalidStatus()
         {
 
             var groupService = new ProjectService(_projectRepositoryMock.Object, 
@@ -55,8 +56,8 @@ namespace Core.Tests.Projects
                 Title = ""
             };
 
-            var result = await groupService.Create(invalidGroupWithEmptyTitle, String.Empty);
-            Assert.Null(result);
+            var response = await groupService.Create(invalidGroupWithEmptyTitle, String.Empty);
+            Assert.Equal(CrudStatus.BadRequest, response.Status);
         }
 
         [Fact]

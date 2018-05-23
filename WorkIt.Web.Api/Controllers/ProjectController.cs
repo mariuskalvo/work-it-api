@@ -13,41 +13,44 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WorkIt.Core;
 using WorkIt.Core.Constants;
+using WorkIt.Web.Api.Controllers;
 using WorkIt.Web.Api.Utils;
 
 namespace WebApi.Controllers
 {
     [Authorize]
     [Route("api/[controller]/[action]")]
-    public class ProjectController : Controller
+    public class ProjectController : BaseController
     {
         private readonly IProjectService _projectService;
-        private readonly IUserService _userService;
 
-        public ProjectController(IProjectService projectService, IUserService userService)
+        public ProjectController(IProjectService projectService, IUserService userService) : base(userService)
         {
             _projectService = projectService;
-            _userService = userService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int page = 1)
+        public async Task<IActionResult> Get()
         {
-            int pageSize = 10;
-            var projects = await _projectService.Get(page, pageSize);
+            var currentUserId = await GetCurrentUserIdAsync();
+            if (currentUserId == null)
+                return StatusCode(StatusCodes.Status401Unauthorized);
 
-            return new OkObjectResult(projects);
+            var response = await _projectService.Get(currentUserId);
+
+            if (response.Status != CrudStatus.Ok)
+                return StatusCode(CrudStatusMapper.MapCrudStatusToStatusCode(response.Status));
+
+            return new OkObjectResult(response.Data);
 
         }
         
         [HttpPost]
         public async Task<IActionResult> Create(CreateProjectDto createGroupDto)
         {
-            var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
-
+            var currentUserId = await GetCurrentUserIdAsync();
             if (currentUserId == null)
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status401Unauthorized);
 
             var response = await _projectService.Create(createGroupDto, currentUserId);
 
