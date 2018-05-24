@@ -46,7 +46,7 @@ namespace WebApi.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProjectDto createGroupDto)
+        public async Task<IActionResult> Create([FromBody] CreateProjectDto createGroupDto)
         {
             var currentUserId = await GetCurrentUserIdAsync();
             if (currentUserId == null)
