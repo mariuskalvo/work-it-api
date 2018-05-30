@@ -111,5 +111,18 @@ namespace Core.Services
                 return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Error);
             }
         }
+
+        public async Task<ServiceResponse<IEnumerable<ProjectDto>>> GetProjects()
+        {
+            try
+            {
+                var projects = await _projectRepository.GetProjects();
+                var projectDtos = _mapper.Map<IEnumerable<ProjectDto>>(projects);
+                return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Ok).SetData(projectDtos);
+            } catch (Exception ex)
+            {
+                return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Error);
+            }
+        }
     }
 }

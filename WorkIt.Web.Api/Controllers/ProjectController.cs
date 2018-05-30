@@ -43,7 +43,18 @@ namespace WebApi.Controllers
 
             return new OkObjectResult(response.Data);
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> GetProjects()
+        {
+            var response = await _projectService.GetProjects();
+
+            if (response.Status != ServiceStatus.Ok)
+                return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
+
+            return new OkObjectResult(response.Data);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProjectDto createGroupDto)
         {

@@ -48,6 +48,11 @@ namespace WorkIt.Infrastructure.Repositories
             return entities;
         }
 
+        public async Task<IEnumerable<Project>> GetProjects()
+        {
+            return await _dbContext.Projects.ToListAsync();
+        }
+
         public async Task<IEnumerable<Project>> GetProjectsWithUserMembership(string userId)
         {
             var projects = await (
