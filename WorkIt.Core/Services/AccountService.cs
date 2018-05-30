@@ -76,7 +76,7 @@ namespace Core.Services
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretsecretsecretsecretsecret"));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(1);
+            var expires = DateTime.Now.AddDays(365);
             var token = new JwtSecurityToken(
                 "http://localhost:55437",
                 "http://localhost:55437",
