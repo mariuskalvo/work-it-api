@@ -30,19 +30,18 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetProjectWithMembership()
         {
             var currentUserId = await GetCurrentUserIdAsync();
             if (currentUserId == null)
                 return StatusCode(StatusCodes.Status401Unauthorized);
 
-            var response = await _projectService.Get(currentUserId);
+            var response = await _projectService.GetMemberProjectsForUser(currentUserId);
 
             if (response.Status != ServiceStatus.Ok)
                 return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
 
             return new OkObjectResult(response.Data);
-
         }
         
         [HttpPost]

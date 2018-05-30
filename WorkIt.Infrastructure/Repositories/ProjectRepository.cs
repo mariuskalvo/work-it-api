@@ -32,7 +32,7 @@ namespace WorkIt.Infrastructure.Repositories
             return await _dbContext.Projects.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Project>> GetProjects(string currentUserId)
+        public async Task<IEnumerable<Project>> GetMemberProjectsForUser(string currentUserId)
         {
             var allEntities = await _dbContext.Projects.ToListAsync();
 

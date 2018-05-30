@@ -98,11 +98,11 @@ namespace Core.Services
             }
         }
 
-        public async Task<ServiceResponse<IEnumerable<ProjectDto>>> Get(string currentUserId)
+        public async Task<ServiceResponse<IEnumerable<ProjectDto>>> GetMemberProjectsForUser(string currentUserId)
         {
             try
             {
-                var projects = await _projectRepository.GetProjects(currentUserId);
+                var projects = await _projectRepository.GetMemberProjectsForUser(currentUserId);
                 var projectDtos = _mapper.Map<IEnumerable<ProjectDto>>(projects);
                 return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Ok).SetData(projectDtos);
             }
