@@ -37,22 +37,14 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
 
             var response = await _projectService.GetMemberProjectsForUser(currentUserId);
-
-            if (response.Status != ServiceStatus.Ok)
-                return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
-
-            return new OkObjectResult(response.Data);
+            return MapActionResultWithData(response);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetProjects()
         {
             var response = await _projectService.GetProjects();
-
-            if (response.Status != ServiceStatus.Ok)
-                return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
-
-            return new OkObjectResult(response.Data);
+            return MapActionResultWithData(response);
         }
 
         [HttpPost]
@@ -63,11 +55,7 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
 
             var response = await _projectService.Create(createGroupDto, currentUserId);
-
-            if (response.Status != ServiceStatus.Ok)
-                return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
-
-            return new OkObjectResult(response.Data);
+            return MapActionResultWithData(response);
         }
 
         [HttpPost]
