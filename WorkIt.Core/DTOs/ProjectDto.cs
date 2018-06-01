@@ -8,5 +8,6 @@ namespace Core.DTOS
     {
         public long Id { get; set; }
         public string Title { get; set; }
+        public bool IsUserMember { get; set; }
     }
 }

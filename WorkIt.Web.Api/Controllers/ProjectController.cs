@@ -43,7 +43,11 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProjects()
         {
-            var response = await _projectService.GetProjects();
+            var currentUserId = await GetCurrentUserIdAsync();
+            if (currentUserId == null)
+                return StatusCode(StatusCodes.Status401Unauthorized);
+
+            var response = await _projectService.GetProjects(currentUserId);
             return MapActionResultWithData(response);
         }
 

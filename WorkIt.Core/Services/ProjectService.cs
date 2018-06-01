@@ -112,12 +112,19 @@ namespace Core.Services
             }
         }
 
-        public async Task<ServiceResponse<IEnumerable<ProjectDto>>> GetProjects()
+        public async Task<ServiceResponse<IEnumerable<ProjectDto>>> GetProjects(string currentUserId)
         {
             try
             {
                 var projects = await _projectRepository.GetProjects();
-                var projectDtos = _mapper.Map<IEnumerable<ProjectDto>>(projects);
+                var projectsWithMembership = await _projectRepository.GetMemberProjectsForUser(currentUserId);
+
+                var projectsWithMembershipIds = projectsWithMembership.Select(p => p.Id);
+
+                var projectDtos = _mapper.Map<IEnumerable<ProjectDto>>(projects).ToList();
+
+                projectDtos.ForEach(p => p.IsUserMember = projectsWithMembershipIds.Contains(p.Id));
+
                 return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Ok).SetData(projectDtos);
             } catch (Exception ex)
             {

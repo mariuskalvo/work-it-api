@@ -8,7 +8,7 @@ using Core.Entities;
 
 namespace Core.AutoMapper
 {
-    class DomainProfile : Profile
+    public class DomainProfile : Profile
     {
         public DomainProfile()
         {
