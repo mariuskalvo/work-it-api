@@ -12,6 +12,10 @@ namespace Core.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
         public string Title { get; set; }
+
+        public bool IsOpenToJoin { get; set; }
+        public bool IsPubliclyVisible { get; set; }
+
         public IEnumerable<ProjectThread> Threads { get; set; }
         public IEnumerable<ApplicationUserOwnedProjects> Owners { get; set; }
         public IEnumerable<ApplicationUserProjectMember> Members { get; set; }
