@@ -21,8 +21,11 @@ namespace WorkIt.Core.Tests.Unit.Projects
         private Mock<IProjectMembershipRepository> _projectMembershipRepositoryMock;
         private Mock<IUserService> _userServiceMock;
         private readonly IMapper _mapper;
-
         private IProjectService _projectService;
+
+        private readonly IEnumerable<long> _openProjectIds = new List<long>() { 3, 4, 5 };
+        private readonly IEnumerable<long> _projectsWithMembershipIds = new List<long>() { 1, 3, 5 };
+        private readonly IEnumerable<long> _allProjectIds = new List<long>() { 1, 2, 3, 4, 5, 6 };
 
         public GetProjectsTests()
         {
@@ -53,8 +56,8 @@ namespace WorkIt.Core.Tests.Unit.Projects
             var userProjectIds = projects.Where(p => p.IsUserMember).Select(p => p.Id).ToList();
             var nonUserProjectIds = projects.Where(p => !p.IsUserMember).Select(p => p.Id).ToList();
 
-            Assert.Equal(new List<long>() { 1, 2, 3 }, userProjectIds);
-            Assert.Equal(new List<long>() { 4, 5, 6 }, nonUserProjectIds);
+            Assert.Equal(_projectsWithMembershipIds.OrderBy(p => p), userProjectIds.OrderBy(p => p));
+            Assert.Equal(new List<long>() { 2, 4, 6 }.OrderBy(p => p), nonUserProjectIds.OrderBy(p => p));
         }
 
         [Fact]
@@ -70,6 +73,36 @@ namespace WorkIt.Core.Tests.Unit.Projects
             Assert.Empty(userProjectIds.Intersect(nonUserProjectIds));
         }
 
+        [Fact]
+        public async Task GetProjects_ProjectsWithMembershipAreSortedFirst()
+        {
+            _projectService = SetupProjectService();
+            var response = await _projectService.GetProjects(It.IsAny<string>());
+
+            var projectsWithMembership = response.Data.TakeWhile(p => p.IsUserMember);
+            var restOfProjects = response.Data.SkipWhile(p => p.IsUserMember);
+
+            Assert.All(projectsWithMembership, p => Assert.True(p.IsUserMember));
+            Assert.All(restOfProjects, p => Assert.False(p.IsUserMember));
+        }
+
+        [Fact]
+        public async Task GetProjects_OpenProjectsAreSortedSecondly()
+        {
+            _projectService = SetupProjectService();
+            var response = await _projectService.GetProjects(It.IsAny<string>());
+
+            var projectsWithMembership = response.Data.TakeWhile(p => p.IsUserMember);
+
+            var projectsWithoutMembership = response.Data.Except(projectsWithMembership);
+
+            var openProjects = projectsWithoutMembership.TakeWhile(p => p.IsOpenToJoin);
+            var restOfProjects = projectsWithoutMembership.SkipWhile(p => p.IsOpenToJoin);
+
+            Assert.All(openProjects, p => Assert.True(p.IsOpenToJoin));
+            Assert.All(restOfProjects, p => Assert.False(p.IsOpenToJoin));
+        }
+
         #region Helpers
 
         private IProjectService SetupProjectService()
@@ -81,14 +114,22 @@ namespace WorkIt.Core.Tests.Unit.Projects
         }
         private IEnumerable<Project> SetupMemberProjects()
         {
-            var projectIds = new List<int>() { 1, 2, 3 };
-            return projectIds.Select(pId => new Project() { Id = pId, Title = pId.ToString() });
+            return _projectsWithMembershipIds.Select(pId => new Project()
+            {
+                Id = pId,
+                Title = pId.ToString(),
+                IsOpenToJoin = _openProjectIds.Contains(pId)
+            });
         }
 
         private IEnumerable<Project> SetupProjects()
         {
-            var projectIds = new List<int>() { 1, 2, 3, 4, 5, 6 };
-            return projectIds.Select(pId => new Project() { Id = pId, Title = pId.ToString() });
+            return _allProjectIds.Select(pId => new Project()
+            {
+                Id = pId,
+                Title = pId.ToString(),
+                IsOpenToJoin = _openProjectIds.Contains(pId)
+            });
         }
         #endregion
 

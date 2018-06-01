@@ -16,6 +16,7 @@ using WorkIt.Core.DTOs;
 using WorkIt.Core.Entities;
 using WorkIt.Core.Interfaces.Repositories;
 using WorkIt.Core.Services.Interfaces;
+using WorkIt.Core.Utils;
 
 namespace Core.Services
 {
@@ -117,13 +118,14 @@ namespace Core.Services
             try
             {
                 var projects = await _projectRepository.GetProjects();
-                var projectsWithMembership = await _projectRepository.GetMemberProjectsForUser(currentUserId);
 
+                var projectsWithMembership = await _projectRepository.GetMemberProjectsForUser(currentUserId);
                 var projectsWithMembershipIds = projectsWithMembership.Select(p => p.Id);
 
                 var projectDtos = _mapper.Map<IEnumerable<ProjectDto>>(projects).ToList();
 
                 projectDtos.ForEach(p => p.IsUserMember = projectsWithMembershipIds.Contains(p.Id));
+                projectDtos.Sort(new ProjectDtoSortComparer());
 
                 return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Ok).SetData(projectDtos);
             } catch (Exception ex)
