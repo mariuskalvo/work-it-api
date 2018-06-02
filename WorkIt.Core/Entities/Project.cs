@@ -24,5 +24,6 @@ namespace Core.Entities
         public ApplicationUser CreatedBy { get; set; }
 
         public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
     }
 }
