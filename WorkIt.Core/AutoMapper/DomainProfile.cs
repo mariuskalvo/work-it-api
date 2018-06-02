@@ -5,6 +5,7 @@ using AutoMapper;
 using Core.DTOs;
 using Core.DTOS;
 using Core.Entities;
+using WorkIt.Core.DTOs;
 
 namespace Core.AutoMapper
 {
@@ -14,6 +15,7 @@ namespace Core.AutoMapper
         {
             CreateMap<CreateProjectDto, Project>();
             CreateMap<Project, ProjectDto>().ReverseMap();
+            CreateMap<Project, RecentlyUpdatedProjectDto>().ReverseMap();
 
             CreateMap<CreateProjectThreadDto, ProjectThread>();
             CreateMap<ProjectThread, ProjectThreadDto>().ReverseMap();

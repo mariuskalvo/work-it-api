@@ -134,16 +134,16 @@ namespace Core.Services
             }
         }
 
-        public async Task<ServiceResponse<IEnumerable<ProjectDto>>> GetLastUpdatedProjects(string currentUserId, int limit)
+        public async Task<ServiceResponse<IEnumerable<RecentlyUpdatedProjectDto>>> GetLastUpdatedProjects(string currentUserId, int limit)
         {
             try
             {
                 var entities = await _projectRepository.GetLastUpdatedUserProjects(currentUserId, limit);
-                var dtos = _mapper.Map<IEnumerable<ProjectDto>>(entities);
-                return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Ok).SetData(dtos);
+                var dtos = _mapper.Map<IEnumerable<RecentlyUpdatedProjectDto>>(entities);
+                return new ServiceResponse<IEnumerable<RecentlyUpdatedProjectDto>>(ServiceStatus.Ok).SetData(dtos);
             } catch (Exception)
             {
-                return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Error);
+                return new ServiceResponse<IEnumerable<RecentlyUpdatedProjectDto>>(ServiceStatus.Error);
             }
         }
     }
