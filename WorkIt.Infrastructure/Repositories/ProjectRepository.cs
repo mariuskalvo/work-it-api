@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using WorkIt.Core.Entities;
 using WorkIt.Core.Interfaces.Repositories;
 using WorkIt.Infrastructure.DataAccess;
 
@@ -32,10 +31,24 @@ namespace WorkIt.Infrastructure.Repositories
             return await _dbContext.Projects.FindAsync(id);
         }
 
+        public async Task<IEnumerable<Project>> GetLastUpdatedUserProjects(string currentUserId, int limit)
+        {
+            var entities = await
+                (from project in _dbContext.Projects
+                 join projectMember in _dbContext.ProjectMembers
+                 on project.Id equals projectMember.ProjectId
+                 where projectMember.ApplicationUserId == currentUserId
+                 orderby project.ModifiedAt descending
+                 select project
+                )
+                .Take(limit)
+                .ToListAsync();
+
+            return entities;
+        }
+
         public async Task<IEnumerable<Project>> GetMemberProjectsForUser(string currentUserId)
         {
-            var allEntities = await _dbContext.Projects.ToListAsync();
-
             var entities = await 
                 (from project in _dbContext.Projects
                 join projectMember in _dbContext.ProjectMembers

@@ -24,6 +24,10 @@ namespace WorkIt.Web.Api.Controllers
         {
             var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
+
+            if (currentUserId == null)
+                throw new UnauthorizedAccessException();
+
             return currentUserId;
         }
 

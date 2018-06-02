@@ -133,5 +133,18 @@ namespace Core.Services
                 return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Error);
             }
         }
+
+        public async Task<ServiceResponse<IEnumerable<ProjectDto>>> GetLastUpdatedProjects(string currentUserId, int limit)
+        {
+            try
+            {
+                var entities = await _projectRepository.GetLastUpdatedUserProjects(currentUserId, limit);
+                var dtos = _mapper.Map<IEnumerable<ProjectDto>>(entities);
+                return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Ok).SetData(dtos);
+            } catch (Exception)
+            {
+                return new ServiceResponse<IEnumerable<ProjectDto>>(ServiceStatus.Error);
+            }
+        }
     }
 }

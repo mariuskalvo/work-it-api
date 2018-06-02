@@ -51,6 +51,17 @@ namespace WebApi.Controllers
             return MapActionResultWithData(response);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetLastUpdatedUserProjects()
+        {
+            var currentUserId = await GetCurrentUserIdAsync();
+
+            var numberOfProjects = 4;
+            var response = await _projectService.GetLastUpdatedProjects(currentUserId, numberOfProjects);
+
+            return MapActionResultWithData(response);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProjectDto createGroupDto)
         {

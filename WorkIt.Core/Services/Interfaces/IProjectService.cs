@@ -12,6 +12,8 @@ namespace Core.Services
     {
         Task<ServiceResponse<IEnumerable<ProjectDto>>> GetMemberProjectsForUser(string currentUserId);
         Task<ServiceResponse<IEnumerable<ProjectDto>>> GetProjects(string currentUserId);
+        Task<ServiceResponse<IEnumerable<ProjectDto>>> GetLastUpdatedProjects(string currentUserId, int limit);
+
         Task<ServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId);
         Task<ServiceResponse> AddMemberToProject(long projectId, string userId);
         Task<ServiceResponse> RemoveMemberFromProject(long projectId, string userId);
