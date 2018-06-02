@@ -52,20 +52,5 @@ namespace WorkIt.Infrastructure.Repositories
         {
             return await _dbContext.Projects.ToListAsync();
         }
-
-        public async Task<IEnumerable<Project>> GetProjectsWithUserMembership(string userId)
-        {
-            var projects = await (
-                 from project in _dbContext.Projects
-                 join projectMember in _dbContext.ProjectMembers
-                 on project.Id equals projectMember.ProjectId
-                 where projectMember.ApplicationUserId == userId
-                 select project
-            ).ToListAsync();
-
-            return projects;
-        }
-
-
     }
 }
