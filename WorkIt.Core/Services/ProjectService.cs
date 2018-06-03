@@ -49,6 +49,8 @@ namespace Core.Services
             var entityToAdd = _mapper.Map<Project>(createGroupDto);
 
             entityToAdd.CreatedAt = DateTime.Now;
+            entityToAdd.ModifiedAt = DateTime.Now;
+
             entityToAdd.CreatedById = applicationUserId;
 
             var addedEntity = await _projectRepository.Create(entityToAdd);
@@ -141,6 +143,7 @@ namespace Core.Services
                 var entities = await _projectRepository.GetLastUpdatedUserProjects(currentUserId, limit);
                 var dtos = _mapper.Map<IEnumerable<RecentlyUpdatedProjectDto>>(entities);
                 return new ServiceResponse<IEnumerable<RecentlyUpdatedProjectDto>>(ServiceStatus.Ok).SetData(dtos);
+
             } catch (Exception)
             {
                 return new ServiceResponse<IEnumerable<RecentlyUpdatedProjectDto>>(ServiceStatus.Error);
