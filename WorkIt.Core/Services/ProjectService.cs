@@ -59,11 +59,15 @@ namespace Core.Services
             return new ServiceResponse<ProjectDto>(ServiceStatus.Ok).SetData(projectDto);
         }
 
-        public async Task<ServiceResponse> AddMemberToProject(long projectId, string userId)
+        public async Task<ServiceResponse> AddMemberToProject(string currentUserId, long projectId, string userIdToBeAdded)
         {
             try
             {
-                var user = await _userService.GetUserById(userId);
+                var userProjectOwnership = await _projectRepository.GetProjectsOwnership(currentUserId, projectId);
+                if (userProjectOwnership == null)
+                    return new ServiceResponse(ServiceStatus.Unauthorized);
+
+                var user = await _userService.GetUserById(userIdToBeAdded);
                 if (user == null)
                     return new ServiceResponse(ServiceStatus.BadRequest);
 
@@ -71,11 +75,11 @@ namespace Core.Services
                 if (project == null)
                     return new ServiceResponse(ServiceStatus.BadRequest);
 
-                var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
+                var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userIdToBeAdded);
                 if (existingMembership != null)
                     return new ServiceResponse(ServiceStatus.BadRequest);
 
-                await _projectMembershipRepository.AddMemberToProject(userId, projectId);
+                await _projectMembershipRepository.AddMemberToProject(userIdToBeAdded, projectId);
                 return new ServiceResponse(ServiceStatus.Ok);
 
             } catch (Exception ex)

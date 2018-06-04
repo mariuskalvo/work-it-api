@@ -10,9 +10,9 @@ namespace WorkIt.Core.Interfaces.Repositories
     {
         Task<Project> Create(Project project);
         Task<Project> GetById(long id);
-
         Task<IEnumerable<Project>> GetMemberProjectsForUser(string currentUserId);
         Task<IEnumerable<Project>> GetLastUpdatedUserProjects(string currentUserId, int limit);
         Task<IEnumerable<Project>> GetProjects();
+        Task<ApplicationUserOwnedProjects> GetProjectsOwnership(string currentUserId, long projectId);
     }
 }

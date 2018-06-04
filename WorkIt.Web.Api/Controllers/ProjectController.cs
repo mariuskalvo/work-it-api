@@ -76,18 +76,15 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddMember([FromBody] ProjectMembershipDto projectMembership)
         {
-            var response = await _projectService.AddMemberToProject(projectMembership.ProjectId, 
-                                                                    projectMembership.UserId);
-
+            var currentUserId = await GetCurrentUserIdAsync();
+            var response = await _projectService.AddMemberToProject(currentUserId, projectMembership.ProjectId, projectMembership.UserId);
             return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
         }
 
         [HttpDelete]
         public async Task<IActionResult> RemoveMember(ProjectMembershipDto projectMembership)
         {
-            var response = await _projectService.RemoveMemberFromProject(projectMembership.ProjectId,
-                                                                         projectMembership.UserId);
-
+            var response = await _projectService.RemoveMemberFromProject(projectMembership.ProjectId,projectMembership.UserId);
             return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
         }
     }

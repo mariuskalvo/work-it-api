@@ -16,6 +16,8 @@ namespace WorkIt.Infrastructure.DataAccess
         public virtual DbSet<ThreadEntryReaction> ThreadEntryReactions { get; set; }
 
         public virtual DbSet<ApplicationUserProjectMember> ProjectMembers { get; set; }
+        public virtual DbSet<ApplicationUserOwnedProjects> ProjectOwners { get; set; }
+
 
 
         public AppDbContext() { }

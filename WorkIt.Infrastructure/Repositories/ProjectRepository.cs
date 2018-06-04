@@ -65,5 +65,12 @@ namespace WorkIt.Infrastructure.Repositories
         {
             return await _dbContext.Projects.ToListAsync();
         }
+
+        public async Task<ApplicationUserOwnedProjects> GetProjectsOwnership(string currentUserId, long projectId)
+        {
+            return await _dbContext.ProjectOwners
+                            .Where(po => po.ApplicationUserId == currentUserId && po.ProjectId == projectId)
+                            .FirstOrDefaultAsync();
+        }
     }
 }
