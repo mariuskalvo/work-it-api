@@ -19,7 +19,7 @@ using WorkIt.Web.Api.Utils;
 namespace WebApi.Controllers
 {
     [Authorize]
-    [Route("api/[controller]/[action]")]
+    [Route("api/projects")]
     public class ProjectController : BaseController
     {
         private readonly IProjectService _projectService;
@@ -29,7 +29,7 @@ namespace WebApi.Controllers
             _projectService = projectService;
         }
 
-        [HttpGet]
+        [HttpGet("memberships")]
         public async Task<IActionResult> GetProjectWithMembership()
         {
             var currentUserId = await GetCurrentUserIdAsync();
@@ -51,10 +51,12 @@ namespace WebApi.Controllers
             return MapActionResultWithData(response);
         }
 
-        [HttpGet]
+        [HttpGet("recent")]
         public async Task<IActionResult> GetLastUpdatedUserProjects()
         {
             var currentUserId = await GetCurrentUserIdAsync();
+            if (currentUserId == null)
+                return StatusCode(StatusCodes.Status401Unauthorized);
 
             var numberOfProjects = 4;
             var response = await _projectService.GetLastUpdatedProjects(currentUserId, numberOfProjects);
@@ -73,17 +75,24 @@ namespace WebApi.Controllers
             return MapActionResultWithData(response);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddMember([FromBody] ProjectMembershipDto projectMembership)
+        [HttpPost("{projectId}/members")]
+        public async Task<IActionResult> AddMember(long projectId, [FromBody] ProjectMembershipDto projectMembership)
         {
             var currentUserId = await GetCurrentUserIdAsync();
+            if (currentUserId == null)
+                return StatusCode(StatusCodes.Status401Unauthorized);
+
             var response = await _projectService.AddMemberToProject(currentUserId, projectMembership.ProjectId, projectMembership.UserId);
             return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
         }
 
-        [HttpDelete]
+        [HttpDelete("{projectId}/members")]
         public async Task<IActionResult> RemoveMember(ProjectMembershipDto projectMembership)
         {
+            var currentUserId = await GetCurrentUserIdAsync();
+            if (currentUserId == null)
+                return StatusCode(StatusCodes.Status401Unauthorized);
+
             var response = await _projectService.RemoveMemberFromProject(projectMembership.ProjectId,projectMembership.UserId);
             return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
         }
