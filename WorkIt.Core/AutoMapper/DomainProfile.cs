@@ -17,6 +17,9 @@ namespace Core.AutoMapper
             CreateMap<Project, ProjectDto>().ReverseMap();
             CreateMap<Project, RecentlyUpdatedProjectDto>().ReverseMap();
 
+            CreateMap<Project, DetailedProjectListEntryDto>()
+                .ForMember(p => p.CreatedBy, opt => opt.MapFrom(projectEntity => projectEntity.CreatedBy.Email));
+
             CreateMap<CreateProjectThreadDto, ProjectThread>();
             CreateMap<ProjectThread, ProjectThreadDto>().ReverseMap();
 

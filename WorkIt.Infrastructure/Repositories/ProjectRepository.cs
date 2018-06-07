@@ -66,6 +66,14 @@ namespace WorkIt.Infrastructure.Repositories
             return await _dbContext.Projects.ToListAsync();
         }
 
+        public async Task<IEnumerable<Project>> GetDetailedProjects()
+        {
+            return await _dbContext
+                .Projects
+                .Include(p => p.CreatedBy)
+                .ToListAsync();
+        }
+
         public async Task<ApplicationUserOwnedProjects> GetProjectsOwnership(string currentUserId, long projectId)
         {
             return await _dbContext.ProjectOwners

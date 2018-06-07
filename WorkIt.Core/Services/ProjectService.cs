@@ -153,5 +153,24 @@ namespace Core.Services
                 return new ServiceResponse<IEnumerable<RecentlyUpdatedProjectDto>>(ServiceStatus.Error);
             }
         }
+
+        public async Task<ServiceResponse<IEnumerable<DetailedProjectListEntryDto>>> GetDetailedProjects(string currentUserId)
+        {
+            try
+            {
+                var entities = await _projectRepository.GetProjects();
+                var projectsWithMembership = await _projectRepository.GetMemberProjectsForUser(currentUserId);
+                var projectsWithMembershipIds = projectsWithMembership.Select(p => p.Id);
+
+                var dtos = _mapper.Map<IEnumerable<DetailedProjectListEntryDto>>(entities).ToList();
+                dtos.ForEach(p => p.IsUserMember = projectsWithMembershipIds.Contains(p.Id));
+
+                return new ServiceResponse<IEnumerable<DetailedProjectListEntryDto>>(ServiceStatus.Ok).SetData(dtos);
+            }
+            catch (Exception)
+            {
+                return new ServiceResponse<IEnumerable<DetailedProjectListEntryDto>>(ServiceStatus.Error);
+            }
+        }
     }
 }
