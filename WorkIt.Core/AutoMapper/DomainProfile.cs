@@ -13,14 +13,16 @@ namespace Core.AutoMapper
     {
         public DomainProfile()
         {
-            CreateMap<CreateProjectDto, Project>();
+            CreateMap<CreateProjectDto, Project>()
+                .ForMember(p => p.IsOpenToJoin, opt => opt.MapFrom(entity => !entity.RequiresInvitation))
+                .ForMember(p => p.IsPubliclyVisible, opt => opt.MapFrom(entity => entity.PubliclyVisible));
+
             CreateMap<Project, ProjectDto>().ReverseMap();
             CreateMap<Project, RecentlyUpdatedProjectDto>().ReverseMap();
 
             CreateMap<Project, DetailedProjectListEntryDto>()
                 .ForMember(p => p.CreatedBy, opt => opt.MapFrom(projectEntity => projectEntity.CreatedBy.Email));
 
-            CreateMap<CreateProjectThreadDto, ProjectThread>();
             CreateMap<ProjectThread, ProjectThreadDto>().ReverseMap();
 
             CreateMap<CreateThreadEntryDto, ThreadEntry>();

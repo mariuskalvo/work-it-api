@@ -11,9 +11,10 @@ using WorkIt.Infrastructure.DataAccess;
 namespace Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180609210341_AddedDescriptionAndProjectOwnerToProject")]
+    partial class AddedDescriptionAndProjectOwnerToProject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
