@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
 using Core.DTOs;
-using Core.Entities;
 using WorkIt.Core.DTOs;
 using WorkIt.Core.DTOs.Project;
+using WorkIt.Core.Entities;
 
 namespace Core.AutoMapper
 {
@@ -19,6 +19,9 @@ namespace Core.AutoMapper
 
             CreateMap<Project, ProjectDto>().ReverseMap();
             CreateMap<Project, RecentlyUpdatedProjectDto>().ReverseMap();
+
+            CreateMap<Project, ProjectDetailsDto>()
+                .ForMember(p => p.CreatedBy, opt => opt.MapFrom(projectEntity => projectEntity.CreatedBy.Email));
 
             CreateMap<Project, DetailedProjectListEntryDto>()
                 .ForMember(p => p.CreatedBy, opt => opt.MapFrom(projectEntity => projectEntity.CreatedBy.Email));

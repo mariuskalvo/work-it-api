@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using WorkIt.Core.Entities;
 
-namespace Core.Entities
+namespace WorkIt.Core.Entities
 {
     public class ApplicationUser : IdentityUser
     {

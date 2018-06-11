@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.DTOs;
-using Core.Entities;
 using Core.Services.Interfaces;
 using WorkIt.Core.Constants;
 using WorkIt.Core.DTOs;
+using WorkIt.Core.Entities;
 using WorkIt.Core.Interfaces.Repositories;
 
 namespace Core.Services

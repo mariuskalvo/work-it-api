@@ -6,13 +6,13 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Core.DTOs;
-using Core.Entities;
 using Core.Services.Interfaces;
 using Core.Validators;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using WorkIt.Core.Constants;
 using WorkIt.Core.DTOs;
+using WorkIt.Core.Entities;
 
 namespace Core.Services
 {

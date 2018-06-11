@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,18 +41,25 @@ namespace WorkIt.Infrastructure.Repositories
             return _dbContext.ProjectMembers.FindAsync(userId, projectId);
         }
 
-        public async Task<IEnumerable<ApplicationUserProjectMember>> GetProjectMemberships(string userId)
-        {
-            return await _dbContext.ProjectMembers.Where(pm => pm.ApplicationUserId == userId)
-                                                  .Include(pm => pm.Project)
-                                                  .ToListAsync();
-        }
-
         public async Task<IEnumerable<ApplicationUserProjectMember>> GetProjectMembershipsByUserId(string userId)
         {
             return await _dbContext.ProjectMembers.Where(pm => pm.ApplicationUserId == userId)
                                       .Include(pm => pm.ApplicationUser)
                                       .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ApplicationUserProjectMember>> GetProjectMembershipsByProjectId(long projectId)
+        {
+            return await _dbContext.ProjectMembers.Where(pm => pm.ProjectId == projectId)
+                                                  .Include(pm => pm.ApplicationUser)
+                                                  .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ApplicationUserOwnedProjects>> GetProjectOwnersByProjectId(long projectId)
+        {
+            return await _dbContext.ProjectOwners.Where(po => po.ProjectId == projectId)
+                                    .Include(po => po.ApplicationUser)
+                                    .ToListAsync();
         }
     }
 }

@@ -50,6 +50,17 @@ namespace WebApi.Controllers
             return MapActionResultWithData(response);
         }
 
+        [HttpGet("{projectId}")]
+        public async Task<IActionResult> GetProjectDetailsById(long projectId)
+        {
+            var currentUserId = await GetCurrentUserIdAsync();
+            if (currentUserId == null)
+                return StatusCode(StatusCodes.Status401Unauthorized);
+
+            var response = await _projectService.GetProjectDetailsByProjectId(projectId, currentUserId);
+            return MapActionResultWithData(response);
+        }
+
         [HttpGet("detailedprojects")]
         public async Task<IActionResult> GetDetailedProjects()
         {

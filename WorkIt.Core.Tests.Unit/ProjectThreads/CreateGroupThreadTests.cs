@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
 using Core.DTOs;
-using Core.Entities;
 using Core.Exceptions;
 using Core.Services;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +11,7 @@ using Xunit;
 using WorkIt.Infrastructure.DataAccess;
 using System.Threading.Tasks;
 using WorkIt.Core.Interfaces.Repositories;
+using WorkIt.Core.Entities;
 
 namespace Core.Tests.ProjectThreads
 {

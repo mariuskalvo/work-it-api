@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.DTOs;
-using Core.Entities;
 using Core.Exceptions;
 using Core.Services.Interfaces;
 using Core.Validators;
@@ -171,6 +170,27 @@ namespace Core.Services
             {
                 return new ServiceResponse<IEnumerable<DetailedProjectListEntryDto>>(ServiceStatus.Error);
             }
+        }
+
+        public async Task<ServiceResponse<ProjectDetailsDto>> GetProjectDetailsByProjectId(long projectId, string userId)
+        {
+            var projectMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
+            var project = await _projectRepository.GetById(projectId);
+
+            if (projectMembership == null && !project.IsPubliclyVisible)
+            {
+                return new ServiceResponse<ProjectDetailsDto>(ServiceStatus.Unauthorized);
+            }
+
+            var projectOwnerships = await _projectMembershipRepository.GetProjectOwnersByProjectId(projectId);
+            var projectMemberships = await _projectMembershipRepository.GetProjectMembershipsByProjectId(projectId);
+
+            var projectOwners = projectOwnerships.Select(po => po.ApplicationUser);
+            var projectMembers = projectMemberships.Select(pm => pm.ApplicationUser);
+
+            var projectDetailsDto = _mapper.Map<ProjectDetailsDto>(project);
+
+            return new ServiceResponse<ProjectDetailsDto>(ServiceStatus.Ok).SetData(projectDetailsDto);
         }
     }
 }

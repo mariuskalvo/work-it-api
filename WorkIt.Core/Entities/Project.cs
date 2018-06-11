@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WorkIt.Core.Entities;
 
-namespace Core.Entities
+namespace WorkIt.Core.Entities
 {
     public class Project
     {

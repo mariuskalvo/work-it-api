@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Core.Entities
+namespace WorkIt.Core.Entities
 {
     public class ProjectThread
     {

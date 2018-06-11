@@ -13,7 +13,6 @@ using Swashbuckle.AspNetCore.Swagger;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Core.Services.Interfaces;
-using Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +23,7 @@ using WorkIt.Infrastructure.Repositories;
 using WorkIt.Infrastructure.DataAccess;
 using WorkIt.Core.Services.Interfaces;
 using Newtonsoft.Json.Serialization;
+using WorkIt.Core.Entities;
 
 namespace WebApi
 {
