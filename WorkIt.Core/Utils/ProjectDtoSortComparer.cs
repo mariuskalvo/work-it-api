@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Core.DTOS;
+using WorkIt.Core.DTOs.Project;
 
 namespace WorkIt.Core.Utils
 {

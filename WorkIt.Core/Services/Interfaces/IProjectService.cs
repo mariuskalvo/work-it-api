@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Core.DTOs;
-using Core.DTOS;
 using WorkIt.Core.DTOs;
+using WorkIt.Core.DTOs.Project;
 
 namespace Core.Services
 {

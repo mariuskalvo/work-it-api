@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
 using Core.DTOs;
-using Core.DTOS;
 using Core.Entities;
 using Core.Exceptions;
 using Core.Services;
@@ -16,6 +15,7 @@ using WorkIt.Infrastructure.DataAccess;
 using WorkIt.Core.Services.Interfaces;
 using Core.Services.Interfaces;
 using WorkIt.Core.Constants;
+using WorkIt.Core.DTOs.Project;
 
 namespace Core.Tests.Projects
 {

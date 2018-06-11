@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
 using Core.DTOs;
-using Core.DTOS;
 using Core.Entities;
 using WorkIt.Core.DTOs;
+using WorkIt.Core.DTOs.Project;
 
 namespace Core.AutoMapper
 {
