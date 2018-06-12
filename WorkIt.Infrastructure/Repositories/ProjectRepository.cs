@@ -37,7 +37,8 @@ namespace WorkIt.Infrastructure.Repositories
                 (from project in _dbContext.Projects
                  join projectMember in _dbContext.ProjectMembers
                  on project.Id equals projectMember.ProjectId
-                 where projectMember.ApplicationUserId == currentUserId
+                 join user in _dbContext.UserInfos on projectMember.UserInfoId equals user.Id
+                 where user.OpenIdSub == currentUserId
                  orderby project.ModifiedAt descending
                  select project
                 )
@@ -47,14 +48,15 @@ namespace WorkIt.Infrastructure.Repositories
             return entities;
         }
 
-        public async Task<IEnumerable<Project>> GetMemberProjectsForUser(string currentUserId)
+        public async Task<IEnumerable<Project>> GetMemberProjectsForUser(string userId)
         {
             var entities = await 
                 (from project in _dbContext.Projects
                 join projectMember in _dbContext.ProjectMembers
                 on project.Id equals projectMember.ProjectId
-                where projectMember.ApplicationUserId == currentUserId
-                orderby project.CreatedAt descending
+                 join user in _dbContext.UserInfos on projectMember.UserInfoId equals user.Id
+                 where user.OpenIdSub == userId
+                 orderby project.CreatedAt descending
                 select project
                 ).ToListAsync();
 
@@ -74,10 +76,10 @@ namespace WorkIt.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<ApplicationUserOwnedProjects> GetProjectsOwnership(string currentUserId, long projectId)
+        public async Task<ApplicationUserOwnedProjects> GetProjectsOwnership(string userId, long projectId)
         {
-            return await _dbContext.ProjectOwners
-                            .Where(po => po.ApplicationUserId == currentUserId && po.ProjectId == projectId)
+            return await _dbContext.ProjectOwners.Include(p => p.UserInfo)
+                            .Where(po => po.UserInfo.OpenIdSub == userId && po.ProjectId == projectId)
                             .FirstOrDefaultAsync();
         }
     }

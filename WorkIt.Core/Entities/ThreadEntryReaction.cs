@@ -16,7 +16,7 @@ namespace WorkIt.Core.Entities
         public long ThreadEntryId { get; set; }
         public string ReactionTag { get; set; }
 
-        public ApplicationUser CreatedBy { get; set; }
+        public UserInfo CreatedBy { get; set; }
         public string CreatedById { get; set; }
     }
 }

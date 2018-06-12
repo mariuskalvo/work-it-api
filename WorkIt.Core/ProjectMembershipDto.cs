@@ -6,7 +6,7 @@ namespace WorkIt.Core
 {
     public class ProjectMembershipDto
     {
-        public string UserId { get; set; }
+        public long UserId { get; set; }
         public long ProjectId { get; set; }
     }
 }

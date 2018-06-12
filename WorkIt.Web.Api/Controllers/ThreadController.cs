@@ -29,8 +29,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Create(CreateProjectThreadDto thread)
         {
             var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
-            var response = await _projectThreadService.Create(thread, currentUserId);
+            var response = await _projectThreadService.Create(thread, jwtUserSubject);
 
             if (response.Status != ServiceStatus.Ok)
                 return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));

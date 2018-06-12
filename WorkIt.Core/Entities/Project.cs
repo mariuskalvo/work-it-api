@@ -22,7 +22,7 @@ namespace WorkIt.Core.Entities
         public IEnumerable<ApplicationUserProjectMember> Members { get; set; }
 
         public string CreatedById { get; set; }
-        public ApplicationUser CreatedBy { get; set; }
+        public UserInfo CreatedBy { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }

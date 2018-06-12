@@ -9,7 +9,7 @@ namespace Core.Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<ServiceResponse> CreateAccount(CreateAccountDto createAccount);
-        Task<ServiceResponse<string>> IssueToken(LoginDto loginDto);
+        //Task<ServiceResponse> CreateAccount(CreateAccountDto createAccount);
+        //Task<ServiceResponse<string>> IssueToken(LoginDto loginDto);
     }
 }

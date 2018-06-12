@@ -20,7 +20,7 @@ namespace WorkIt.Core.Entities
 
         public DateTime CreatedAt { get; set; }
 
-        public ApplicationUser CreatedBy { get; set; }
+        public UserInfo CreatedBy { get; set; }
         public string CreatedById { get; set; }
 
     }

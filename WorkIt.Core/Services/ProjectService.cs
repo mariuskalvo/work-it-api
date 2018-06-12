@@ -25,9 +25,11 @@ namespace Core.Services
         private readonly IProjectRepository _projectRepository;
         private readonly IProjectMembershipRepository _projectMembershipRepository;
         private readonly IUserService _userService;
+        private readonly IUserInfoRepository _userInfoRepository;
 
         public ProjectService(IProjectRepository projectRepository, 
                               IProjectMembershipRepository projectMembershipRepository,
+                              IUserInfoRepository userInfoRepository,
                               IUserService userService,
                               IMapper mapper)
         {
@@ -35,6 +37,7 @@ namespace Core.Services
             _projectRepository = projectRepository;
             _projectMembershipRepository = projectMembershipRepository;
             _userService = userService;
+            _userInfoRepository = userInfoRepository;
         }
 
         public async Task<ServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId)
@@ -58,17 +61,13 @@ namespace Core.Services
             return new ServiceResponse<ProjectDto>(ServiceStatus.Ok).SetData(projectDto);
         }
 
-        public async Task<ServiceResponse> AddMemberToProject(string currentUserId, long projectId, string userIdToBeAdded)
+        public async Task<ServiceResponse> AddMemberToProject(string currentUserId, long projectId, long userIdToBeAdded)
         {
             try
             {
                 var userProjectOwnership = await _projectRepository.GetProjectsOwnership(currentUserId, projectId);
                 if (userProjectOwnership == null)
                     return new ServiceResponse(ServiceStatus.Unauthorized);
-
-                var user = await _userService.GetUserById(userIdToBeAdded);
-                if (user == null)
-                    return new ServiceResponse(ServiceStatus.BadRequest);
 
                 var project = await _projectRepository.GetById(projectId);
                 if (project == null)
@@ -87,7 +86,7 @@ namespace Core.Services
             }
         }
 
-        public async Task<ServiceResponse> RemoveMemberFromProject(long projectId, string userId)
+        public async Task<ServiceResponse> RemoveMemberFromProject(long projectId, long userId)
         {
             try
             {
@@ -174,7 +173,13 @@ namespace Core.Services
 
         public async Task<ServiceResponse<ProjectDetailsDto>> GetProjectDetailsByProjectId(long projectId, string userId)
         {
-            var projectMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
+            var userInfo = _userInfoRepository.GetUserInfoByOpenIdSub(userId);
+            if (userInfo == null)
+            {
+                return new ServiceResponse<ProjectDetailsDto>(ServiceStatus.BadRequest);
+            }
+
+            var projectMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userInfo.Id);
             var project = await _projectRepository.GetById(projectId);
 
             if (projectMembership == null && !project.IsPubliclyVisible)
@@ -185,8 +190,8 @@ namespace Core.Services
             var projectOwnerships = await _projectMembershipRepository.GetProjectOwnersByProjectId(projectId);
             var projectMemberships = await _projectMembershipRepository.GetProjectMembershipsByProjectId(projectId);
 
-            var projectOwners = projectOwnerships.Select(po => po.ApplicationUser);
-            var projectMembers = projectMemberships.Select(pm => pm.ApplicationUser);
+            var projectOwners = projectOwnerships.Select(po => po.UserInfo);
+            var projectMembers = projectMemberships.Select(pm => pm.UserInfo);
 
             var projectDetailsDto = _mapper.Map<ProjectDetailsDto>(project);
 

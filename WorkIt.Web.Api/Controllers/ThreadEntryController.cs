@@ -42,8 +42,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Create(CreateThreadEntryDto createEntry)
         {
             var jwtUserSubjectEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var currentUserId = await _userService.GetCurrentUserId(jwtUserSubjectEmail);
-            var response = await _threadEntryService.Create(createEntry, currentUserId);
+            var response = await _threadEntryService.Create(createEntry, "");
 
             if (response.Status != ServiceStatus.Ok)
                 return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));

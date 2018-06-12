@@ -48,34 +48,22 @@ namespace WebApi
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IProjectThreadRepository, ProjectThreadRepository>();
             services.AddScoped<IProjectMembershipRepository, ProjectMembershipRepository>();
+            services.AddScoped<IUserInfoRepository, UserInfoRepository>();
+
 
             services.AddScoped<IThreadEntryRepository, ThreadEntryRepository>();
 
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-            {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-            })
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
 
-            services.AddAuthentication(options => options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.RequireHttpsMetadata = false;
-                        options.SaveToken = true;
-                        options.TokenValidationParameters = new TokenValidationParameters()
-                        {
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("secretsecretsecretsecretsecret")),
-                            ValidateIssuerSigningKey = true,
-                            ValidAudience = "http://localhost:55437",
-                            ValidIssuer = "http://localhost:55437",
-                            ClockSkew = TimeSpan.Zero
-                        };
-                    });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = Configuration["Auth0:Authority"];
+                options.Audience = Configuration["Auth0:Audience"];
+            });
 
             services.AddAutoMapper();
             services.AddSwaggerGen(c =>

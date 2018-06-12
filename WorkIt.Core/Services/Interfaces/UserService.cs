@@ -9,7 +9,5 @@ namespace Core.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<string> GetCurrentUserId(string email);
-        Task<ApplicationUser> GetUserById(string userId);
     }
 }

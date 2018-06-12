@@ -25,6 +25,8 @@ namespace Core.Tests.Projects
         private Mock<IProjectMembershipRepository> _projectMembershipRepositoryMock;
         private Mock<IMapper> _mapperMock;
         private Mock<IUserService> _userServiceMock;
+        private Mock<IUserInfoRepository> _userInfoRepository;
+
 
         private static readonly string VALID_TITLE = "Valid title";
         private static readonly Project VALID_GROUP = new Project()
@@ -39,6 +41,7 @@ namespace Core.Tests.Projects
             _projectRepositoryMock = new Mock<IProjectRepository>();
             _projectMembershipRepositoryMock = new Mock<IProjectMembershipRepository>();
             _mapperMock = new Mock<IMapper>();
+            _userInfoRepository = new Mock<IUserInfoRepository>();
             _userServiceMock = new Mock<IUserService>();
         }
 
@@ -48,6 +51,7 @@ namespace Core.Tests.Projects
 
             var groupService = new ProjectService(_projectRepositoryMock.Object, 
                                                   _projectMembershipRepositoryMock.Object,
+                                                  _userInfoRepository.Object,
                                                   _userServiceMock.Object,
                                                   _mapperMock.Object);
 
@@ -77,6 +81,7 @@ namespace Core.Tests.Projects
 
             var groupService = new ProjectService(_projectRepositoryMock.Object,
                                                   _projectMembershipRepositoryMock.Object,
+                                                  _userInfoRepository.Object,
                                                   _userServiceMock.Object,
                                                   _mapperMock.Object);
 

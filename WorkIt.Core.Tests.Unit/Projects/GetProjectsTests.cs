@@ -20,6 +20,7 @@ namespace WorkIt.Core.Tests.Unit.Projects
         private Mock<IProjectRepository> _projectRepositoryMock;
         private Mock<IProjectMembershipRepository> _projectMembershipRepositoryMock;
         private Mock<IUserService> _userServiceMock;
+        private Mock<IUserInfoRepository> _userInfoRepository;
         private readonly IMapper _mapper;
         private IProjectService _projectService;
 
@@ -32,7 +33,7 @@ namespace WorkIt.Core.Tests.Unit.Projects
             _projectRepositoryMock = new Mock<IProjectRepository>();
             _projectMembershipRepositoryMock = new Mock<IProjectMembershipRepository>();
             _userServiceMock = new Mock<IUserService>();
-
+            _userInfoRepository = new Mock<IUserInfoRepository>();
             var automapperProfile = new DomainProfile();
             var mapperConfig = new MapperConfiguration(cfg => cfg.AddProfile(automapperProfile));
             _mapper = new Mapper(mapperConfig);
@@ -109,6 +110,7 @@ namespace WorkIt.Core.Tests.Unit.Projects
         {
             return new ProjectService(_projectRepositoryMock.Object,
                                       _projectMembershipRepositoryMock.Object,
+                                      _userInfoRepository.Object,
                                       _userServiceMock.Object,
                                       _mapper);
         }

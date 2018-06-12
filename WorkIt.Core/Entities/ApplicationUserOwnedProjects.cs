@@ -8,8 +8,8 @@ namespace WorkIt.Core.Entities
 {
     public class ApplicationUserOwnedProjects
     {
-        public string ApplicationUserId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
+        public long UserInfoId { get; set; }
+        public UserInfo UserInfo { get; set; }
 
         public long ProjectId { get; set; }
         public Project Project { get; set; }

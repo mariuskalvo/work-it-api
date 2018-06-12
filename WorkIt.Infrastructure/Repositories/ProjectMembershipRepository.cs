@@ -19,11 +19,11 @@ namespace WorkIt.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddMemberToProject(string userId, long projectId)
+        public async Task AddMemberToProject(long userId, long projectId)
         {
             _dbContext.ProjectMembers.Add(new ApplicationUserProjectMember()
             {
-                ApplicationUserId = userId,
+                UserInfoId = userId,
                 ProjectId = projectId
             });
 
@@ -36,29 +36,29 @@ namespace WorkIt.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public Task<ApplicationUserProjectMember> GetProjectMembership(long projectId, string userId)
+        public Task<ApplicationUserProjectMember> GetProjectMembership(long projectId, long userId)
         {
             return _dbContext.ProjectMembers.FindAsync(userId, projectId);
         }
 
         public async Task<IEnumerable<ApplicationUserProjectMember>> GetProjectMembershipsByUserId(string userId)
         {
-            return await _dbContext.ProjectMembers.Where(pm => pm.ApplicationUserId == userId)
-                                      .Include(pm => pm.ApplicationUser)
+            return await _dbContext.ProjectMembers.Where(pm => pm.UserInfo.OpenIdSub == userId)
+                                      .Include(pm => pm.UserInfo)
                                       .ToListAsync();
         }
 
         public async Task<IEnumerable<ApplicationUserProjectMember>> GetProjectMembershipsByProjectId(long projectId)
         {
             return await _dbContext.ProjectMembers.Where(pm => pm.ProjectId == projectId)
-                                                  .Include(pm => pm.ApplicationUser)
+                                                  .Include(pm => pm.UserInfo)
                                                   .ToListAsync();
         }
 
         public async Task<IEnumerable<ApplicationUserOwnedProjects>> GetProjectOwnersByProjectId(long projectId)
         {
             return await _dbContext.ProjectOwners.Where(po => po.ProjectId == projectId)
-                                    .Include(po => po.ApplicationUser)
+                                    .Include(po => po.UserInfo)
                                     .ToListAsync();
         }
     }

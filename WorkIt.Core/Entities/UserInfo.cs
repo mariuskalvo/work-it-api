@@ -6,9 +6,17 @@ using WorkIt.Core.Entities;
 
 namespace WorkIt.Core.Entities
 {
-    public class ApplicationUser : IdentityUser
+    public class UserInfo 
     {
+        public long Id { get; set; }
+        public string OpenIdSub { get; set; }
+
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+
         public IEnumerable<ApplicationUserOwnedProjects> OwnedProjects { get; set; }
         public IEnumerable<ApplicationUserProjectMember> MemberProjects { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
 }

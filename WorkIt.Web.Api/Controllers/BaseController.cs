@@ -13,22 +13,10 @@ namespace WorkIt.Web.Api.Controllers
 {
     public class BaseController : Controller
     {
-        private readonly IUserService _userService;
 
-        public BaseController(IUserService userService)
+        protected string GetOpenIdSub()
         {
-            _userService = userService;
-        }
-
-        protected async Task<string> GetCurrentUserIdAsync()
-        {
-            var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var currentUserId = await _userService.GetCurrentUserId(jwtUserSubject);
-
-            if (currentUserId == null)
-                throw new UnauthorizedAccessException();
-
-            return currentUserId;
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
         protected IActionResult MapActionResultWithData<T>(ServiceResponse<T> response) where T : class

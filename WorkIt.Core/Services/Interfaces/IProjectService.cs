@@ -9,13 +9,13 @@ namespace Core.Services
 {
     public interface IProjectService
     {
-        Task<ServiceResponse<IEnumerable<ProjectDto>>> GetMemberProjectsForUser(string currentUserId);
-        Task<ServiceResponse<IEnumerable<ProjectDto>>> GetProjects(string currentUserId);
-        Task<ServiceResponse<ProjectDetailsDto>> GetProjectDetailsByProjectId(long projectId, string userId);
-        Task<ServiceResponse<IEnumerable<RecentlyUpdatedProjectDto>>> GetLastUpdatedProjects(string currentUserId, int limit);
-        Task<ServiceResponse<IEnumerable<DetailedProjectListEntryDto>>> GetDetailedProjects(string currentUserId);
-        Task<ServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId);
-        Task<ServiceResponse> AddMemberToProject(string currentUserId, long projectId, string userIdToBeAdded);
-        Task<ServiceResponse> RemoveMemberFromProject(long projectId, string userId);
+        Task<ServiceResponse<IEnumerable<ProjectDto>>> GetMemberProjectsForUser(string currentUserOpenIdSub);
+        Task<ServiceResponse<IEnumerable<ProjectDto>>> GetProjects(string currentUserOpenIdSub);
+        Task<ServiceResponse<ProjectDetailsDto>> GetProjectDetailsByProjectId(long projectId, string currentUserOpenIdSub);
+        Task<ServiceResponse<IEnumerable<RecentlyUpdatedProjectDto>>> GetLastUpdatedProjects(string currentUserOpenIdSub, int limit);
+        Task<ServiceResponse<IEnumerable<DetailedProjectListEntryDto>>> GetDetailedProjects(string currentUserOpenIdSub);
+        Task<ServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string currentUserOpenIdSub);
+        Task<ServiceResponse> AddMemberToProject(string currentUserOpenIdSub, long projectId, long userIdToBeAdded);
+        Task<ServiceResponse> RemoveMemberFromProject(long projectId, long userId);
     }
 }
