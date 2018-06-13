@@ -9,5 +9,7 @@ namespace WorkIt.Core.Interfaces.Repositories
     public interface IUserInfoRepository
     {
         Task<UserInfo> GetUserInfoByOpenIdSub(string openIdSub);
+        Task<IEnumerable<UserInfo>> GetProjectOwnersByProjectId(long projectId);
+        Task<IEnumerable<UserInfo>> GetProjectMembersByProjectId(long projectId); 
     }
 }

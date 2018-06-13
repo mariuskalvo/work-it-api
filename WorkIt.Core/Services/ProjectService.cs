@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using WorkIt.Core.Constants;
 using WorkIt.Core.DTOs;
 using WorkIt.Core.DTOs.Project;
+using WorkIt.Core.DTOs.UserInfo;
 using WorkIt.Core.Entities;
 using WorkIt.Core.Interfaces.Repositories;
 using WorkIt.Core.Services.Interfaces;
@@ -24,19 +25,16 @@ namespace Core.Services
         private readonly IMapper _mapper;
         private readonly IProjectRepository _projectRepository;
         private readonly IProjectMembershipRepository _projectMembershipRepository;
-        private readonly IUserService _userService;
         private readonly IUserInfoRepository _userInfoRepository;
 
         public ProjectService(IProjectRepository projectRepository, 
                               IProjectMembershipRepository projectMembershipRepository,
                               IUserInfoRepository userInfoRepository,
-                              IUserService userService,
                               IMapper mapper)
         {
             _mapper = mapper;
             _projectRepository = projectRepository;
             _projectMembershipRepository = projectMembershipRepository;
-            _userService = userService;
             _userInfoRepository = userInfoRepository;
         }
 
@@ -179,21 +177,23 @@ namespace Core.Services
                 return new ServiceResponse<ProjectDetailsDto>(ServiceStatus.BadRequest);
             }
 
-            var projectMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userInfo.Id);
             var project = await _projectRepository.GetById(projectId);
+            var projectMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userInfo.Id);
 
             if (projectMembership == null && !project.IsPubliclyVisible)
             {
                 return new ServiceResponse<ProjectDetailsDto>(ServiceStatus.Unauthorized);
             }
 
-            var projectOwnerships = await _projectMembershipRepository.GetProjectOwnersByProjectId(projectId);
-            var projectMemberships = await _projectMembershipRepository.GetProjectMembershipsByProjectId(projectId);
+            var members = await _userInfoRepository.GetProjectMembersByProjectId(projectId);
+            var owners = await _userInfoRepository.GetProjectOwnersByProjectId(projectId);
 
-            var projectOwners = projectOwnerships.Select(po => po.UserInfo);
-            var projectMembers = projectMemberships.Select(pm => pm.UserInfo);
-
+            var memberDtos = _mapper.Map<IEnumerable<SimpleUserInfoDto>>(members);
+            var ownerDtos = _mapper.Map<IEnumerable<SimpleUserInfoDto>>(owners);
+            
             var projectDetailsDto = _mapper.Map<ProjectDetailsDto>(project);
+            projectDetailsDto.Members = memberDtos;
+            projectDetailsDto.Owners = ownerDtos;
 
             return new ServiceResponse<ProjectDetailsDto>(ServiceStatus.Ok).SetData(projectDetailsDto);
         }

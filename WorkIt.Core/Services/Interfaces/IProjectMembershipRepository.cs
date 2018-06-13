@@ -12,7 +12,5 @@ namespace WorkIt.Core.Services.Interfaces
         Task<IEnumerable<ApplicationUserProjectMember>> GetProjectMembershipsByUserId(string userId);
         Task AddMemberToProject(long userId, long projectId);
         Task RemoveMembership(ApplicationUserProjectMember membership);
-        Task<IEnumerable<ApplicationUserProjectMember>> GetProjectMembershipsByProjectId(long projectId);
-        Task<IEnumerable<ApplicationUserOwnedProjects>> GetProjectOwnersByProjectId(long projectId);
     }
 }

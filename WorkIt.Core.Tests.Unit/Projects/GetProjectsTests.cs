@@ -111,7 +111,6 @@ namespace WorkIt.Core.Tests.Unit.Projects
             return new ProjectService(_projectRepositoryMock.Object,
                                       _projectMembershipRepositoryMock.Object,
                                       _userInfoRepository.Object,
-                                      _userServiceMock.Object,
                                       _mapper);
         }
         private IEnumerable<Project> SetupMemberProjects()

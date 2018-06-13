@@ -47,19 +47,5 @@ namespace WorkIt.Infrastructure.Repositories
                                       .Include(pm => pm.UserInfo)
                                       .ToListAsync();
         }
-
-        public async Task<IEnumerable<ApplicationUserProjectMember>> GetProjectMembershipsByProjectId(long projectId)
-        {
-            return await _dbContext.ProjectMembers.Where(pm => pm.ProjectId == projectId)
-                                                  .Include(pm => pm.UserInfo)
-                                                  .ToListAsync();
-        }
-
-        public async Task<IEnumerable<ApplicationUserOwnedProjects>> GetProjectOwnersByProjectId(long projectId)
-        {
-            return await _dbContext.ProjectOwners.Where(po => po.ProjectId == projectId)
-                                    .Include(po => po.UserInfo)
-                                    .ToListAsync();
-        }
     }
 }

@@ -19,9 +19,30 @@ namespace WorkIt.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<IEnumerable<UserInfo>> GetProjectMembersByProjectId(long projectId)
+        {
+            return await (from userInfo in _dbContext.UserInfos
+                    join projectMember in _dbContext.ProjectMembers
+                    on userInfo.Id equals projectMember.UserInfoId
+                    where projectMember.ProjectId == projectId
+                    select userInfo).ToListAsync();
+        }
+
+        public async Task<IEnumerable<UserInfo>> GetProjectOwnersByProjectId(long projectId)
+        {
+            return await (from userInfo in _dbContext.UserInfos
+                         join projectOwner in _dbContext.ProjectOwners
+                         on userInfo.Id equals projectOwner.UserInfoId
+                         where projectOwner.ProjectId == projectId
+                         select userInfo).ToListAsync();
+        }
+
         public async Task<UserInfo> GetUserInfoByOpenIdSub(string openIdSub)
         {
-            return await _dbContext.UserInfos.Where(u => u.OpenIdSub == openIdSub).FirstOrDefaultAsync();
+            return await _dbContext
+                .UserInfos
+                .Where(u => u.OpenIdSub == openIdSub)
+                .FirstOrDefaultAsync();
         }
     }
 }

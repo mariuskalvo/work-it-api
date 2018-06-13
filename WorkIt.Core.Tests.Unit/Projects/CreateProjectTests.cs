@@ -52,7 +52,6 @@ namespace Core.Tests.Projects
             var groupService = new ProjectService(_projectRepositoryMock.Object, 
                                                   _projectMembershipRepositoryMock.Object,
                                                   _userInfoRepository.Object,
-                                                  _userServiceMock.Object,
                                                   _mapperMock.Object);
 
             var invalidGroupWithEmptyTitle = new CreateProjectDto()
@@ -82,7 +81,6 @@ namespace Core.Tests.Projects
             var groupService = new ProjectService(_projectRepositoryMock.Object,
                                                   _projectMembershipRepositoryMock.Object,
                                                   _userInfoRepository.Object,
-                                                  _userServiceMock.Object,
                                                   _mapperMock.Object);
 
             var validGroup = new CreateProjectDto()

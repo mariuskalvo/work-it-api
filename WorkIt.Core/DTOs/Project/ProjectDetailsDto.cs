@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WorkIt.Core.DTOs.UserInfo;
 
 namespace WorkIt.Core.DTOs.Project
 {
@@ -11,6 +12,10 @@ namespace WorkIt.Core.DTOs.Project
         public bool IsUserMember { get; set; }
         public bool IsOpenToJoin { get; set; }
         public string CreatedBy { get; set; }
+
+        public IEnumerable<SimpleUserInfoDto> Owners { get; set; }
+        public IEnumerable<SimpleUserInfoDto> Members { get; set; }
+
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
     }
