@@ -21,9 +21,6 @@ namespace WorkIt.Web.Api.Controllers
             _projectService = projectService;
         }
 
-        [HttpGet]
-
-
         [HttpPost("{projectId}")]
         public async Task<IActionResult> AddMember([FromBody]ProjectMembershipDto projectMembership, long projectId)
         {
