@@ -76,21 +76,5 @@ namespace WebApi.Controllers
             var response = await _projectService.Create(createGroupDto, currentUserId);
             return MapActionResultWithData(response);
         }
-
-        [HttpPost("{projectId}/members")]
-        public async Task<IActionResult> AddMember([FromBody]ProjectMembershipDto projectMembership, long projectId)
-        {
-            var currentUserId =  GetOpenIdSub();
-            var response = await _projectService.AddMemberToProject(currentUserId, projectMembership.ProjectId, projectMembership.UserId);
-            return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
-        }
-
-        [HttpDelete("{projectId}/members")]
-        public async Task<IActionResult> RemoveMember(ProjectMembershipDto projectMembership)
-        {
-            var currentUserId =  GetOpenIdSub();
-            var response = await _projectService.RemoveMemberFromProject(projectMembership.ProjectId,projectMembership.UserId);
-            return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
-        }
     }
 }

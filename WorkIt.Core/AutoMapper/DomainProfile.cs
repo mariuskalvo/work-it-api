@@ -5,6 +5,7 @@ using AutoMapper;
 using Core.DTOs;
 using WorkIt.Core.DTOs;
 using WorkIt.Core.DTOs.Project;
+using WorkIt.Core.DTOs.UserInfo;
 using WorkIt.Core.Entities;
 
 namespace Core.AutoMapper
@@ -32,6 +33,8 @@ namespace Core.AutoMapper
             CreateMap<ThreadEntry, ThreadEntryDto>().ReverseMap();
 
             CreateMap<AddEntryReactionDto, ThreadEntryReaction>();
+
+            CreateMap<UserInfo, SimpleUserInfoDto>();
         }
     }
 }
