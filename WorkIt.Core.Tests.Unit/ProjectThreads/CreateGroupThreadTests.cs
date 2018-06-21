@@ -12,6 +12,8 @@ using WorkIt.Infrastructure.DataAccess;
 using System.Threading.Tasks;
 using WorkIt.Core.Interfaces.Repositories;
 using WorkIt.Core.Entities;
+using WorkIt.Core.Services.Interfaces;
+using WorkIt.Core.Constants;
 
 namespace Core.Tests.ProjectThreads
 {
@@ -26,18 +28,32 @@ namespace Core.Tests.ProjectThreads
         };
 
         private readonly Mock<IProjectThreadRepository> _threadRepoMock;
+        private readonly Mock<IProjectRepository> _projectRepositoryMock;
+        private readonly Mock<IUserInfoRepository> _userInfoRepoMock;
+        private readonly Mock<IProjectMembershipRepository> _projectMembershipRepoMock;
+        private readonly Mock<IMapper> _mapperMock;
+
 
         public CreateGroupThreadTests()
         {
             _threadRepoMock = new Mock<IProjectThreadRepository>();
+            _projectRepositoryMock = new Mock<IProjectRepository>();
+            _userInfoRepoMock = new Mock<IUserInfoRepository>();
+            _projectMembershipRepoMock = new Mock<IProjectMembershipRepository>();
+            _mapperMock = new Mock<IMapper>();
+
         }
 
         [Fact]
-        public async Task ThreadWithNullOrEmptyName_ThrowsException()
+        public async Task ThreadWithNullOrEmptyName_ReturnServiceStatusWithBadRequest()
         {
-            var mapper = new Mock<IMapper>();
 
-            var threadService = new ProjectThreadService(_threadRepoMock.Object, mapper.Object);
+            var threadService = new ProjectThreadService(
+                _threadRepoMock.Object,
+                _projectMembershipRepoMock.Object,
+                _userInfoRepoMock.Object,
+                _projectRepositoryMock.Object,
+                _mapperMock.Object);
 
             var invalidGroupWithEmptyTitle = new CreateProjectThreadDto()
             {
@@ -45,35 +61,42 @@ namespace Core.Tests.ProjectThreads
             };
 
             var creationResult = await threadService.Create(invalidGroupWithEmptyTitle, string.Empty);
-            Assert.Null(creationResult);
+            Assert.Equal(ServiceStatus.BadRequest, creationResult.Status);
         }
 
         [Fact]
         public async Task ThreadHasValidField_ThredIsPersisted()
         {
-            var mockedMapper = new Mock<IMapper>();
-            mockedMapper.Setup(mapper => mapper.Map<ProjectThread>(It.IsAny<CreateProjectThreadDto>()))
-                        .Returns(VALID_THREAD);
+            _mapperMock.Setup(mapper => mapper.Map<ProjectThread>(It.IsAny<CreateProjectThreadDto>()))
+                .Returns(VALID_THREAD);
 
-            mockedMapper.Setup(mapper => mapper.Map<ProjectThreadDto>(It.IsAny<ProjectThread>()))
-                        .Returns(new ProjectThreadDto()
-                        {
-                            Title = VALID_TITLE
-                        });
+            _mapperMock.Setup(mapper => mapper.Map<ProjectThreadDto>(It.IsAny<ProjectThread>()))
+                .Returns(new ProjectThreadDto() { Title = VALID_TITLE });
+
+            _userInfoRepoMock.Setup(u => u.GetUserInfoByOpenIdSub(It.IsAny<string>()))
+                .ReturnsAsync(new UserInfo() { Id = 1 });
+
+            _projectMembershipRepoMock.Setup(p => p.GetProjectMembership(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync(new ApplicationUserProjectMember() { ProjectId = 1, UserInfoId = 1 });
 
             var mockContext = new Mock<AppDbContext>();
             var mockSet = new Mock<DbSet<ProjectThread>>();
             mockContext.Setup(m => m.Threads).Returns(mockSet.Object);
 
 
-            var groupService = new ProjectThreadService(_threadRepoMock.Object, mockedMapper.Object);
+            var threadService = new ProjectThreadService(
+                _threadRepoMock.Object,
+                _projectMembershipRepoMock.Object,
+                _userInfoRepoMock.Object,
+                _projectRepositoryMock.Object,
+                _mapperMock.Object);
 
             var validThread = new CreateProjectThreadDto()
             {
                 Title = VALID_TITLE
             };
 
-            var created = await groupService.Create(validThread, string.Empty);
+            var created = await threadService.Create(validThread, string.Empty);
 
             _threadRepoMock.Verify(r => r.Create(It.IsAny<ProjectThread>()), Times.Once);
         }

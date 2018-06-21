@@ -43,9 +43,8 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetByProjectId(long projectId, int page = 1)
         {
-            int pageSize = 10;
             var userOpenIdSub = GetOpenIdSub();
-            var response = await _projectThreadService.GetPagedByProjectId(projectId, page, pageSize);
+            var response = await _projectThreadService.GetPagedByProjectId(projectId, page, userOpenIdSub);
 
             if (response.Status != ServiceStatus.Ok)
                 return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
