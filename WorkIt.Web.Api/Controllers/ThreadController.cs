@@ -8,13 +8,14 @@ using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkIt.Core.Constants;
+using WorkIt.Web.Api.Controllers;
 using WorkIt.Web.Api.Utils;
 
 namespace WebApi.Controllers
 {
     [Authorize]
     [Route("api/[controller]/[action]")]
-    public class ThreadController : Controller
+    public class ThreadController : BaseController
     {
         private readonly IProjectThreadService _projectThreadService;
         private readonly IUserService _userService;
@@ -28,8 +29,9 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateProjectThreadDto thread)
         {
-            var jwtUserSubject = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var response = await _projectThreadService.Create(thread, jwtUserSubject);
+            var userOpenIdSub = GetOpenIdSub();
+
+            var response = await _projectThreadService.Create(thread, userOpenIdSub);
 
             if (response.Status != ServiceStatus.Ok)
                 return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
@@ -42,6 +44,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> GetByProjectId(long projectId, int page = 1)
         {
             int pageSize = 10;
+            var userOpenIdSub = GetOpenIdSub();
             var response = await _projectThreadService.GetPagedByProjectId(projectId, page, pageSize);
 
             if (response.Status != ServiceStatus.Ok)

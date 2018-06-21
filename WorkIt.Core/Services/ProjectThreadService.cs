@@ -12,31 +12,48 @@ using WorkIt.Core.Constants;
 using WorkIt.Core.DTOs;
 using WorkIt.Core.Entities;
 using WorkIt.Core.Interfaces.Repositories;
+using WorkIt.Core.Services.Interfaces;
 
 namespace Core.Services
 {
     public class ProjectThreadService : IProjectThreadService
     {
         private readonly IProjectThreadRepository _projectThreadRepository;
+        private readonly IProjectMembershipRepository _projectMembershipRepository;
+        private readonly IUserInfoRepository _userInfoRepository;
         private readonly IMapper _mapper;
 
-        public ProjectThreadService(IProjectThreadRepository projectThreadRepository, IMapper mapper)
+        public ProjectThreadService(
+            IProjectThreadRepository projectThreadRepository,
+            IProjectMembershipRepository projectMembershipRepository,
+            IUserInfoRepository userInfoRepository,
+            IMapper mapper)
         {
             _projectThreadRepository = projectThreadRepository;
+            _projectMembershipRepository = projectMembershipRepository;
+            _userInfoRepository = userInfoRepository;
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<ProjectThreadDto>> Create(CreateProjectThreadDto groupThread, string creatorUserId)
+        public async Task<ServiceResponse<ProjectThreadDto>> Create(CreateProjectThreadDto groupThread, string creatorOpenIdSubject)
         {
             ProjectThreadValidator validator = new ProjectThreadValidator();
             var validationResults = validator.Validate(groupThread);
 
             if (!validationResults.IsValid)
-                return null;
+                return new ServiceResponse<ProjectThreadDto>(ServiceStatus.BadRequest);
+
+            var userInfo = await _userInfoRepository.GetUserInfoByOpenIdSub(creatorOpenIdSubject);
+            if (userInfo == null)
+                return new ServiceResponse<ProjectThreadDto>(ServiceStatus.Error);
+
+            var projectMembership = await _projectMembershipRepository.GetProjectMembership(groupThread.ProjectId, userInfo.Id);
+            if (projectMembership == null)
+                return new ServiceResponse<ProjectThreadDto>(ServiceStatus.Unauthorized);
 
             var entityToAdd = _mapper.Map<ProjectThread>(groupThread);
             entityToAdd.CreatedAt = DateTime.Now;
-            entityToAdd.CreatedById = creatorUserId;
+            entityToAdd.CreatedById = creatorOpenIdSubject;
 
             try
             {
