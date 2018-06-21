@@ -21,17 +21,20 @@ namespace Core.Services
         private readonly IProjectThreadRepository _projectThreadRepository;
         private readonly IProjectMembershipRepository _projectMembershipRepository;
         private readonly IUserInfoRepository _userInfoRepository;
+        private readonly IProjectRepository _projectRepository;
         private readonly IMapper _mapper;
 
         public ProjectThreadService(
             IProjectThreadRepository projectThreadRepository,
             IProjectMembershipRepository projectMembershipRepository,
             IUserInfoRepository userInfoRepository,
+            IProjectRepository projectRepository,
             IMapper mapper)
         {
             _projectThreadRepository = projectThreadRepository;
             _projectMembershipRepository = projectMembershipRepository;
             _userInfoRepository = userInfoRepository;
+            _projectRepository = projectRepository;
             _mapper = mapper;
         }
 
@@ -66,13 +69,25 @@ namespace Core.Services
             }
         }
 
-        public async Task<ServiceResponse<IEnumerable<ProjectThreadDto>>> GetPagedByProjectId(long projectId, int page, int pageSize)
+        public async Task<ServiceResponse<IEnumerable<ProjectThreadDto>>> GetPagedByProjectId(long projectId, int page, string currentUserOpenIdSub)
         {
+            int pageSize = 10;
             int actualPage = Math.Max(page - 1, 0);
             int skip = actualPage * pageSize;
 
             try
             {
+                var userInfo = await _userInfoRepository.GetUserInfoByOpenIdSub(currentUserOpenIdSub);
+                if (userInfo == null)
+                    return new ServiceResponse<IEnumerable<ProjectThreadDto>>(ServiceStatus.Error);
+
+                var project = await _projectRepository.GetById(projectId);
+                var projectIsOpen = project.IsOpenToJoin;
+
+                var projectMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userInfo.Id);
+                if (projectMembership == null && !projectIsOpen)
+                    return new ServiceResponse<IEnumerable<ProjectThreadDto>>(ServiceStatus.Unauthorized);
+
                 var entities = await _projectThreadRepository.GetProjectThreads(projectId, pageSize, skip);
                 var returningDtos = _mapper.Map<IEnumerable<ProjectThreadDto>>(entities);
                 return new ServiceResponse<IEnumerable<ProjectThreadDto>>(ServiceStatus.Ok).SetData(returningDtos);
