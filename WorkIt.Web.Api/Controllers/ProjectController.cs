@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Core.Services;
-using Core.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WorkIt.Core;
-using WorkIt.Core.Constants;
 using WorkIt.Core.DTOs.Project;
 using WorkIt.Web.Api.Controllers;
-using WorkIt.Web.Api.Utils;
 
 namespace WebApi.Controllers
 {

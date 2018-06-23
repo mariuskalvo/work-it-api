@@ -7,14 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.DTOs;
 using Core.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using WorkIt.Core.Constants;
 using WorkIt.Web.Api.Controllers;
-using WorkIt.Web.Api.Models;
-using WorkIt.Web.Api.Utils;
 
 namespace WebApi.Controllers
 {
