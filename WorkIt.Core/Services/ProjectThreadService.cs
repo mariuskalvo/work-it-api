@@ -119,10 +119,5 @@ namespace Core.Services
                 return new ServiceResponse<IEnumerable<ProjectThreadOverviewDto>>(ServiceStatus.Error).SetException(ex);
             }
         }
-
-        Task<ServiceResponse<IEnumerable<ProjectThreadOverviewDto>>> IProjectThreadService.GetPagedByProjectId(long threadId, int page, string currentUserOpenIdSub)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
