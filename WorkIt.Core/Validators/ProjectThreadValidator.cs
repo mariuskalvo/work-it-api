@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Core.DTOs;
 using FluentValidation;
+using WorkIt.Core.DTOs.ProjectThread;
 
 namespace Core.Validators
 {

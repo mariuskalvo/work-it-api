@@ -5,6 +5,7 @@ using AutoMapper;
 using Core.DTOs;
 using WorkIt.Core.DTOs;
 using WorkIt.Core.DTOs.Project;
+using WorkIt.Core.DTOs.ProjectThread;
 using WorkIt.Core.DTOs.UserInfo;
 using WorkIt.Core.Entities;
 
@@ -27,7 +28,7 @@ namespace Core.AutoMapper
             CreateMap<Project, DetailedProjectListEntryDto>()
                 .ForMember(p => p.CreatedBy, opt => opt.MapFrom(projectEntity => projectEntity.CreatedBy.Firstname));
 
-            CreateMap<ProjectThread, ProjectThreadDto>().ReverseMap();
+            CreateMap<ProjectThread, ProjectThreadOverviewDto>().ReverseMap();
 
             CreateMap<CreateThreadEntryDto, ThreadEntry>();
             CreateMap<ThreadEntry, ThreadEntryDto>().ReverseMap();

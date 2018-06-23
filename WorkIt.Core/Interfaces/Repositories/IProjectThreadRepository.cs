@@ -10,5 +10,7 @@ namespace WorkIt.Core.Interfaces.Repositories
     {
         Task<ProjectThread> Create(ProjectThread projectThread);
         Task<IEnumerable<ProjectThread>> GetProjectThreads(long projectId, int take, int skip);
+        Task<ProjectThread> GetById(long threadId);
+
     }
 }

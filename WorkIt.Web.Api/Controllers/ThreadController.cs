@@ -8,6 +8,7 @@ using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkIt.Core.Constants;
+using WorkIt.Core.DTOs.ProjectThread;
 using WorkIt.Web.Api.Controllers;
 using WorkIt.Web.Api.Utils;
 
@@ -46,6 +47,17 @@ namespace WebApi.Controllers
             var userOpenIdSub = GetOpenIdSub();
             var response = await _projectThreadService.GetPagedByProjectId(projectId, page, userOpenIdSub);
 
+            if (response.Status != ServiceStatus.Ok)
+                return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
+
+            return new OkObjectResult(response.Data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetByProjectThreadId(long projectThreadId)
+        {
+            var userOpenIdSub = GetOpenIdSub();
+            var response = await _projectThreadService.GetByThreadId(projectThreadId, userOpenIdSub);
             if (response.Status != ServiceStatus.Ok)
                 return StatusCode(ServiceStatusMapper.MapToHttpStatusCode(response.Status));
 

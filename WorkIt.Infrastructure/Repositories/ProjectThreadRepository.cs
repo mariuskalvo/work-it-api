@@ -26,6 +26,11 @@ namespace WorkIt.Infrastructure.Repositories
             return projectThread;
         }
 
+        public async Task<ProjectThread> GetById(long threadId)
+        {
+            return await _dbContext.Threads.FindAsync(threadId);
+        }
+
         public async Task<IEnumerable<ProjectThread>> GetProjectThreads(long projectId, int take, int skip)
         {
             return await _dbContext.Threads

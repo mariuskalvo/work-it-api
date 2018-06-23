@@ -14,6 +14,7 @@ using WorkIt.Core.Interfaces.Repositories;
 using WorkIt.Core.Entities;
 using WorkIt.Core.Services.Interfaces;
 using WorkIt.Core.Constants;
+using WorkIt.Core.DTOs.ProjectThread;
 
 namespace Core.Tests.ProjectThreads
 {
@@ -70,8 +71,8 @@ namespace Core.Tests.ProjectThreads
             _mapperMock.Setup(mapper => mapper.Map<ProjectThread>(It.IsAny<CreateProjectThreadDto>()))
                 .Returns(VALID_THREAD);
 
-            _mapperMock.Setup(mapper => mapper.Map<ProjectThreadDto>(It.IsAny<ProjectThread>()))
-                .Returns(new ProjectThreadDto() { Title = VALID_TITLE });
+            _mapperMock.Setup(mapper => mapper.Map<ProjectThreadOverviewDto>(It.IsAny<ProjectThread>()))
+                .Returns(new ProjectThreadOverviewDto() { Title = VALID_TITLE });
 
             _userInfoRepoMock.Setup(u => u.GetUserInfoByOpenIdSub(It.IsAny<string>()))
                 .ReturnsAsync(new UserInfo() { Id = 1 });

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.DTOs
+namespace WorkIt.Core.DTOs.ProjectThread
 {
-    public class CreateProjectThreadDto
+    public class ProjectThreadOverviewDto
     {
+        public long Id { get; set; }
         public string Title { get; set; }
-        public long ProjectId { get; set; }
     }
 }
