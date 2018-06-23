@@ -8,13 +8,11 @@ namespace WorkIt.Core.DTOs
     public class ServiceResponse
     {
         public ServiceStatus Status { get; set; }
-        public string ErrorMessage { get; set; }
         public Exception Exception { get; set; }
 
-        public ServiceResponse(ServiceStatus status, string errorMessage = null)
+        public ServiceResponse(ServiceStatus status)
         {
             Status = status;
-            ErrorMessage = errorMessage;
         }
 
         public ServiceResponse SetException(Exception exception)
@@ -28,10 +26,9 @@ namespace WorkIt.Core.DTOs
     {
         public T Data { get; set; }
 
-        public ServiceResponse(ServiceStatus status, string errorMessage = null) : base(status, errorMessage)
+        public ServiceResponse(ServiceStatus status, string errorMessage = null) : base(status)
         {
             Status = status;
-            ErrorMessage = errorMessage;
         }
 
         public ServiceResponse<T> SetData(T data)

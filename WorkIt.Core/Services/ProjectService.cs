@@ -90,7 +90,7 @@ namespace Core.Services
             {
                 var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userId);
                 if (existingMembership == null)
-                    return new ServiceResponse(ServiceStatus.BadRequest, "Attempting to remove non-existing project membership");
+                    return new ServiceResponse(ServiceStatus.BadRequest);
 
                 await _projectMembershipRepository.RemoveMembership(existingMembership);
                 return new ServiceResponse(ServiceStatus.Ok);
