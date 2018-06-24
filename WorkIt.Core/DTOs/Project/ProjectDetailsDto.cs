@@ -11,10 +11,10 @@ namespace WorkIt.Core.DTOs.Project
         public string Title { get; set; }
         public bool IsUserMember { get; set; }
         public bool IsOpenToJoin { get; set; }
-        public string CreatedBy { get; set; }
 
         public IEnumerable<SimpleUserInfoDto> Owners { get; set; }
         public IEnumerable<SimpleUserInfoDto> Members { get; set; }
+        public SimpleUserInfoDto CreatedBy { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }

@@ -19,12 +19,13 @@ namespace WorkIt.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<UserInfo> CreateDefaultUserInfo(string openIdSub)
+        public async Task<UserInfo> CreateDefaultUserInfo(string openIdSub, string email)
         {
             var userInfo = new UserInfo
             {
                 OpenIdSub = openIdSub,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                Email = email
             };
             _dbContext.UserInfos.Add(userInfo);
             await _dbContext.SaveChangesAsync();

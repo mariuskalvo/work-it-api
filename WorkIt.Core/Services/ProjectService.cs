@@ -198,6 +198,7 @@ namespace Core.Services
             projectDetailsDto.Members = memberDtos;
             projectDetailsDto.Owners = ownerDtos;
 
+
             return new ServiceResponse<ProjectDetailsDto>(ServiceStatus.Ok).SetData(projectDetailsDto);
         }
     }

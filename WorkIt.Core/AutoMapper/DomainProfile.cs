@@ -23,7 +23,7 @@ namespace Core.AutoMapper
             CreateMap<Project, RecentlyUpdatedProjectDto>().ReverseMap();
 
             CreateMap<Project, ProjectDetailsDto>()
-                .ForMember(p => p.CreatedBy, opt => opt.MapFrom(projectEntity => projectEntity.CreatedBy.Firstname));
+                .ForMember(p => p.CreatedBy, opt => opt.MapFrom(projectEntity => projectEntity.CreatedBy));
 
             CreateMap<Project, DetailedProjectListEntryDto>()
                 .ForMember(p => p.CreatedBy, opt => opt.MapFrom(projectEntity => projectEntity.CreatedBy.Firstname));

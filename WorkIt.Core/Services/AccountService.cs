@@ -65,7 +65,7 @@ namespace Core.Services
                         var existingUserInfo = await _userInfoRepository.GetUserInfoByOpenIdSub(subject);
                         if (existingUserInfo == null)
                         {
-                            await _userInfoRepository.CreateDefaultUserInfo(subject);
+                            await _userInfoRepository.CreateDefaultUserInfo(subject, loginDto.Email);
                         }
                     }
                     return new ServiceResponse<string>(ServiceStatus.Ok).SetData(loginResponse.AccessToken);
