@@ -48,10 +48,13 @@ namespace Core.Services
 
             var entityToAdd = _mapper.Map<Project>(createGroupDto);
 
+            var userInfo = await _userInfoRepository.GetUserInfoByOpenIdSub(applicationUserId);
+            if (userInfo == null)
+                return new ServiceResponse<ProjectDto>(ServiceStatus.BadRequest);
+
+            entityToAdd.CreatedById = userInfo.Id;
             entityToAdd.CreatedAt = DateTime.Now;
             entityToAdd.ModifiedAt = DateTime.Now;
-
-            entityToAdd.CreatedById = applicationUserId;
 
             var addedEntity = await _projectRepository.Create(entityToAdd);
             var projectDto = _mapper.Map<ProjectDto>(addedEntity);

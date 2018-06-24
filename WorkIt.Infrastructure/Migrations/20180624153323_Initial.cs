@@ -9,17 +9,19 @@ namespace WorkIt.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ApplicationUser",
+                name: "UserInfos",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    OpenIdSub = table.Column<string>(nullable: true),
                     Firstname = table.Column<string>(nullable: true),
                     Lastname = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ApplicationUser", x => x.Id);
+                    table.PrimaryKey("PK_UserInfos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -32,7 +34,7 @@ namespace WorkIt.Infrastructure.Migrations
                     Description = table.Column<string>(nullable: true),
                     IsOpenToJoin = table.Column<bool>(nullable: false),
                     IsPubliclyVisible = table.Column<bool>(nullable: false),
-                    CreatedById = table.Column<string>(nullable: true),
+                    CreatedById = table.Column<long>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     ModifiedAt = table.Column<DateTime>(nullable: false)
                 },
@@ -40,33 +42,33 @@ namespace WorkIt.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Projects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Projects_ApplicationUser_CreatedById",
+                        name: "FK_Projects_UserInfos_CreatedById",
                         column: x => x.CreatedById,
-                        principalTable: "ApplicationUser",
+                        principalTable: "UserInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ProjectMembers",
                 columns: table => new
                 {
-                    ApplicationUserId = table.Column<string>(nullable: false),
+                    UserInfoId = table.Column<long>(nullable: false),
                     ProjectId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectMembers", x => new { x.ApplicationUserId, x.ProjectId });
-                    table.ForeignKey(
-                        name: "FK_ProjectMembers_ApplicationUser_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "ApplicationUser",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_ProjectMembers", x => new { x.UserInfoId, x.ProjectId });
                     table.ForeignKey(
                         name: "FK_ProjectMembers_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectMembers_UserInfos_UserInfoId",
+                        column: x => x.UserInfoId,
+                        principalTable: "UserInfos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -75,22 +77,22 @@ namespace WorkIt.Infrastructure.Migrations
                 name: "ProjectOwners",
                 columns: table => new
                 {
-                    ApplicationUserId = table.Column<string>(nullable: false),
+                    UserInfoId = table.Column<long>(nullable: false),
                     ProjectId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectOwners", x => new { x.ApplicationUserId, x.ProjectId });
-                    table.ForeignKey(
-                        name: "FK_ProjectOwners_ApplicationUser_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "ApplicationUser",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_ProjectOwners", x => new { x.UserInfoId, x.ProjectId });
                     table.ForeignKey(
                         name: "FK_ProjectOwners_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectOwners_UserInfos_UserInfoId",
+                        column: x => x.UserInfoId,
+                        principalTable: "UserInfos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -104,15 +106,16 @@ namespace WorkIt.Infrastructure.Migrations
                     Title = table.Column<string>(nullable: true),
                     ProjectId = table.Column<long>(nullable: false),
                     CreatedById = table.Column<string>(nullable: true),
+                    CreatedById1 = table.Column<long>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Threads", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Threads_ApplicationUser_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "ApplicationUser",
+                        name: "FK_Threads_UserInfos_CreatedById1",
+                        column: x => x.CreatedById1,
+                        principalTable: "UserInfos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -133,15 +136,16 @@ namespace WorkIt.Infrastructure.Migrations
                     ThreadId = table.Column<long>(nullable: true),
                     Content = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedById1 = table.Column<long>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ThreadEntries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ThreadEntries_ApplicationUser_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "ApplicationUser",
+                        name: "FK_ThreadEntries_UserInfos_CreatedById1",
+                        column: x => x.CreatedById1,
+                        principalTable: "UserInfos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -160,15 +164,16 @@ namespace WorkIt.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     ThreadEntryId = table.Column<long>(nullable: false),
                     ReactionTag = table.Column<string>(nullable: true),
+                    CreatedById1 = table.Column<long>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ThreadEntryReactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ThreadEntryReactions_ApplicationUser_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "ApplicationUser",
+                        name: "FK_ThreadEntryReactions_UserInfos_CreatedById1",
+                        column: x => x.CreatedById1,
+                        principalTable: "UserInfos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -195,9 +200,9 @@ namespace WorkIt.Infrastructure.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ThreadEntries_CreatedById",
+                name: "IX_ThreadEntries_CreatedById1",
                 table: "ThreadEntries",
-                column: "CreatedById");
+                column: "CreatedById1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ThreadEntries_ThreadId",
@@ -205,9 +210,9 @@ namespace WorkIt.Infrastructure.Migrations
                 column: "ThreadId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ThreadEntryReactions_CreatedById",
+                name: "IX_ThreadEntryReactions_CreatedById1",
                 table: "ThreadEntryReactions",
-                column: "CreatedById");
+                column: "CreatedById1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ThreadEntryReactions_ThreadEntryId",
@@ -215,9 +220,9 @@ namespace WorkIt.Infrastructure.Migrations
                 column: "ThreadEntryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Threads_CreatedById",
+                name: "IX_Threads_CreatedById1",
                 table: "Threads",
-                column: "CreatedById");
+                column: "CreatedById1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Threads_ProjectId",
@@ -246,7 +251,7 @@ namespace WorkIt.Infrastructure.Migrations
                 name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "ApplicationUser");
+                name: "UserInfos");
         }
     }
 }

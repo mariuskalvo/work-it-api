@@ -10,7 +10,7 @@ using WorkIt.Infrastructure.DataAccess;
 namespace WorkIt.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180611183420_Initial")]
+    [Migration("20180624153323_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,29 +21,13 @@ namespace WorkIt.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "2.1.0-rtm-30799")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("WorkIt.Core.Entities.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("Firstname");
-
-                    b.Property<string>("Lastname");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ApplicationUser");
-                });
-
             modelBuilder.Entity("WorkIt.Core.Entities.ApplicationUserOwnedProjects", b =>
                 {
-                    b.Property<string>("ApplicationUserId");
+                    b.Property<long>("UserInfoId");
 
                     b.Property<long>("ProjectId");
 
-                    b.HasKey("ApplicationUserId", "ProjectId");
+                    b.HasKey("UserInfoId", "ProjectId");
 
                     b.HasIndex("ProjectId");
 
@@ -52,11 +36,11 @@ namespace WorkIt.Infrastructure.Migrations
 
             modelBuilder.Entity("WorkIt.Core.Entities.ApplicationUserProjectMember", b =>
                 {
-                    b.Property<string>("ApplicationUserId");
+                    b.Property<long>("UserInfoId");
 
                     b.Property<long>("ProjectId");
 
-                    b.HasKey("ApplicationUserId", "ProjectId");
+                    b.HasKey("UserInfoId", "ProjectId");
 
                     b.HasIndex("ProjectId");
 
@@ -70,7 +54,7 @@ namespace WorkIt.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("CreatedById");
+                    b.Property<long>("CreatedById");
 
                     b.Property<string>("Description");
 
@@ -98,13 +82,15 @@ namespace WorkIt.Infrastructure.Migrations
 
                     b.Property<string>("CreatedById");
 
+                    b.Property<long?>("CreatedById1");
+
                     b.Property<long>("ProjectId");
 
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("CreatedById1");
 
                     b.HasIndex("ProjectId");
 
@@ -122,13 +108,15 @@ namespace WorkIt.Infrastructure.Migrations
 
                     b.Property<string>("CreatedById");
 
+                    b.Property<long?>("CreatedById1");
+
                     b.Property<long>("GroupThreadId");
 
                     b.Property<long?>("ThreadId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("CreatedById1");
 
                     b.HasIndex("ThreadId");
 
@@ -142,57 +130,78 @@ namespace WorkIt.Infrastructure.Migrations
 
                     b.Property<string>("CreatedById");
 
+                    b.Property<long?>("CreatedById1");
+
                     b.Property<string>("ReactionTag");
 
                     b.Property<long>("ThreadEntryId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("CreatedById1");
 
                     b.HasIndex("ThreadEntryId");
 
                     b.ToTable("ThreadEntryReactions");
                 });
 
+            modelBuilder.Entity("WorkIt.Core.Entities.UserInfo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Firstname");
+
+                    b.Property<string>("Lastname");
+
+                    b.Property<string>("OpenIdSub");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserInfos");
+                });
+
             modelBuilder.Entity("WorkIt.Core.Entities.ApplicationUserOwnedProjects", b =>
                 {
-                    b.HasOne("WorkIt.Core.Entities.ApplicationUser", "ApplicationUser")
-                        .WithMany("OwnedProjects")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("WorkIt.Core.Entities.Project", "Project")
                         .WithMany("Owners")
                         .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WorkIt.Core.Entities.UserInfo", "UserInfo")
+                        .WithMany("OwnedProjects")
+                        .HasForeignKey("UserInfoId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WorkIt.Core.Entities.ApplicationUserProjectMember", b =>
                 {
-                    b.HasOne("WorkIt.Core.Entities.ApplicationUser", "ApplicationUser")
-                        .WithMany("MemberProjects")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("WorkIt.Core.Entities.Project", "Project")
                         .WithMany("Members")
                         .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WorkIt.Core.Entities.UserInfo", "UserInfo")
+                        .WithMany("MemberProjects")
+                        .HasForeignKey("UserInfoId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WorkIt.Core.Entities.Project", b =>
                 {
-                    b.HasOne("WorkIt.Core.Entities.ApplicationUser", "CreatedBy")
+                    b.HasOne("WorkIt.Core.Entities.UserInfo", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WorkIt.Core.Entities.ProjectThread", b =>
                 {
-                    b.HasOne("WorkIt.Core.Entities.ApplicationUser", "CreatedBy")
+                    b.HasOne("WorkIt.Core.Entities.UserInfo", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
+                        .HasForeignKey("CreatedById1");
 
                     b.HasOne("WorkIt.Core.Entities.Project", "Project")
                         .WithMany("Threads")
@@ -202,9 +211,9 @@ namespace WorkIt.Infrastructure.Migrations
 
             modelBuilder.Entity("WorkIt.Core.Entities.ThreadEntry", b =>
                 {
-                    b.HasOne("WorkIt.Core.Entities.ApplicationUser", "CreatedBy")
+                    b.HasOne("WorkIt.Core.Entities.UserInfo", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
+                        .HasForeignKey("CreatedById1");
 
                     b.HasOne("WorkIt.Core.Entities.ProjectThread", "Thread")
                         .WithMany("Entries")
@@ -213,9 +222,9 @@ namespace WorkIt.Infrastructure.Migrations
 
             modelBuilder.Entity("WorkIt.Core.Entities.ThreadEntryReaction", b =>
                 {
-                    b.HasOne("WorkIt.Core.Entities.ApplicationUser", "CreatedBy")
+                    b.HasOne("WorkIt.Core.Entities.UserInfo", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
+                        .HasForeignKey("CreatedById1");
 
                     b.HasOne("WorkIt.Core.Entities.ThreadEntry", "ThreadEntry")
                         .WithMany("Reactions")

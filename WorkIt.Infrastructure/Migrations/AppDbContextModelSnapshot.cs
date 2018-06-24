@@ -52,9 +52,7 @@ namespace WorkIt.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("CreatedById");
-
-                    b.Property<long?>("CreatedById1");
+                    b.Property<long>("CreatedById");
 
                     b.Property<string>("Description");
 
@@ -68,7 +66,7 @@ namespace WorkIt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById1");
+                    b.HasIndex("CreatedById");
 
                     b.ToTable("Projects");
                 });
@@ -193,7 +191,8 @@ namespace WorkIt.Infrastructure.Migrations
                 {
                     b.HasOne("WorkIt.Core.Entities.UserInfo", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById1");
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WorkIt.Core.Entities.ProjectThread", b =>

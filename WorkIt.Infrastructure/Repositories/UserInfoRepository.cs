@@ -19,6 +19,18 @@ namespace WorkIt.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<UserInfo> CreateDefaultUserInfo(string openIdSub)
+        {
+            var userInfo = new UserInfo
+            {
+                OpenIdSub = openIdSub,
+                CreatedAt = DateTime.Now
+            };
+            _dbContext.UserInfos.Add(userInfo);
+            await _dbContext.SaveChangesAsync();
+            return userInfo;
+        }
+
         public async Task<IEnumerable<UserInfo>> GetProjectMembersByProjectId(long projectId)
         {
             return await (from userInfo in _dbContext.UserInfos
