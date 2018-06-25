@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WorkIt.Core.Constants;
 
 namespace WorkIt.Core.Entities
 {
@@ -11,5 +12,7 @@ namespace WorkIt.Core.Entities
 
         public long ProjectId { get; set; }
         public Project Project { get; set; }
+
+        public RoleLevel RoleLevel { get; set; }
     }
 }

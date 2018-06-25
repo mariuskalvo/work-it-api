@@ -18,7 +18,6 @@ namespace WorkIt.Core.Entities
         public bool IsPubliclyVisible { get; set; }
 
         public IEnumerable<ProjectThread> Threads { get; set; }
-        public IEnumerable<ApplicationUserOwnedProjects> Owners { get; set; }
         public IEnumerable<ApplicationUserProjectMember> Members { get; set; }
 
         public long CreatedById { get; set; }

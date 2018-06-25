@@ -15,9 +15,7 @@ namespace WorkIt.Infrastructure.DataAccess
         public virtual DbSet<ThreadEntryReaction> ThreadEntryReactions { get; set; }
         public virtual DbSet<UserInfo> UserInfos { get; set; }
 
-
         public virtual DbSet<ApplicationUserProjectMember> ProjectMembers { get; set; }
-        public virtual DbSet<ApplicationUserOwnedProjects> ProjectOwners { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -41,18 +39,7 @@ namespace WorkIt.Infrastructure.DataAccess
             modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.ThreadEntry));
             modelBuilder.Entity<ThreadEntryReaction>(tb => tb.HasOne(reaction => reaction.CreatedBy));
 
-            modelBuilder.Entity<ApplicationUserOwnedProjects>().HasKey(a => new { a.UserInfoId, a.ProjectId });
             modelBuilder.Entity<ApplicationUserProjectMember>().HasKey(a => new { a.UserInfoId, a.ProjectId });
-
-            modelBuilder.Entity<ApplicationUserOwnedProjects>()
-                        .HasOne(a => a.Project)
-                        .WithMany(grp => grp.Owners)
-                        .HasForeignKey(a => a.ProjectId);
-
-            modelBuilder.Entity<ApplicationUserOwnedProjects>()
-                        .HasOne(a => a.UserInfo)
-                        .WithMany(user => user.OwnedProjects)
-                        .HasForeignKey(a => a.UserInfoId);
 
             modelBuilder.Entity<ApplicationUserProjectMember>()
                         .HasOne(a => a.UserInfo)

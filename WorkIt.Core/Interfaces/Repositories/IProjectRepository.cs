@@ -14,6 +14,5 @@ namespace WorkIt.Core.Interfaces.Repositories
         Task<IEnumerable<Project>> GetLastUpdatedUserProjects(string userId, int limit);
         Task<IEnumerable<Project>> GetProjects();
         Task<IEnumerable<Project>> GetDetailedProjects();
-        Task<ApplicationUserOwnedProjects> GetProjectsOwnership(string userId, long projectId);
     }
 }

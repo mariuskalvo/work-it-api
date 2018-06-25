@@ -41,15 +41,6 @@ namespace WorkIt.Infrastructure.Repositories
                     select userInfo).ToListAsync();
         }
 
-        public async Task<IEnumerable<UserInfo>> GetProjectOwnersByProjectId(long projectId)
-        {
-            return await (from userInfo in _dbContext.UserInfos
-                         join projectOwner in _dbContext.ProjectOwners
-                         on userInfo.Id equals projectOwner.UserInfoId
-                         where projectOwner.ProjectId == projectId
-                         select userInfo).ToListAsync();
-        }
-
         public async Task<UserInfo> GetUserInfoByOpenIdSub(string openIdSub)
         {
             return await _dbContext

@@ -62,34 +62,5 @@ namespace Core.Tests.Projects
             var response = await groupService.Create(invalidGroupWithEmptyTitle, String.Empty);
             Assert.Equal(ServiceStatus.BadRequest, response.Status);
         }
-
-        [Fact]
-        public async Task GroupHasValidFields_GroupIsPersisted()
-        {
-            _mapperMock.Setup(mapper => mapper.Map<Project>(It.IsAny<CreateProjectDto>()))
-                        .Returns(VALID_GROUP);
-
-            _mapperMock.Setup(mapper => mapper.Map<ProjectDto>(It.IsAny<Project>()))
-                        .Returns(new ProjectDto() {
-                            Title = VALID_TITLE
-                        });
-
-            var mockSet = new Mock<DbSet<Project>>();
-            var mockContext = new Mock<AppDbContext>();
-            mockContext.Setup(m => m.Projects).Returns(mockSet.Object);
-
-            var groupService = new ProjectService(_projectRepositoryMock.Object,
-                                                  _projectMembershipRepositoryMock.Object,
-                                                  _userInfoRepository.Object,
-                                                  _mapperMock.Object);
-
-            var validGroup = new CreateProjectDto()
-            {
-                Title = VALID_TITLE
-            };
-
-            var created = await groupService.Create(validGroup, string.Empty);
-            _projectRepositoryMock.Verify(p => p.Create(It.IsAny<Project>()), Times.Once);
-        }
     }
 }
