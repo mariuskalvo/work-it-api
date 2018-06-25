@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace WorkIt.Infrastructure.Migrations
 {
-    public partial class Initial : Migration
+    public partial class CreatedByProjectToUserInfoFK : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,6 +17,7 @@ namespace WorkIt.Infrastructure.Migrations
                     OpenIdSub = table.Column<string>(nullable: true),
                     Firstname = table.Column<string>(nullable: true),
                     Lastname = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -54,7 +55,8 @@ namespace WorkIt.Infrastructure.Migrations
                 columns: table => new
                 {
                     UserInfoId = table.Column<long>(nullable: false),
-                    ProjectId = table.Column<long>(nullable: false)
+                    ProjectId = table.Column<long>(nullable: false),
+                    RoleLevel = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,30 +76,6 @@ namespace WorkIt.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectOwners",
-                columns: table => new
-                {
-                    UserInfoId = table.Column<long>(nullable: false),
-                    ProjectId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProjectOwners", x => new { x.UserInfoId, x.ProjectId });
-                    table.ForeignKey(
-                        name: "FK_ProjectOwners_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProjectOwners_UserInfos_UserInfoId",
-                        column: x => x.UserInfoId,
-                        principalTable: "UserInfos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Threads",
                 columns: table => new
                 {
@@ -105,19 +83,18 @@ namespace WorkIt.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Title = table.Column<string>(nullable: true),
                     ProjectId = table.Column<long>(nullable: false),
-                    CreatedById = table.Column<string>(nullable: true),
-                    CreatedById1 = table.Column<long>(nullable: true),
+                    CreatedById = table.Column<long>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Threads", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Threads_UserInfos_CreatedById1",
-                        column: x => x.CreatedById1,
+                        name: "FK_Threads_UserInfos_CreatedById",
+                        column: x => x.CreatedById,
                         principalTable: "UserInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Threads_Projects_ProjectId",
                         column: x => x.ProjectId,
@@ -190,11 +167,6 @@ namespace WorkIt.Infrastructure.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectOwners_ProjectId",
-                table: "ProjectOwners",
-                column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Projects_CreatedById",
                 table: "Projects",
                 column: "CreatedById");
@@ -220,9 +192,9 @@ namespace WorkIt.Infrastructure.Migrations
                 column: "ThreadEntryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Threads_CreatedById1",
+                name: "IX_Threads_CreatedById",
                 table: "Threads",
-                column: "CreatedById1");
+                column: "CreatedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Threads_ProjectId",
@@ -234,9 +206,6 @@ namespace WorkIt.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ProjectMembers");
-
-            migrationBuilder.DropTable(
-                name: "ProjectOwners");
 
             migrationBuilder.DropTable(
                 name: "ThreadEntryReactions");

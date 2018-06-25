@@ -17,7 +17,7 @@ namespace WorkIt.Core.Entities
         public Project Project { get; set; }
 
         public IEnumerable<ThreadEntry> Entries { get; set; }
-        public string CreatedById { get; set; }
+        public long CreatedById { get; set; }
         public UserInfo CreatedBy { get; set; }
 
         public DateTime CreatedAt { get; set; }

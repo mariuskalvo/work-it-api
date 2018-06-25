@@ -19,19 +19,6 @@ namespace WorkIt.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "2.1.0-rtm-30799")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("WorkIt.Core.Entities.ApplicationUserOwnedProjects", b =>
-                {
-                    b.Property<long>("UserInfoId");
-
-                    b.Property<long>("ProjectId");
-
-                    b.HasKey("UserInfoId", "ProjectId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("ProjectOwners");
-                });
-
             modelBuilder.Entity("WorkIt.Core.Entities.ApplicationUserProjectMember", b =>
                 {
                     b.Property<long>("UserInfoId");
@@ -80,9 +67,7 @@ namespace WorkIt.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("CreatedById");
-
-                    b.Property<long?>("CreatedById1");
+                    b.Property<long>("CreatedById");
 
                     b.Property<long>("ProjectId");
 
@@ -90,7 +75,7 @@ namespace WorkIt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById1");
+                    b.HasIndex("CreatedById");
 
                     b.HasIndex("ProjectId");
 
@@ -165,19 +150,6 @@ namespace WorkIt.Infrastructure.Migrations
                     b.ToTable("UserInfos");
                 });
 
-            modelBuilder.Entity("WorkIt.Core.Entities.ApplicationUserOwnedProjects", b =>
-                {
-                    b.HasOne("WorkIt.Core.Entities.Project", "Project")
-                        .WithMany("Owners")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("WorkIt.Core.Entities.UserInfo", "UserInfo")
-                        .WithMany("OwnedProjects")
-                        .HasForeignKey("UserInfoId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("WorkIt.Core.Entities.ApplicationUserProjectMember", b =>
                 {
                     b.HasOne("WorkIt.Core.Entities.Project", "Project")
@@ -203,7 +175,8 @@ namespace WorkIt.Infrastructure.Migrations
                 {
                     b.HasOne("WorkIt.Core.Entities.UserInfo", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById1");
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WorkIt.Core.Entities.Project", "Project")
                         .WithMany("Threads")
