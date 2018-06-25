@@ -68,15 +68,11 @@ namespace Core.Services
                     return new ServiceResponse(ServiceStatus.BadRequest);
 
                 var userProjectOwnership = await _projectMembershipRepository.GetProjectMembership(projectId, userInfo.Id);
-                if (userProjectOwnership == null || userProjectOwnership.RoleLevel == RoleLevel.Owner)
+                if (userProjectOwnership == null || userProjectOwnership.RoleLevel != RoleLevel.Owner)
                     return new ServiceResponse(ServiceStatus.Unauthorized);
 
                 var project = await _projectRepository.GetById(projectId);
                 if (project == null)
-                    return new ServiceResponse(ServiceStatus.BadRequest);
-
-                var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userIdToBeAdded);
-                if (existingMembership != null)
                     return new ServiceResponse(ServiceStatus.BadRequest);
 
                 await _projectMembershipRepository.AddMemberToProject(userIdToBeAdded, projectId);
