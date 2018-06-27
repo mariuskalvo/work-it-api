@@ -19,6 +19,19 @@ namespace WorkIt.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<UserInfo> CreateDefaultUserInfo(string openIdSub, string email)
+        {
+            var userInfo = new UserInfo
+            {
+                OpenIdSub = openIdSub,
+                CreatedAt = DateTime.Now,
+                Email = email
+            };
+            _dbContext.UserInfos.Add(userInfo);
+            await _dbContext.SaveChangesAsync();
+            return userInfo;
+        }
+
         public async Task<IEnumerable<UserInfo>> GetProjectMembersByProjectId(long projectId)
         {
             return await (from userInfo in _dbContext.UserInfos
@@ -26,15 +39,6 @@ namespace WorkIt.Infrastructure.Repositories
                     on userInfo.Id equals projectMember.UserInfoId
                     where projectMember.ProjectId == projectId
                     select userInfo).ToListAsync();
-        }
-
-        public async Task<IEnumerable<UserInfo>> GetProjectOwnersByProjectId(long projectId)
-        {
-            return await (from userInfo in _dbContext.UserInfos
-                         join projectOwner in _dbContext.ProjectOwners
-                         on userInfo.Id equals projectOwner.UserInfoId
-                         where projectOwner.ProjectId == projectId
-                         select userInfo).ToListAsync();
         }
 
         public async Task<UserInfo> GetUserInfoByOpenIdSub(string openIdSub)

@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using Core.DTOs;
-using Core.Exceptions;
-using Core.Services.Interfaces;
 using Core.Validators;
 using Microsoft.EntityFrameworkCore;
 using WorkIt.Core.Constants;
@@ -38,24 +34,28 @@ namespace Core.Services
             _userInfoRepository = userInfoRepository;
         }
 
-        public async Task<ServiceResponse<ProjectDto>> Create(CreateProjectDto createGroupDto, string applicationUserId)
+        public async Task<ServiceResponse<ProjectDto>> Create(CreateProjectDto createProjectDto, string applicationUserId)
         {
             var validator = new CreateProjectDtoValidator();
-            var validationResults = validator.Validate(createGroupDto);
+            var validationResults = validator.Validate(createProjectDto);
 
             if (!validationResults.IsValid)
                 return new ServiceResponse<ProjectDto>(ServiceStatus.BadRequest);
 
-            var entityToAdd = _mapper.Map<Project>(createGroupDto);
+            var entityToAdd = _mapper.Map<Project>(createProjectDto);
 
+            var userInfo = await _userInfoRepository.GetUserInfoByOpenIdSub(applicationUserId);
+            if (userInfo == null)
+                return new ServiceResponse<ProjectDto>(ServiceStatus.BadRequest);
+
+            entityToAdd.CreatedById = userInfo.Id;
             entityToAdd.CreatedAt = DateTime.Now;
             entityToAdd.ModifiedAt = DateTime.Now;
 
-            entityToAdd.CreatedById = applicationUserId;
-
             var addedEntity = await _projectRepository.Create(entityToAdd);
-            var projectDto = _mapper.Map<ProjectDto>(addedEntity);
+            await _projectMembershipRepository.AddMemberToProject(userInfo.Id, addedEntity.Id, RoleLevel.Owner);
 
+            var projectDto = _mapper.Map<ProjectDto>(addedEntity);
             return new ServiceResponse<ProjectDto>(ServiceStatus.Ok).SetData(projectDto);
         }
 
@@ -63,16 +63,16 @@ namespace Core.Services
         {
             try
             {
-                var userProjectOwnership = await _projectRepository.GetProjectsOwnership(currentUserId, projectId);
-                if (userProjectOwnership == null)
+                var userInfo = await _userInfoRepository.GetUserInfoByOpenIdSub(currentUserId);
+                if (userInfo == null)
+                    return new ServiceResponse(ServiceStatus.BadRequest);
+
+                var userProjectOwnership = await _projectMembershipRepository.GetProjectMembership(projectId, userInfo.Id);
+                if (userProjectOwnership == null || userProjectOwnership.RoleLevel != RoleLevel.Owner)
                     return new ServiceResponse(ServiceStatus.Unauthorized);
 
                 var project = await _projectRepository.GetById(projectId);
                 if (project == null)
-                    return new ServiceResponse(ServiceStatus.BadRequest);
-
-                var existingMembership = await _projectMembershipRepository.GetProjectMembership(projectId, userIdToBeAdded);
-                if (existingMembership != null)
                     return new ServiceResponse(ServiceStatus.BadRequest);
 
                 await _projectMembershipRepository.AddMemberToProject(userIdToBeAdded, projectId);
@@ -185,15 +185,11 @@ namespace Core.Services
                 return new ServiceResponse<ProjectDetailsDto>(ServiceStatus.Unauthorized);
             }
 
-            var members = await _userInfoRepository.GetProjectMembersByProjectId(projectId);
-            var owners = await _userInfoRepository.GetProjectOwnersByProjectId(projectId);
+            var projectMembers = await _userInfoRepository.GetProjectMembersByProjectId(projectId);
 
-            var memberDtos = _mapper.Map<IEnumerable<SimpleUserInfoDto>>(members);
-            var ownerDtos = _mapper.Map<IEnumerable<SimpleUserInfoDto>>(owners);
-            
+            var memberDtos = _mapper.Map<IEnumerable<SimpleUserInfoDto>>(projectMembers);
             var projectDetailsDto = _mapper.Map<ProjectDetailsDto>(project);
             projectDetailsDto.Members = memberDtos;
-            projectDetailsDto.Owners = ownerDtos;
 
             return new ServiceResponse<ProjectDetailsDto>(ServiceStatus.Ok).SetData(projectDetailsDto);
         }

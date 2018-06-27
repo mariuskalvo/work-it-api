@@ -57,7 +57,18 @@ namespace Core.Services
                     var responseAsString = await response.Content.ReadAsStringAsync();
                     var loginResponse = JsonConvert.DeserializeObject<Auth0LoginResponse>(responseAsString);
 
-                    return new ServiceResponse<string>(ServiceStatus.Ok).SetData(loginResponse.IdToken);
+                    var jwtToken = new JwtSecurityToken(loginResponse.AccessToken);
+                    var subject = jwtToken.Subject;
+                    
+                    if (!string.IsNullOrEmpty(subject))
+                    {
+                        var existingUserInfo = await _userInfoRepository.GetUserInfoByOpenIdSub(subject);
+                        if (existingUserInfo == null)
+                        {
+                            await _userInfoRepository.CreateDefaultUserInfo(subject, loginDto.Email);
+                        }
+                    }
+                    return new ServiceResponse<string>(ServiceStatus.Ok).SetData(loginResponse.AccessToken);
                 }
                 return new ServiceResponse<string>(ServiceStatus.BadRequest);
             }

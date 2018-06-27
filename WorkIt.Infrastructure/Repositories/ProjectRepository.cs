@@ -75,12 +75,5 @@ namespace WorkIt.Infrastructure.Repositories
                 .Include(p => p.CreatedBy)
                 .ToListAsync();
         }
-
-        public async Task<ApplicationUserOwnedProjects> GetProjectsOwnership(string userId, long projectId)
-        {
-            return await _dbContext.ProjectOwners.Include(p => p.UserInfo)
-                            .Where(po => po.UserInfo.OpenIdSub == userId && po.ProjectId == projectId)
-                            .FirstOrDefaultAsync();
-        }
     }
 }

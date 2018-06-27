@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using WorkIt.Core.Constants;
 using WorkIt.Core.Entities;
 using WorkIt.Core.Services.Interfaces;
 using WorkIt.Infrastructure.DataAccess;
@@ -19,12 +20,13 @@ namespace WorkIt.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddMemberToProject(long userId, long projectId)
+        public async Task AddMemberToProject(long userId, long projectId, RoleLevel roleLevel = RoleLevel.Member)
         {
             _dbContext.ProjectMembers.Add(new ApplicationUserProjectMember()
             {
                 UserInfoId = userId,
-                ProjectId = projectId
+                ProjectId = projectId,
+                RoleLevel = roleLevel
             });
 
             await _dbContext.SaveChangesAsync();

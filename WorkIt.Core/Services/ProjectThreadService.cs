@@ -57,7 +57,7 @@ namespace Core.Services
 
             var entityToAdd = _mapper.Map<ProjectThread>(groupThread);
             entityToAdd.CreatedAt = DateTime.Now;
-            entityToAdd.CreatedById = creatorOpenIdSubject;
+            entityToAdd.CreatedById = userInfo.Id;
 
             try
             {
